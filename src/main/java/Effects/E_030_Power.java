@@ -5,8 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Log4j2
@@ -16,23 +14,26 @@ public class E_030_Power extends Effect { // TODO: Deeper inheritance for player
     @Getter @Setter String initializationString = null;
     int changeBy;
 
-    public E_030_Power(List<Card> effectedCards, int changeBy, List<ConditionInterface> conditions) {
+    public E_030_Power(List<Card> effectedCards, int changeBy, List<ConditionInterface> conditions, TriggerTime triggerTime) {
+        super(triggerTime);
+        super.conditions = conditions;
+
         this.effectedCards = effectedCards;
         this.changeBy = changeBy;
-
-        super.conditions = conditions;
     }
 
     @Override
-    public void applyEffect() {
+    public Effect applyEffect() {
         if (this.effectedCards == null) {
             log.error("Initialization went wrong, no cards effected...");
         }
-        if (super.checkConditions()) {
+        if (super.conditionsFulfilled()) {
             for (Card card : this.effectedCards) {
                 int newPower = card.getCurrentPower() + this.changeBy;
                 card.setCurrentPower(newPower);
             }
+            return super.expiryEffect;
         }
+        return null;
     }
 }

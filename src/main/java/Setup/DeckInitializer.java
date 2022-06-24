@@ -31,28 +31,20 @@ public class DeckInitializer {
 
     public EffectCollection getFullRandomEffect() {
         if (Main.random.nextInt(100) < 20) { // 10% chance for any card to have this effect
-            String desc = "";
-            // On PLAY: If you are losing the round, and it's after round 2 give all A&C cards in your deck +50 until the end of the round
+            String desc = "ON PLAY  [Cond: loosing round & after round 2, Effect: +50 to own A&C, Expire: end of round]";
+
             List<ConditionInterface> cond_list   = new ArrayList<>();
             cond_list.add(new C_010_RoundStatus(-2));
-            desc += "Con: loosing round";
             cond_list.add(new C_001_AfterRoundX(2));
-            desc += " & after round 2";
 
-            E_030_Power effect_Plus50 = new E_030_Power(null, 50, cond_list);
+            E_030_Power effect_Minus50 = new E_030_Power(null, -50, null, TriggerTime.ON_END_ROUND);
+            E_030_Power effect_Plus50  = new E_030_Power(null, 50, cond_list, TriggerTime.ON_PLAY);
             effect_Plus50.setInitializationString(TargetCards.OWN + Main.SEPARATOR +
                     TargetQualifiers.FROM_ALBUM        + Main.SEPARATOR + Album.ARTS_AND_CULTURE + Main.SEPARATOR +
                     TargetQualifiers.BASE_ENERGY_UNDER + Main.SEPARATOR + "6");
-            desc += ", Eff: +50 to own A&C";
+            effect_Plus50.setExpiryEffect(effect_Minus50);
 
-            E_030_Power effect_Minus50 = new E_030_Power(null, -50, null);
-
-            EffectContainer effectContainer_Plus50 = new EffectContainer(effect_Plus50, TriggerTime.ON_PLAY);
-            desc = "ON PLAY   " + desc;
-            effectContainer_Plus50.setExpiryEffect(new EffectContainer(effect_Minus50, TriggerTime.ON_END_ROUND));
-            desc += ", Dur: end of round";
-
-            return new EffectCollection(desc,false, effectContainer_Plus50);
+            return new EffectCollection(desc,false, effect_Plus50);
         }
         return null;
     }

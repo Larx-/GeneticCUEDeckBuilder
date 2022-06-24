@@ -14,12 +14,13 @@ public class E_001_EPT extends Effect {
     @Getter @Setter TargetPlayers targetPlayers;
     int changeBy;
 
-    public E_001_EPT(List<PlayerManager> effectedPlayers, int changeBy, List<ConditionInterface> conditions) {
+    public E_001_EPT(List<PlayerManager> effectedPlayers, int changeBy, List<ConditionInterface> conditions, TriggerTime triggerTime) {
+        super(triggerTime);
+        super.conditions = conditions;
+
         this.effectedPlayers = effectedPlayers;
         this.changeBy = changeBy;
         this.targetPlayers = this.effectedPlayers == null ? TargetPlayers.INVALID_STATE : TargetPlayers.INIT_FINISHED;
-
-        super.conditions = conditions;
     }
 
     public void initialize(PlayerManager self, PlayerManager other) {
@@ -37,15 +38,17 @@ public class E_001_EPT extends Effect {
     }
 
     @Override
-    public void applyEffect() {
+    public Effect applyEffect() {
         if (this.effectedPlayers == null) {
             log.error("Effect was not initialized properly!");
         }
-        if (super.checkConditions()) {
+        if (super.conditionsFulfilled()) {
             for (PlayerManager player : this.effectedPlayers) {
                 int newEPT = player.getEnergyPerTurn() + this.changeBy;
                 player.setEnergyPerTurn(newEPT);
             }
+            return super.expiryEffect;
         }
+        return null;
     }
 }

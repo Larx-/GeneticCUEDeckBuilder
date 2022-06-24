@@ -14,11 +14,12 @@ public class Card {
     @Getter private final Collection collection;
     @Getter private final int baseCost;
     @Getter private final int basePower;
+    @Getter private final EffectCollection effects;
+    // Transient "in-play" variables
     @Getter @Setter private int currentCost;
     @Getter @Setter private int currentPower;
     @Getter @Setter private boolean isLocked;
     // TODO: isOnFire
-    @Getter private final EffectCollection effects;
 
     public Card(String id, String name, Album album, Collection collection,
                 int energyCost, int basePower, EffectCollection effects){

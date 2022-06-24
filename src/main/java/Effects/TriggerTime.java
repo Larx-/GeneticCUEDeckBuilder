@@ -9,5 +9,5 @@ public enum TriggerTime {
     ON_RETURN,
     ON_END_TURN, // Same as return, but only ever used as "counter effect"
     ON_END_ROUND,
-    AFTER_TIME
+    ON_TIMER
 }

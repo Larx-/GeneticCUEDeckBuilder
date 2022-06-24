@@ -1,3 +1,5 @@
+import Effects.E_030_Power;
+import Effects.Effect;
 import GameElements.Card;
 import Setup.Album;
 import Setup.Collection;

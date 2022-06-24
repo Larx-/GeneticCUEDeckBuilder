@@ -1,18 +1,10 @@
 package Effects;
 
-import Controlling.Main;
 import GameElements.Card;
-import GameElements.Game;
-import GameElements.PlayerManager;
-import Setup.Album;
-import Setup.Collection;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.lang3.ArrayUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Log4j2
@@ -22,23 +14,26 @@ public class E_020_Energy extends Effect { // TODO: Deeper inheritance for playe
     @Getter @Setter String initializationString = null;
     int changeBy;
 
-    public E_020_Energy(List<Card> effectedCards, int changeBy, List<ConditionInterface> conditions) {
+    public E_020_Energy(List<Card> effectedCards, int changeBy, List<ConditionInterface> conditions, TriggerTime triggerTime) {
+        super(triggerTime);
+        super.conditions = conditions;
+
         this.effectedCards = effectedCards;
         this.changeBy = changeBy;
-
-        super.conditions = conditions;
     }
 
     @Override
-    public void applyEffect() {
+    public Effect applyEffect() {
         if (this.effectedCards == null) {
             log.error("Initialization went wrong, no cards effected...");
         }
-        if (super.checkConditions()) {
+        if (super.conditionsFulfilled()) {
             for (Card card : this.effectedCards) {
                 int newEnergy = card.getCurrentCost() + this.changeBy;
                 card.setCurrentCost(newEnergy);
             }
+            return super.expiryEffect;
         }
+        return null;
     }
 }

@@ -11,24 +11,24 @@ public class EffectCollection {
 
     @Getter String miniDescription;
     @Getter boolean isFullyInitialized;
-    @Getter List<EffectContainer> effects;
+    @Getter List<Effect> effects;
 
-    public EffectCollection(String miniDescription, boolean isFullyInitialized, EffectContainer ... effects) {
+    public EffectCollection(String miniDescription, boolean isFullyInitialized, Effect ... effects) {
         this.miniDescription = miniDescription;
         this.isFullyInitialized = isFullyInitialized;
         this.effects = Arrays.asList(effects);
     }
 
-    public List<EffectContainer> getEffectsWithTrigger(TriggerTime trigger) {
-        List<EffectContainer> rc = new ArrayList<>();
+    public List<Effect> getEffectsWithTrigger(TriggerTime trigger) {
+        List<Effect> rc = new ArrayList<>();
 
-        for (EffectContainer effectCont : this.effects) {
+        for (Effect effectCont : this.effects) {
             if (effectCont.getTriggerTime() == trigger) {
                 rc.add(effectCont);
 
-                if (effectCont.getExpiryEffect() != null) {
-                    rc.add(effectCont.getExpiryEffect());
-                }
+//                if (effectCont.getExpiryEffect() != null) {
+//                    rc.add(effectCont.getExpiryEffect());
+//                }
             }
         }
         return rc;

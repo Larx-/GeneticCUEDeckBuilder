@@ -18,13 +18,24 @@ import java.util.List;
 @Log4j2
 public class Effect {
 
-    @Getter List<ConditionInterface> conditions = null;
+    @Getter List<ConditionInterface> conditions;
+    @Getter TriggerTime triggerTime;
+    @Setter @Getter int afterXTurns;
+    @Setter @Getter Effect expiryEffect;
 
-    public void applyEffect () {
-       log.error("Parent effect should not be called!"); // FIXME: Move the upper part into here?
+    public Effect (TriggerTime triggerTime) {
+        this.triggerTime = triggerTime;
+
+        this.conditions = null;
+        this.expiryEffect = null;
     }
 
-    protected boolean checkConditions () {
+    public Effect applyEffect () {
+        log.error("Parent effect should not be called!"); // FIXME: Move the upper part into here?
+        return null;
+    }
+
+    protected boolean conditionsFulfilled () {
         if (this.conditions != null) {
             for (ConditionInterface condition : this.conditions) {
                 if (!condition.checkConditionFulfilled()) {

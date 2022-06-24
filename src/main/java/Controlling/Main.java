@@ -37,6 +37,7 @@ public class Main {
 
 //        System.out.println("\n");
 
-        game.playGame();
+        // FIXME: Cards not resetting after game
+//        game.playGame();
     }
 }
