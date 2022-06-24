@@ -1,21 +1,22 @@
+package GameElements;
+
+import Controlling.Main;
 import lombok.Getter;
 
 import java.util.*;
 
 public class Rules {
 
-    Random random;
     @Getter private final int energyStarting;
     @Getter private final int energyMin;
     @Getter private final int energyMax;
     @Getter private final int energyPerTurn;
     private List<RoundBonus> guaranteedRoundBoni;
     private List<RoundBonus> additionalRoundBoni;
-    @Getter private RoundBonus[] roundBoni;
+    private RoundBonus[] roundBoni;
 
     public Rules(int energyStarting, int energyMin, int energyMax, int energyPerTurn,
-                 List<RoundBonus> guaranteedRoundBoni, List<RoundBonus> additionalRoundBoni, Random random) {
-        this.random = random;
+                 List<RoundBonus> guaranteedRoundBoni, List<RoundBonus> additionalRoundBoni) {
 
         this.energyStarting = energyStarting;
         this.energyMin = energyMin;
@@ -27,6 +28,10 @@ public class Rules {
         this.roundBoni = new RoundBonus[5];
     }
 
+    public RoundBonus getRoundBonus(int round) {
+        return this.roundBoni[round-1];
+    }
+
     public void chooseRoundBoni() {
         List<Integer> toChooseRounds = new ArrayList<>(Arrays.asList(0,1,2,3,4));
         Collections.shuffle(toChooseRounds);
@@ -35,12 +40,12 @@ public class Rules {
             this.roundBoni[toChooseRounds.remove(0)] = roundBonus;
         }
 
-        int firstAdditional = this.random.nextInt(3);
+        int firstAdditional = Main.random.nextInt(3);
         this.roundBoni[toChooseRounds.remove(0)] = this.additionalRoundBoni.get(firstAdditional);
 
-        int secondAdditional = this.random.nextInt(3);
+        int secondAdditional = Main.random.nextInt(3);
         while (firstAdditional == secondAdditional) {
-            secondAdditional = this.random.nextInt(3);
+            secondAdditional = Main.random.nextInt(3);
         }
         this.roundBoni[toChooseRounds.remove(0)] = this.additionalRoundBoni.get(secondAdditional);
     }

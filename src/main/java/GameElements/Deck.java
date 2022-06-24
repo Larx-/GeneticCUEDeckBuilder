@@ -1,8 +1,12 @@
+package GameElements;
+
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
 
 @Log4j2
 public class Deck {
@@ -21,12 +25,15 @@ public class Deck {
         Collections.shuffle(this.cardsInDeck);
     }
 
-    public void drawCards() {
+    public List<Card> drawCards() {
+        List<Card> draw = new ArrayList<>();
         for (int i = 0; i < 5; i++){
             if (this.cardsInHand[i] == null) {
                 this.cardsInHand[i] = this.cardsInDeck.pollFirst();
+                draw.add(this.cardsInHand[i]);
             }
         }
+        return draw;
     }
 
     public void playCard(int indexInHand, int indexOnBoard) {
@@ -34,11 +41,11 @@ public class Deck {
         this.cardsInHand[indexInHand] = null;
     }
 
-    public int executePlay() {
+    public int calcPower() {
         int sumPower = 0;
         for (Card c : cardsPlayed) {
             if (c != null) {
-                sumPower += c.getBasePower();
+                sumPower += c.getCurrentPower();
             }
         }
         return sumPower;
@@ -49,6 +56,24 @@ public class Deck {
             if (this.cardsPlayed[i] != null) {
                 this.cardsInDeck.addLast(this.cardsPlayed[i]);
                 this.cardsPlayed[i] = null;
+            }
+        }
+    }
+
+    public int countLockedCards() {
+        int lockedCards = 0;
+        for (int i = 0; i < 5; i++){
+            if (this.cardsInHand[i] != null && this.cardsInHand[i].isLocked()) {
+                lockedCards++;
+            }
+        }
+        return lockedCards;
+    }
+
+    public void unlockCards() {
+        for (int i = 0; i < 5; i++){
+            if (this.cardsInHand[i] != null && this.cardsInHand[i].isLocked()) {
+                this.cardsInHand[i].setLocked(false);
             }
         }
     }

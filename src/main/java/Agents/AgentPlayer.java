@@ -1,8 +1,8 @@
+package Agents;
+
+import GameElements.Deck;
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 import java.util.Scanner;
 
 public class AgentPlayer implements AgentInterface {
@@ -16,7 +16,7 @@ public class AgentPlayer implements AgentInterface {
     }
 
     @Override
-    public int getNextTurn(int availableEnergy) { // TODO: replace int with something like gameState
+    public int decideNextTurn(int availableEnergy) { // TODO: replace int with something like gameState
         String inputLine = scanner.nextLine();
         String[] inputStrings = inputLine.split(",");
 
@@ -28,10 +28,13 @@ public class AgentPlayer implements AgentInterface {
 
                 if (inputInt >= 0 && inputInt <= 4) {
 
-                    int cardCost = deck.getCardsInHand()[inputInt].getBaseCost();
-                    if ((cardCost + usedEnergy) <= availableEnergy) {
-                        usedEnergy += cardCost;
-                        deck.playCard(inputInt,i);
+                    if (!deck.getCardsInHand()[inputInt].isLocked()) {
+
+                        int cardCost = deck.getCardsInHand()[inputInt].getBaseCost();
+                        if ((cardCost + usedEnergy) <= availableEnergy) {
+                            usedEnergy += cardCost;
+                            deck.playCard(inputInt, i);
+                        }
                     }
                 }
             }
