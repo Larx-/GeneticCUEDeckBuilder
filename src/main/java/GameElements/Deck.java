@@ -45,7 +45,7 @@ public class Deck {
         int sumPower = 0;
         for (Card c : cardsPlayed) {
             if (c != null) {
-                sumPower += c.getCurrentPower();
+                sumPower += c.getModifiedPower();
             }
         }
         return sumPower;

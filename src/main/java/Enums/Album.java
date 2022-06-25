@@ -1,6 +1,4 @@
-package Setup;
-
-import Effects.TargetQualifiers;
+package Enums;
 
 public enum Album {
     ARTS_AND_CULTURE ("Arts & Culture"),

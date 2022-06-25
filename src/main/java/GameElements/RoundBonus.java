@@ -1,7 +1,7 @@
 package GameElements;
 
-import Setup.Album;
-import Setup.Collection;
+import Enums.Album;
+import Enums.Collection;
 import lombok.Getter;
 
 public class RoundBonus {

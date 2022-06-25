@@ -2,8 +2,9 @@ package GameElements;
 
 import Agents.AgentInterface;
 import Effects.*;
-import Setup.Album;
-import Setup.Collection;
+import Enums.TriggerTime;
+import Enums.Album;
+import Enums.Collection;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
@@ -80,71 +81,8 @@ public class Game {
         this.totalTurnNumber = 1;
         this.roundNumber = 1;
 
-        this.initConditions(this.resident.getDeck().getCardsInDeck(), false);
-        this.initConditions(this.opponent.getDeck().getCardsInDeck(), true);
-    }
-
-    private void initConditions(List<Card> cardList, boolean isOpponentView) {
-        // FIXME: There must be a thousand smarter and better ways to do this
-        for (Card card : cardList) {
-            EffectCollection cardEffectCollection = card.getEffects();
-
-            if (cardEffectCollection != null && !cardEffectCollection.isFullyInitialized()) {
-                for (Effect effect : cardEffectCollection.getEffects()) {
-                    if (effect != null) {
-                        // Condition initialization and if possible caching
-                        for (ConditionInterface cond : effect.getConditions()) {
-                            switch (cond.getClass().getSimpleName()) {
-                                case "C_001_AfterRoundX":
-                                    C_001_AfterRoundX c_001 = (C_001_AfterRoundX)cond;
-                                    c_001.initialize(this);
-                                    break;
-
-                                case "C_002_BeforeRoundX":
-                                    C_002_BeforeRoundX c_002 = (C_002_BeforeRoundX)cond;
-                                    c_002.initialize(this);
-                                    break;
-
-                                case "C_010_RoundStatus":
-                                    C_010_RoundStatus c_010 = (C_010_RoundStatus)cond;
-                                    c_010.initialize(this, isOpponentView);
-                                    break;
-
-                                default:
-                                    log.error("Could not initialize unknown Condition!");
-                            }
-                        }
-                        // Effect initialization as far as possible at least
-                        switch (effect.getClass().getSimpleName()) {
-                            case "E_001_EPT":
-                                E_001_EPT e_001 = (E_001_EPT)effect;
-                                if (isOpponentView) {
-                                    e_001.initialize(this.opponent, this.resident);
-                                } else {
-                                    e_001.initialize(this.resident, this.opponent);
-                                }
-                                break;
-
-                            case "E_010_PPT":
-                                E_010_PPT e_010 = (E_010_PPT)effect;
-                                if (isOpponentView) {
-                                    e_010.initialize(this.opponent, this.resident);
-                                } else {
-                                    e_010.initialize(this.resident, this.opponent);
-                                }
-                                break;
-
-                            case "E_020_Energy":
-                            case "E_030_Power":
-                                break;
-
-                            default:
-                                log.error("Could not initialize unknown Condition!");
-                        }
-                    }
-                }
-            }
-        }
+//        this.initConditions(this.resident.getDeck().getCardsInDeck(), false);
+//        this.initConditions(this.opponent.getDeck().getCardsInDeck(), true);
     }
 
     private boolean playRound(){
@@ -183,10 +121,10 @@ public class Game {
 
         // Return by value (I know, not pretty, but more efficient than my previous attempt)
         if (this.opponent.findCardsForBonus(bonusCollection, bonusAlbum, bCCards, bACards)) {
-            this.effectStack_DRAW_START.add(new E_030_Power(bCCards,  roundBonus.getCollectionBonus(), null, TriggerTime.ON_START_ROUND));
-            this.effectStack_DRAW_START.add(new E_030_Power(bACards,  roundBonus.getAlbumBonus(),      null, TriggerTime.ON_START_ROUND));
-            this.effectStack_ENDofROUND.add(new E_030_Power(bCCards, -roundBonus.getCollectionBonus(), null, TriggerTime.ON_END_ROUND));
-            this.effectStack_ENDofROUND.add(new E_030_Power(bACards, -roundBonus.getAlbumBonus(),      null, TriggerTime.ON_END_ROUND));
+            this.effectStack_DRAW_START.add(new E_Power(bCCards,  roundBonus.getCollectionBonus(), null, TriggerTime.START_ROUND));
+            this.effectStack_DRAW_START.add(new E_Power(bACards,  roundBonus.getAlbumBonus(),      null, TriggerTime.START_ROUND));
+            this.effectStack_ENDofROUND.add(new E_Power(bCCards, -roundBonus.getCollectionBonus(), null, TriggerTime.END_ROUND));
+            this.effectStack_ENDofROUND.add(new E_Power(bACards, -roundBonus.getAlbumBonus(),      null, TriggerTime.END_ROUND));
         }
 
         log.debug(String.format("ROUND %d  (+%d %s / +%d %s)", this.roundNumber,
@@ -203,24 +141,24 @@ public class Game {
         // Add DRAW effects to queue
         for (Card card : drawnCardsResident) {
             if (card.getEffects() != null) {
-                this.effectStack_DRAW_START.addAll(card.getEffects().getEffectsWithTrigger(TriggerTime.ON_DRAW));
+                this.effectStack_DRAW_START.addAll(card.getEffects().get(TriggerTime.DRAW));
             }
         }
         for (Card card : drawnCardsOpponent) {
             if (card.getEffects() != null) {
-                this.effectStack_DRAW_START.addAll(card.getEffects().getEffectsWithTrigger(TriggerTime.ON_DRAW));
+                this.effectStack_DRAW_START.addAll(card.getEffects().get(TriggerTime.DRAW));
             }
         }
 
         // Add START effects to queue
         for (Card card : this.resident.getDeck().getCardsInHand()) {
             if (card.getEffects() != null) {
-                this.effectStack_DRAW_START.addAll(card.getEffects().getEffectsWithTrigger(TriggerTime.ON_START_TURN));
+                this.effectStack_DRAW_START.addAll(card.getEffects().get(TriggerTime.START_TURN));
             }
         }
         for (Card card : this.opponent.getDeck().getCardsInHand()) {
             if (card.getEffects() != null) {
-                this.effectStack_DRAW_START.addAll(card.getEffects().getEffectsWithTrigger(TriggerTime.ON_START_TURN));
+                this.effectStack_DRAW_START.addAll(card.getEffects().get(TriggerTime.START_TURN));
             }
         }
 
@@ -238,12 +176,12 @@ public class Game {
         // Add PLAY effects to queue
         for (Card card : this.resident.getDeck().getCardsPlayed()) {
             if (card != null && card.getEffects() != null) {
-                this.effectStack_PLAY.addAll(card.getEffects().getEffectsWithTrigger(TriggerTime.ON_PLAY));
+                this.effectStack_PLAY.addAll(card.getEffects().get(TriggerTime.PLAY));
             }
         }
         for (Card card : this.resident.getDeck().getCardsPlayed()) {
             if (card != null && card.getEffects() != null) {
-                this.effectStack_PLAY.addAll(card.getEffects().getEffectsWithTrigger(TriggerTime.ON_PLAY));
+                this.effectStack_PLAY.addAll(card.getEffects().get(TriggerTime.PLAY));
             }
         }
 
@@ -261,12 +199,12 @@ public class Game {
         // Add RETURN effects to queue
         for (Card card : this.resident.getDeck().getCardsPlayed()) {
             if (card != null && card.getEffects() != null) {
-                this.effectStack_RETURN.addAll(card.getEffects().getEffectsWithTrigger(TriggerTime.ON_RETURN));
+                this.effectStack_RETURN.addAll(card.getEffects().get(TriggerTime.RETURN));
             }
         }
         for (Card card : this.resident.getDeck().getCardsPlayed()) {
             if (card != null && card.getEffects() != null) {
-                this.effectStack_RETURN.addAll(card.getEffects().getEffectsWithTrigger(TriggerTime.ON_RETURN));
+                this.effectStack_RETURN.addAll(card.getEffects().get(TriggerTime.RETURN));
             }
         }
 
@@ -312,7 +250,7 @@ public class Game {
 
     private void initEffectedCards(List<Card> cardsToInit, boolean isOpponentView) {
         for (Card card : cardsToInit) {
-            EffectCollection effectColl = card.getEffects();
+            EffectCollection effectColl = null; //card.getEffects();
             if (effectColl != null && !effectColl.isFullyInitialized()) {
 
                 List<Effect> effectCont = effectColl.getEffects();
@@ -340,15 +278,15 @@ public class Game {
     private void addEffectsToTriggerQueues(List<Effect> effects) {
         for (Effect effect : effects) {
             switch (effect.getTriggerTime()) {
-                case ON_START_GAME : if (this.roundNumber <= 1) { this.effectStack_DRAW_START.add(effect); } break;
-                case ON_START_ROUND: if (this.turnNumber <= 1)  { this.effectStack_DRAW_START.add(effect); } break;
-                case ON_START_TURN :
-                case ON_DRAW       : this.effectStack_DRAW_START.add(effect);   break;
-                case ON_PLAY       : this.effectStack_PLAY.add(effect);         break;
-                case ON_RETURN     :
-                case ON_END_TURN   : this.effectStack_RETURN.add(effect);       break;
-                case ON_END_ROUND  : this.effectStack_ENDofROUND.add(effect);   break;
-                case ON_TIMER: int turnToTrigger = this.totalTurnNumber + effect.getAfterXTurns();
+                case START_GAME: if (this.roundNumber <= 1) { this.effectStack_DRAW_START.add(effect); } break;
+                case START_ROUND: if (this.turnNumber <= 1)  { this.effectStack_DRAW_START.add(effect); } break;
+                case START_TURN:
+                case DRAW: this.effectStack_DRAW_START.add(effect);   break;
+                case PLAY: this.effectStack_PLAY.add(effect);         break;
+                case RETURN:
+                case END_TURN: this.effectStack_RETURN.add(effect);       break;
+                case END_ROUND: this.effectStack_ENDofROUND.add(effect);   break;
+                case TIMER: int turnToTrigger = this.totalTurnNumber; //+ effect.getAfterXTurns();
                                      if (this.effectStack_TIMED.containsKey(turnToTrigger)) {
                                          this.effectStack_TIMED.get(turnToTrigger).add(effect);
                                      } else {

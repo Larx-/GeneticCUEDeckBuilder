@@ -30,7 +30,7 @@ public class AgentPlayer implements AgentInterface {
 
                     if (!deck.getCardsInHand()[inputInt].isLocked()) {
 
-                        int cardCost = deck.getCardsInHand()[inputInt].getBaseCost();
+                        int cardCost = deck.getCardsInHand()[inputInt].getModifiedCost();
                         if ((cardCost + usedEnergy) <= availableEnergy) {
                             usedEnergy += cardCost;
                             deck.playCard(inputInt, i);

@@ -1,5 +1,5 @@
 Id,Name,Limited,Rarity,Collection,Energy,Power,Effects,EffectDescription
-ACNO001,Loki,1,Legendary,Norse Mythology,5,35,On:RETURN;Target:REMAINING(OTHER);Effect:ENERGY(+3);Duration:TURNS(1),"When returned to your deck, your Opponent's cards left in hand cost 3 more Energy next turn."
+ACNO001,Loki,1,Legendary,Norse Mythology,5,35,TriggerTime:RETURN;Target:REMAINING(OTHER);Effect:ENERGY(+3);Duration:TURNS(1),"When returned to your deck, your Opponent's cards left in hand cost 3 more Energy next turn."
 ACNO002,Freya,1,Common,Norse Mythology,2,25,,"When played, all cards have -25 Power this turn."
 ACNO003,Thor,1,Legendary,Norse Mythology,5,48,,"When played, Thunderstorms cards gain +30 Power until played."
 ACNO004,Odin,1,Epic,Norse Mythology,3,30,,"When played with Frigga, give that card +30 Power."
@@ -7,7 +7,7 @@ ACNO005,Freyr,1,Rare,Norse Mythology,3,33,,"When returned to your deck, both pla
 ACNO006,Baldr,1,Common,Norse Mythology,4,32,,"When returned to your deck, if you won the turn, gain +40 Power next turn."
 ACNO007,Frigga,1,Epic,Norse Mythology,7,70,,"When played with Odin, give that card +70 Power."
 ACNO008,Tyr,1,Common,Norse Mythology,9,75,,"When drawn, your Norse Mythology cards have +25 Power until played."
-ACNO009,Mj�lnir,1,Epic,Norse Mythology,4,44,"On:PLAY;Target:CARD_THIS,Effect:POWER(+68);Duration:TURNS(0);Condition:PLAYED(SELF,NAME,Thor)","When played with Thor, give it +68 Power this turn."
+ACNO009,Mj�lnir,1,Epic,Norse Mythology,4,44,"{TriggerTime:PLAY;Target:CARD_THIS,Effect:POWER(+68);Duration:TURNS(0);Condition:PLAYED(SELF,NAME,Thor)}","When played with Thor, give it +68 Power this turn."
 ACNO010,Fenrir,1,Rare,Norse Mythology,3,26,,"When played with Atlantic Wolffish or Lupus, give them +24 Power this turn."
 ACNO011,Ymir,1,Rare,Norse Mythology,9,87,,"When drawn, Lock a random card in your opponent's hand for this turn. If you are losing the round, also give it -20 Power until it is played."
 ACNO012,Heimdall,1,Legendary,Norse Mythology,6,30,,"When returned to your deck, if it contains cards from 6 or more Albums, give your cards (even if they're in your deck) +30 Power this round."

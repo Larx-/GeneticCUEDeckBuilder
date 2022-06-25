@@ -1,4 +1,4 @@
-package Setup;
+package Enums;
 
 public enum Collection {
     AMAS ("Amazing Astronauts", Album.SPACE),
@@ -29,7 +29,7 @@ public enum Collection {
     }
 
     public boolean equalsName(String otherName) {
-        return name.equals(otherName);
+        return this.name.equals(otherName);
     }
 
     public String toString() {

@@ -1,11 +1,15 @@
 package GameElements;
 
-import Effects.EffectCollection;
-import Setup.Album;
-import Setup.Collection;
+import Effects.Effect;
+import Enums.TriggerTime;
+import Enums.Album;
+import Enums.Collection;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.List;
+import java.util.Map;
 
 public class Card {
     @Getter private final String id;
@@ -14,15 +18,16 @@ public class Card {
     @Getter private final Collection collection;
     @Getter private final int baseCost;
     @Getter private final int basePower;
-    @Getter private final EffectCollection effects;
+    @Getter private final Map<TriggerTime,List<Effect>> effects;
+
     // Transient "in-play" variables
-    @Getter @Setter private int currentCost;
-    @Getter @Setter private int currentPower;
+    @Getter @Setter private int modifierCost;
+    @Getter @Setter private int modifierPower;
     @Getter @Setter private boolean isLocked;
-    // TODO: isOnFire
+    // TODO: On Fire
 
     public Card(String id, String name, Album album, Collection collection,
-                int energyCost, int basePower, EffectCollection effects){
+                int energyCost, int basePower, Map<TriggerTime,List<Effect>> effects){
         this.id = id;
         this.name = name;
         this.album = album;
@@ -30,12 +35,22 @@ public class Card {
         this.baseCost = energyCost;
         this.basePower = basePower;
         this.effects = effects;
-        this.currentCost = this.baseCost;
-        this.currentPower = this.basePower;
+
+        this.modifierCost = 0;
+        this.modifierPower = 0;
         this.isLocked = false;
     }
 
+    public int getModifiedCost() {
+        return Math.max(0, (this.baseCost + this.modifierCost));
+    }
+
+    public int getModifiedPower() {
+        return Math.max(0, (this.basePower + this.modifierPower));
+    }
+
     public Card copyFresh(){
+        // TODO: Deep copy effects
         return new Card(id,name, album, collection, baseCost, basePower, effects);
     }
 
@@ -44,8 +59,8 @@ public class Card {
         return String.format("%s]  %s  E:%d (%d)   P:%d (%d)   %s  %s",
                 StringUtils.leftPad(this.id,3),
                 StringUtils.rightPad(StringUtils.abbreviate(this.name,30),30),
-                this.currentCost, this.baseCost, this.currentPower, this.basePower,
+                this.modifierCost, this.baseCost, this.modifierPower, this.basePower,
                 (this.isLocked ? "[\uD83D\uDD12]" : "   "),
-                (this.effects == null ? "" : this.effects.getMiniDescription()));
+                (this.effects == null ? "" : "*"));
     }
 }

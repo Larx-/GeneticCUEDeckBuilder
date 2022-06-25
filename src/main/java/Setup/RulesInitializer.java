@@ -1,6 +1,8 @@
 package Setup;
 
 import Controlling.Main;
+import Enums.Album;
+import Enums.Collection;
 import GameElements.RoundBonus;
 import GameElements.Rules;
 

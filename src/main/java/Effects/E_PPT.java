@@ -1,5 +1,7 @@
 package Effects;
 
+import Enums.TargetPlayers;
+import Enums.TriggerTime;
 import GameElements.PlayerManager;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,13 +10,14 @@ import lombok.extern.log4j.Log4j2;
 import java.util.List;
 
 @Log4j2
-public class E_001_EPT extends Effect {
+public class E_PPT extends Effect {
 
     @Setter List<PlayerManager> effectedPlayers;
-    @Getter @Setter TargetPlayers targetPlayers;
+    @Getter @Setter
+    TargetPlayers targetPlayers;
     int changeBy;
 
-    public E_001_EPT(List<PlayerManager> effectedPlayers, int changeBy, List<ConditionInterface> conditions, TriggerTime triggerTime) {
+    public E_PPT(List<PlayerManager> effectedPlayers, int changeBy, List<ConditionInterface> conditions, TriggerTime triggerTime) {
         super(triggerTime);
         super.conditions = conditions;
 
@@ -44,8 +47,8 @@ public class E_001_EPT extends Effect {
         }
         if (super.conditionsFulfilled()) {
             for (PlayerManager player : this.effectedPlayers) {
-                int newEPT = player.getEnergyPerTurn() + this.changeBy;
-                player.setEnergyPerTurn(newEPT);
+                int newPPT = player.getPowerPerTurn() + this.changeBy;
+                player.setPowerPerTurn(newPPT);
             }
             return super.expiryEffect;
         }

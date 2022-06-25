@@ -2,6 +2,11 @@ package Setup;
 
 import Controlling.Main;
 import Effects.*;
+import Enums.Album;
+import Enums.Collection;
+import Enums.TargetCards;
+import Enums.TargetQualifiers;
+import Enums.TriggerTime;
 import GameElements.Card;
 import GameElements.Deck;
 import lombok.Getter;
@@ -21,10 +26,10 @@ public class DeckInitializer {
             int cost = Main.random.nextInt(10);
             int power = Math.max(0, (cost * 10) + Main.random.nextInt(40) - 20);
             Album album = getRandomEnum(Album.class);
-            Collection collection = getRandomEnum(Collection.class);
+            Enums.Collection collection = getRandomEnum(Collection.class);
             String name = collection + " - " + album+" ("+iStr+")";
 
-            Card card = new Card(iStr, name, album, collection, cost, power, getFullRandomEffect());
+            Card card = new Card(iStr, name, album, collection, cost, power, null);
             this.cardPrototypes.add(card);
         }
     }
@@ -34,14 +39,14 @@ public class DeckInitializer {
             String desc = "ON PLAY  [Cond: loosing round & after round 2, Effect: +50 to own A&C, Expire: end of round]";
 
             List<ConditionInterface> cond_list   = new ArrayList<>();
-            cond_list.add(new C_010_RoundStatus(-2));
-            cond_list.add(new C_001_AfterRoundX(2));
+            cond_list.add(new C_RoundStatus(-2));
+            cond_list.add(new C_AfterRoundX(2));
 
-            E_030_Power effect_Minus50 = new E_030_Power(null, -50, null, TriggerTime.ON_END_ROUND);
-            E_030_Power effect_Plus50  = new E_030_Power(null, 50, cond_list, TriggerTime.ON_PLAY);
+            E_Power effect_Plus50  = new E_Power(null, 50, cond_list, TriggerTime.PLAY);
             effect_Plus50.setInitializationString(TargetCards.OWN + Main.SEPARATOR +
                     TargetQualifiers.FROM_ALBUM        + Main.SEPARATOR + Album.ARTS_AND_CULTURE + Main.SEPARATOR +
                     TargetQualifiers.BASE_ENERGY_UNDER + Main.SEPARATOR + "6");
+            E_Power effect_Minus50 = new E_Power(null, -50, null, TriggerTime.END_ROUND);
             effect_Plus50.setExpiryEffect(effect_Minus50);
 
             return new EffectCollection(desc,false, effect_Plus50);

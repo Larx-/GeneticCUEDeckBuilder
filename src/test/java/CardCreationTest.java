@@ -1,8 +1,6 @@
-import Effects.E_030_Power;
-import Effects.Effect;
 import GameElements.Card;
-import Setup.Album;
-import Setup.Collection;
+import Enums.Album;
+import Enums.Collection;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

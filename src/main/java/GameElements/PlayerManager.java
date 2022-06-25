@@ -1,8 +1,8 @@
 package GameElements;
 
 import Agents.AgentInterface;
-import Setup.Album;
-import Setup.Collection;
+import Enums.Album;
+import Enums.Collection;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -119,20 +119,4 @@ public class PlayerManager {
 
         return !bCCards.isEmpty() || !bACards.isEmpty();
     }
-}
-
-enum By {
-    NAME,
-    COLLECTION,
-    ALBUM,
-    NAME_INCLUDES,
-    _OTHER_
-}
-
-enum In {
-    ALL,
-    DECK,
-    HAND_PLAY,
-    HAND_REMAINING,
-    PLAY
 }

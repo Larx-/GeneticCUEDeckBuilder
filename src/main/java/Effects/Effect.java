@@ -1,15 +1,15 @@
 package Effects;
 
-import Controlling.Main;
+import Enums.*;
+import Enums.TargetCards;
+import Enums.TargetQualifiers;
 import GameElements.Card;
+import GameElements.Deck;
 import GameElements.Game;
 import GameElements.PlayerManager;
-import Setup.Album;
-import Setup.Collection;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,136 +18,133 @@ import java.util.List;
 @Log4j2
 public class Effect {
 
-    @Getter List<ConditionInterface> conditions;
-    @Getter TriggerTime triggerTime;
-    @Setter @Getter int afterXTurns;
-    @Setter @Getter Effect expiryEffect;
+    @Getter @Setter TriggerTime triggerTime;
+    @Getter @Setter List<Target> target;
+    @Getter @Setter List<Condition> conditions;
 
-    public Effect (TriggerTime triggerTime) {
+    public Effect(TriggerTime triggerTime, List<Target> target, List<Condition> conditions) {
         this.triggerTime = triggerTime;
-
-        this.conditions = null;
-        this.expiryEffect = null;
+        this.target = target;
+        this.conditions = conditions;
     }
 
-    public Effect applyEffect () {
-        log.error("Parent effect should not be called!"); // FIXME: Move the upper part into here?
+    public Effect applyEffect (Game game, Who selfPlayer) {
+        Target target = this.target.get(0);
+
+        if (target == Target.PLAYER) {
+            // 1. Collect Targets
+            List<PlayerManager> targetPlayers = this.selectPlayers(game, selfPlayer, target);
+
+            // 2. Check conditions (per card / general)
+            // 3. In subclass do effect
+            // 4. If required return expiryEffect using inverse
+
+        } else {
+            // 1. Collect Targets
+            List<Card> targetCards = this.selectCards(game, selfPlayer, target);
+
+            // 2. Check conditions
+
+
+            // 3. In subclass do effect
+
+            // 4. If required return expiryEffect using inverse
+
+        }
+
         return null;
     }
 
+    private List<PlayerManager> selectPlayers(Game game, Who selfPlayer, Target toSelect) {
+        List<PlayerManager> targetPlayers = new ArrayList<>();
+
+        switch (toSelect.getWho()) {
+            case SELF:
+                if (selfPlayer == Who.RESIDENT) { targetPlayers.add(game.getResident()); }
+                else                            { targetPlayers.add(game.getOpponent()); }
+                break;
+            case OTHER:
+                if (selfPlayer == Who.RESIDENT) { targetPlayers.add(game.getOpponent()); }
+                else                            { targetPlayers.add(game.getResident()); }
+                break;
+            case BOTH:
+                targetPlayers.add(game.getResident());
+                targetPlayers.add(game.getResident());
+                break;
+        }
+
+        return targetPlayers;
+    }
+
+    private List<Card> selectCards(Game game, Who selfPlayer, Target toSelect) {
+        List<Card> potentialCards = new ArrayList<>();
+        Who selectWho = toSelect.getWho();
+        What selectWhat = toSelect.getWhat();
+
+        // add resident cards
+        if (selectWho == Who.BOTH ||
+                (selfPlayer == Who.RESIDENT && selectWho == Who.SELF) ||
+                (selfPlayer == Who.OPPONENT && selectWho == Who.OTHER)) {
+            Deck deck = game.getResident().getDeck();
+            potentialCards.addAll(this.selectCardsFromPlace(deck, toSelect));
+        }
+
+        // add opponent cards
+        if (selectWho == Who.BOTH ||
+                (selfPlayer == Who.RESIDENT && selectWho == Who.OTHER) ||
+                (selfPlayer == Who.OPPONENT && selectWho == Who.SELF)) {
+            Deck deck = game.getOpponent().getDeck();
+            potentialCards.addAll(this.selectCardsFromPlace(deck, toSelect));
+        }
+
+        // Only include cards fitting What
+        if (selectWhat != null) {
+            List<Card> targetCards = new ArrayList<>();
+            String selectName = toSelect.getName();
+
+            for (Card potentialCard : potentialCards) {
+                switch (selectWhat) {
+                    case NAME:          if (potentialCard.getName().equals(selectName))           { targetCards.add(potentialCard); } break;
+                    case NAME_INCLUDES: if (potentialCard.getName().contains(selectName))         { targetCards.add(potentialCard); } break;
+                    case COLLECTION:    if (potentialCard.getCollection().equalsName(selectName)) { targetCards.add(potentialCard); } break;
+                    case ALBUM:         if (potentialCard.getAlbum().equalsName(selectName))      { targetCards.add(potentialCard); } break;
+                }
+            }
+
+            return targetCards;
+        } else {
+            return potentialCards;
+        }
+    }
+
+    private List<Card> selectCardsFromPlace(Deck deck, Target toSelect) {
+        List<Card> targetCards = new ArrayList<>();
+        switch (toSelect) {
+            case CARDS_IN_DECK:
+                targetCards.addAll(deck.getCardsInDeck());
+                targetCards.addAll(Arrays.asList(deck.getCardsInHand()));
+                break;
+            case CARDS_IN_HAND:
+                targetCards.addAll(Arrays.asList(deck.getCardsInHand()));
+                targetCards.addAll(Arrays.asList(deck.getCardsPlayed()));
+                break;
+            case CARDS_IN_REMAINING:
+                targetCards.addAll(Arrays.asList(deck.getCardsInHand()));
+                break;
+        }
+        return targetCards;
+    }
+
+
     protected boolean conditionsFulfilled () {
         if (this.conditions != null) {
-            for (ConditionInterface condition : this.conditions) {
+            for (Condition condition : this.conditions) {
                 if (!condition.checkConditionFulfilled()) {
                     return false;
                 }
             }
         }
         return true;
-    }
-
-    public void setEffectedCards (List<Card> cards) {
-
-    }
-
-    public String getInitializationString() {
-        return null;
-    }
-
-    public static List<Card> initializeEffectedCards (String initString, Game game, boolean isOpponentView) {
-        String[] initStrings = initString.split(Main.SEPARATOR);
-        List<Card> targetedCards = new ArrayList<>();
-
-        TargetCards initTargetCards = TargetCards.fromString(initStrings[0]);
-        if (initTargetCards != null) {
-            PlayerManager self  = isOpponentView ? game.getOpponent() : game.getResident();
-            PlayerManager other = isOpponentView ? game.getResident() : game.getOpponent();
-
-            switch (initTargetCards) {
-                case OWN             : targetedCards.addAll(self.getDeck().getCardsInDeck());
-                case OWN_HAND        : targetedCards.addAll(Arrays.asList(self.getDeck().getCardsPlayed()));
-                case OWN_REMAINING   : targetedCards.addAll(Arrays.asList(self.getDeck().getCardsInHand()));
-                    break;
-                case OTHER           : targetedCards.addAll(other.getDeck().getCardsInDeck());
-                case OTHER_HAND      : targetedCards.addAll(Arrays.asList(other.getDeck().getCardsPlayed()));
-                case OTHER_REMAINING : targetedCards.addAll(Arrays.asList(other.getDeck().getCardsInHand()));
-                    break;
-                case BOTH            : targetedCards.addAll(self.getDeck().getCardsInDeck());
-                    targetedCards.addAll(other.getDeck().getCardsInDeck());
-                case BOTH_HAND       : targetedCards.addAll(Arrays.asList(self.getDeck().getCardsPlayed()));
-                    targetedCards.addAll(Arrays.asList(other.getDeck().getCardsPlayed()));
-                case BOTH_REMAINING  : targetedCards.addAll(Arrays.asList(self.getDeck().getCardsInHand()));
-                    targetedCards.addAll(Arrays.asList(other.getDeck().getCardsInHand()));
-                    break;
-                case COMPLEX         :
-                case INIT_FINISHED   :
-                case INVALID_STATE   : log.error("Error in Effect Selector initialization!");
-            }
-            // Remove all null cards that may have com from hand / board
-            while (targetedCards.remove(null)){}
-        }
-
-        List<Card> tmpCardList = new ArrayList<>();
-        for (int i = 1, initStringsLength = initStrings.length; i < initStringsLength; i+=2) {
-            TargetQualifiers initQualifiers = TargetQualifiers.fromString(initStrings[i]);
-
-            if (initQualifiers != null && !targetedCards.isEmpty()) {
-                switch (initQualifiers) {
-                    case BASE_ENERGY_UNDER :
-                        int energy = Integer.parseInt(initStrings[i+1]);
-                        for (Card card : targetedCards) { if (card.getBaseCost() < energy) { tmpCardList.add(card); }  }
-                        targetedCards.clear();
-                        targetedCards.addAll(tmpCardList);
-                        tmpCardList.clear();
-                        break;
-
-                    case BASE_ENERGY_ABOVE :
-                        energy = Integer.parseInt(initStrings[i+1]);
-                        for (Card card : targetedCards) { if (card.getBaseCost() > energy) { tmpCardList.add(card); }  }
-                        targetedCards.clear();
-                        targetedCards.addAll(tmpCardList);
-                        tmpCardList.clear();
-                        break;
-
-                    case FROM_ALBUM:
-                        Album album = Album.fromString(initStrings[i+1]);
-                        for (Card card : targetedCards) { if (card.getAlbum() == album) { tmpCardList.add(card); }  }
-                        targetedCards.clear();
-                        targetedCards.addAll(tmpCardList);
-                        tmpCardList.clear();
-                        break;
-
-                    case FROM_COLLECTION:
-                        Collection collection = Collection.fromString(initStrings[i+1]);
-                        for (Card card : targetedCards) { if (card.getCollection() == collection) { tmpCardList.add(card); }  }
-                        targetedCards.clear();
-                        targetedCards.addAll(tmpCardList);
-                        tmpCardList.clear();
-                        break;
-
-                    case FROM_NAME:
-                        String name = initStrings[i+1];
-                        for (Card card : targetedCards) { if (card.getName().equals(name)) { tmpCardList.add(card); }  }
-                        targetedCards.clear();
-                        targetedCards.addAll(tmpCardList);
-                        tmpCardList.clear();
-                        break;
-
-                    case FROM_NAME_CONTAINS:
-                        name = initStrings[i+1];
-                        for (Card card : targetedCards) { if (card.getName().contains(name)) { tmpCardList.add(card); }  }
-                        targetedCards.clear();
-                        targetedCards.addAll(tmpCardList);
-                        tmpCardList.clear();
-                        break;
-
-                    case INIT_FINISHED     :
-                    case INVALID_STATE     :
-                    default                : log.error("Error in Effect Selector qualification!");
-                }
-            }
-        }
-        return targetedCards;
     }
 }
 
