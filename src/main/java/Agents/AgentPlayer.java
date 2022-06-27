@@ -26,14 +26,14 @@ public class AgentPlayer implements AgentInterface {
             if (!trimmedInput.equals("")){
                 int inputInt = Integer.parseInt(trimmedInput);
 
-                if (inputInt >= 0 && inputInt <= 4) {
+                if (inputInt >= 1 && inputInt <= 5) {
 
-                    if (!deck.getCardsInHand()[inputInt].isLocked()) {
+                    if (!deck.getCardsInHand()[inputInt-1].isLocked()) {
 
-                        int cardCost = deck.getCardsInHand()[inputInt].getModifiedCost();
+                        int cardCost = deck.getCardsInHand()[inputInt-1].getModifiedEnergy();
                         if ((cardCost + usedEnergy) <= availableEnergy) {
                             usedEnergy += cardCost;
-                            deck.playCard(inputInt, i);
+                            deck.playCard(inputInt-1, i);
                         }
                     }
                 }

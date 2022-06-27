@@ -2,8 +2,7 @@ package GameElements;
 
 import Agents.AgentInterface;
 import Effects.*;
-import Enums.TriggerTime;
-import Enums.Album;
+import Enums.*;
 import Enums.Collection;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
@@ -14,8 +13,10 @@ import java.util.*;
 public class Game {
 
     @Getter Rules rules;
-    @Getter PlayerManager resident;
-    @Getter PlayerManager opponent;
+    @Getter
+    Player resident;
+    @Getter
+    Player opponent;
 
     @Getter int totalTurnNumber;
     @Getter int roundNumber;
@@ -28,24 +29,20 @@ public class Game {
     @Getter int lastPowerDiff;
 
     // FIFO queues of effects to execute (/revert) at different times
-    List<Effect> effectStack_DRAW_START;
-    List<Effect> effectStack_PLAY;
-    List<Effect> effectStack_RETURN;
-    List<Effect> effectStack_ENDofROUND;
-    Map<Integer,List<Effect>> effectStack_TIMED;
-
+    Map<TriggerTime,List<Effect>> effectStackResident;
+    Map<TriggerTime,List<Effect>> effectStackOpponent;
 
     public Game(Rules rules, AgentInterface resident, AgentInterface opponent) {
         this.rules = rules;
 
-        this.resident = new PlayerManager(resident, this.rules.getEnergyStarting(), this.rules.getEnergyPerTurn(), 0);
-        this.opponent = new PlayerManager(opponent, this.rules.getEnergyStarting(), this.rules.getEnergyPerTurn(), 0);
+        this.resident = new Player(resident, this.rules.getEnergyStarting(), this.rules.getEnergyPerTurn(), 0);
+        this.opponent = new Player(opponent, this.rules.getEnergyStarting(), this.rules.getEnergyPerTurn(), 0);
     }
 
     public void playGame(){
         this.initializeGame();
 
-        while(this.rWin < 3 && this.oWin <3){
+        while(this.rWin < 3 && this.oWin < 3){
             boolean resWon = playRound();
 
             if (resWon) { this.rWin++; }
@@ -65,24 +62,26 @@ public class Game {
     }
 
     private void initializeGame() {
-        this.effectStack_DRAW_START = new ArrayList<>();
-        this.effectStack_PLAY       = new ArrayList<>();
-        this.effectStack_RETURN     = new ArrayList<>();
-        this.effectStack_ENDofROUND = new ArrayList<>();
-        this.effectStack_TIMED      = new HashMap<>();
-
-        this.rules.chooseRoundBoni();
-
-        this.resident.getDeck().shuffleDeck();
-        this.opponent.getDeck().shuffleDeck();
+        // TODO: potentially more resetting necessary
+        this.effectStackResident = new HashMap<>();
+        this.effectStackOpponent = new HashMap<>();
+        for (TriggerTime triggerTime : TriggerTime.values()) {
+            this.effectStackResident.put(triggerTime, new ArrayList<>());
+            this.effectStackOpponent.put(triggerTime, new ArrayList<>());
+        }
 
         this.rWin = 0;
         this.oWin = 0;
         this.totalTurnNumber = 1;
         this.roundNumber = 1;
 
-//        this.initConditions(this.resident.getDeck().getCardsInDeck(), false);
-//        this.initConditions(this.opponent.getDeck().getCardsInDeck(), true);
+        this.rules.chooseRoundBoni();
+        this.resident.getDeck().shuffleDeck();
+        this.opponent.getDeck().shuffleDeck();
+
+        this.applyCardEffects(this.resident.getDeck().getCardsInDeck(), TriggerTime.START_GAME, Who.RESIDENT);
+        this.applyCardEffects(this.opponent.getDeck().getCardsInDeck(), TriggerTime.START_GAME, Who.OPPONENT);
+        this.applyEffectStack(TriggerTime.START_GAME, Who.BOTH);
     }
 
     private boolean playRound(){
@@ -91,6 +90,7 @@ public class Game {
 
         // Find effected cards and add round bonus to first DRAW and AFTER_ROUND queues
         this.applyRoundBonus();
+        this.applyEffectStack(TriggerTime.START_ROUND, Who.BOTH);
 
         // Play round
         for (int i = 0; i < 3; i++){
@@ -105,7 +105,7 @@ public class Game {
         }
 
         // execute EndOfRound effects
-        this.applyEffectStack("ENDofROUND");
+        this.applyEffectStack(TriggerTime.END_ROUND, Who.BOTH);
 
         return this.powerBalance > 0;
     }
@@ -116,54 +116,44 @@ public class Game {
         Collection bonusCollection = roundBonus.getCollection();
         Album bonusAlbum = roundBonus.getAlbum();
 
-        List<Card> bCCards = new ArrayList<>();
-        List<Card> bACards = new ArrayList<>();
+        Target bonusCollectionTarget    = new Target(Who.BOTH,Where.CARDS_IN_DECK,bonusCollection);
+        Target bonusAlbumTarget         = new Target(Who.BOTH,Where.CARDS_IN_DECK,bonusAlbum);
 
-        // Return by value (I know, not pretty, but more efficient than my previous attempt)
-        if (this.opponent.findCardsForBonus(bonusCollection, bonusAlbum, bCCards, bACards)) {
-            this.effectStack_DRAW_START.add(new E_Power(bCCards,  roundBonus.getCollectionBonus(), null, TriggerTime.START_ROUND));
-            this.effectStack_DRAW_START.add(new E_Power(bACards,  roundBonus.getAlbumBonus(),      null, TriggerTime.START_ROUND));
-            this.effectStack_ENDofROUND.add(new E_Power(bCCards, -roundBonus.getCollectionBonus(), null, TriggerTime.END_ROUND));
-            this.effectStack_ENDofROUND.add(new E_Power(bACards, -roundBonus.getAlbumBonus(),      null, TriggerTime.END_ROUND));
+        Effect roundBonusCollection     = new E_Power(TriggerTime.START_ROUND, bonusCollectionTarget, roundBonus.getCollectionBonus(),TriggerTime.END_ROUND,null);
+        Effect roundBonusAlbum          = new E_Power(TriggerTime.START_ROUND, bonusAlbumTarget, roundBonus.getAlbumBonus(),TriggerTime.END_ROUND,null);
+
+        Effect collectionExpiry         = roundBonusCollection.applyEffect(this, Who.RESIDENT);
+        Effect albumExpiry              = roundBonusAlbum.applyEffect(this, Who.RESIDENT);
+
+        this.effectStackResident.get(TriggerTime.END_ROUND).add(collectionExpiry);
+        this.effectStackResident.get(TriggerTime.END_ROUND).add(albumExpiry);
+
+        if (roundBonus.getCollection() == null) {
+            log.debug(String.format("ROUND %d  (+%d %s)", this.roundNumber,
+                    roundBonus.getAlbumBonus(), bonusAlbum));
+        } else {
+            log.debug(String.format("ROUND %d  (+%d %s / +%d %s)", this.roundNumber,
+                    (roundBonus.getCollectionBonus() + roundBonus.getAlbumBonus()), bonusCollection, roundBonus.getAlbumBonus(), bonusAlbum));
         }
 
-        log.debug(String.format("ROUND %d  (+%d %s / +%d %s)", this.roundNumber,
-                roundBonus.getCollectionBonus(), bonusCollection, roundBonus.getAlbumBonus(), bonusAlbum));
     }
 
     private void playTurn(){
+        // DRAW effects
         List<Card> drawnCardsResident = this.resident.getDeck().drawCards();
         List<Card> drawnCardsOpponent = this.opponent.getDeck().drawCards();
 
-        this.initEffectedCards(Arrays.asList(this.resident.getDeck().getCardsInHand()), false);
-        this.initEffectedCards(Arrays.asList(this.opponent.getDeck().getCardsInHand()), true);
+        this.applyCardEffects(drawnCardsResident,TriggerTime.DRAW,Who.RESIDENT);
+        this.applyCardEffects(drawnCardsOpponent,TriggerTime.DRAW,Who.OPPONENT);
+        this.applyEffectStack(TriggerTime.DRAW,Who.BOTH);
 
-        // Add DRAW effects to queue
-        for (Card card : drawnCardsResident) {
-            if (card.getEffects() != null) {
-                this.effectStack_DRAW_START.addAll(card.getEffects().get(TriggerTime.DRAW));
-            }
-        }
-        for (Card card : drawnCardsOpponent) {
-            if (card.getEffects() != null) {
-                this.effectStack_DRAW_START.addAll(card.getEffects().get(TriggerTime.DRAW));
-            }
-        }
+        // START effects
+        Card[] cardsInHandResident = this.resident.getDeck().getCardsInHand();
+        Card[] cardsInHandOpponent = this.opponent.getDeck().getCardsInHand();
 
-        // Add START effects to queue
-        for (Card card : this.resident.getDeck().getCardsInHand()) {
-            if (card.getEffects() != null) {
-                this.effectStack_DRAW_START.addAll(card.getEffects().get(TriggerTime.START_TURN));
-            }
-        }
-        for (Card card : this.opponent.getDeck().getCardsInHand()) {
-            if (card.getEffects() != null) {
-                this.effectStack_DRAW_START.addAll(card.getEffects().get(TriggerTime.START_TURN));
-            }
-        }
-
-        // execute DRAW / START effects
-        this.applyEffectStack("DRAW_START");
+        this.applyCardEffects(cardsInHandResident,TriggerTime.START,Who.RESIDENT);
+        this.applyCardEffects(cardsInHandOpponent,TriggerTime.START,Who.OPPONENT);
+        this.applyEffectStack(TriggerTime.START,Who.BOTH);
 
         this.resident.applyUnlockIfSet();         // Fixme: Check if this is correct or does the unlock come before draw effects (relevant for self locking cards)
         this.opponent.applyUnlockIfSet();
@@ -173,20 +163,13 @@ public class Game {
         this.resident.decideNextTurn();
         this.opponent.decideNextTurn();
 
-        // Add PLAY effects to queue
-        for (Card card : this.resident.getDeck().getCardsPlayed()) {
-            if (card != null && card.getEffects() != null) {
-                this.effectStack_PLAY.addAll(card.getEffects().get(TriggerTime.PLAY));
-            }
-        }
-        for (Card card : this.resident.getDeck().getCardsPlayed()) {
-            if (card != null && card.getEffects() != null) {
-                this.effectStack_PLAY.addAll(card.getEffects().get(TriggerTime.PLAY));
-            }
-        }
+        // PLAY effects
+        Card[] cardsPlayedResident = this.resident.getDeck().getCardsPlayed();
+        Card[] cardsPlayedOpponent = this.opponent.getDeck().getCardsPlayed();
 
-        // execute PLAY effects
-        this.applyEffectStack("PLAY");
+        this.applyCardEffects(cardsPlayedResident,TriggerTime.PLAY,Who.RESIDENT);
+        this.applyCardEffects(cardsPlayedOpponent,TriggerTime.PLAY,Who.OPPONENT);
+        this.applyEffectStack(TriggerTime.PLAY,Who.BOTH);
 
         // Power calculation
         this.rPow = this.resident.getDeck().calcPower() + this.resident.getPowerPerTurn();
@@ -197,23 +180,15 @@ public class Game {
         this.logPlay();
 
         // Add RETURN effects to queue
-        for (Card card : this.resident.getDeck().getCardsPlayed()) {
-            if (card != null && card.getEffects() != null) {
-                this.effectStack_RETURN.addAll(card.getEffects().get(TriggerTime.RETURN));
-            }
-        }
-        for (Card card : this.resident.getDeck().getCardsPlayed()) {
-            if (card != null && card.getEffects() != null) {
-                this.effectStack_RETURN.addAll(card.getEffects().get(TriggerTime.RETURN));
-            }
-        }
+        this.applyCardEffects(cardsPlayedResident,TriggerTime.RETURN,Who.RESIDENT);
+        this.applyCardEffects(cardsPlayedOpponent,TriggerTime.RETURN,Who.OPPONENT);
+        this.applyEffectStack(TriggerTime.RETURN,Who.BOTH);
+        this.applyEffectStack(TriggerTime.END_TURN,Who.BOTH);
 
         this.resident.getDeck().returnPlayedCards();
         this.opponent.getDeck().returnPlayedCards();
 
-        // execute RETURN effects
-        this.applyEffectStack("RETURN");
-
+        // Update end of turn values
         this.resident.updateEnergyAvailable(this.rules.getEnergyMin(), this.rules.getEnergyMax());
         this.opponent.updateEnergyAvailable(this.rules.getEnergyMin(), this.rules.getEnergyMax());
 
@@ -223,78 +198,64 @@ public class Game {
         this.totalTurnNumber++;
 
         // execute TIMER based effects
-        this.applyEffectStack("TIMED");
+        this.applyEffectStack(TriggerTime.TIMER,Who.BOTH);
     }
 
-    private void applyEffectStack (String effectStackStr) {
-        List<Effect> effectStack = new ArrayList<>();
-        switch (effectStackStr) {
-            case "DRAW_START"   : effectStack = this.effectStack_DRAW_START;                        break;
-            case "PLAY"         : effectStack = this.effectStack_PLAY;                              break;
-            case "RETURN"       : effectStack = this.effectStack_RETURN;                            break;
-            case "ENDofROUND"   : effectStack = this.effectStack_ENDofROUND;                        break;
-            case "TIMED"        : effectStack = this.effectStack_TIMED.remove(this.totalTurnNumber);break;
-        }
-
-        // Make sure expiry effects only get added when the effects actually trigger
-        List<Effect> expiryEffectCache = new ArrayList<>();
-
-        while (effectStack != null && !effectStack.isEmpty()) {
-            Effect expiryEffect = effectStack.remove(0).applyEffect();
-            if (expiryEffect != null) {
-                expiryEffectCache.add(expiryEffect);
+    private void applyCardEffects (Card[] cards, TriggerTime triggerTime, Who selfPlayer) {
+        List<Card> cardList = new ArrayList<>();
+        for (Card card : cards) {
+            if (card != null) {
+                cardList.add(card);
             }
         }
-        this.addEffectsToTriggerQueues(expiryEffectCache);
+        this.applyCardEffects(cardList, triggerTime, selfPlayer);
     }
 
-    private void initEffectedCards(List<Card> cardsToInit, boolean isOpponentView) {
-        for (Card card : cardsToInit) {
-            EffectCollection effectColl = null; //card.getEffects();
-            if (effectColl != null && !effectColl.isFullyInitialized()) {
-
-                List<Effect> effectCont = effectColl.getEffects();
-                if (effectCont != null) {
-
-                    for (Effect effect : effectCont) {
-                        String initString = effect.getInitializationString();
-
-                        if (initString != null) {
-                            List<Card> effectedCards = Effect.initializeEffectedCards(initString, this, isOpponentView);
-                            effect.setEffectedCards(effectedCards);
-
-                            Effect effectExpiry = effect.getExpiryEffect();
-                            if (effectExpiry != null) {
-                                effectExpiry.setEffectedCards(effectedCards);
-                            }
-                        }
-                    }
+    private void applyCardEffects (List<Card> cards, TriggerTime triggerTime, Who selfPlayer) {
+        for (Card card : cards) {
+            List<Effect> cardEffects = card.getEffectsByTriggerTime(triggerTime);
+            if (cardEffects != null) {
+                for (Effect effect : cardEffects) {
+                    this.applyEffect(effect, selfPlayer);
                 }
             }
         }
     }
 
-    // TODO: could this be avoided completely with a slightly more clever handling when expiry effects are added?
-    private void addEffectsToTriggerQueues(List<Effect> effects) {
-        for (Effect effect : effects) {
-            switch (effect.getTriggerTime()) {
-                case START_GAME: if (this.roundNumber <= 1) { this.effectStack_DRAW_START.add(effect); } break;
-                case START_ROUND: if (this.turnNumber <= 1)  { this.effectStack_DRAW_START.add(effect); } break;
-                case START_TURN:
-                case DRAW: this.effectStack_DRAW_START.add(effect);   break;
-                case PLAY: this.effectStack_PLAY.add(effect);         break;
-                case RETURN:
-                case END_TURN: this.effectStack_RETURN.add(effect);       break;
-                case END_ROUND: this.effectStack_ENDofROUND.add(effect);   break;
-                case TIMER: int turnToTrigger = this.totalTurnNumber; //+ effect.getAfterXTurns();
-                                     if (this.effectStack_TIMED.containsKey(turnToTrigger)) {
-                                         this.effectStack_TIMED.get(turnToTrigger).add(effect);
-                                     } else {
-                                         List<Effect> effectList = new ArrayList<>();
-                                         effectList.add(effect);
-                                         this.effectStack_TIMED.put(turnToTrigger, effectList);
-                                     }
-                default            : log.error("Something went wrong!");
+    private void applyEffect (Effect effect, Who selfPlayer) {
+        Effect expiryEffect = effect.applyEffect(this, selfPlayer);
+
+        if (expiryEffect != null) {
+            if (selfPlayer == Who.RESIDENT) {
+                this.effectStackResident.get(expiryEffect.getTriggerTime()).add(expiryEffect);
+            } else {
+                this.effectStackOpponent.get(expiryEffect.getTriggerTime()).add(expiryEffect);
+            }
+        }
+    }
+
+    private void applyEffectStack (TriggerTime triggerTime, Who selfPlayer) {
+        if (selfPlayer == Who.BOTH) {
+            this.applyEffectStack(triggerTime, Who.RESIDENT);
+            this.applyEffectStack(triggerTime, Who.OPPONENT);
+
+        } else {
+            if (triggerTime == TriggerTime.TIMER) {
+                // TODO
+
+            } else {
+                List<Effect> effectList;
+
+                if (selfPlayer == Who.RESIDENT) {
+                    effectList = this.effectStackResident.get(triggerTime);
+                } else {
+                    effectList = this.effectStackOpponent.get(triggerTime);
+                }
+
+                while (effectList.size() > 0) {
+                    Effect effect = effectList.remove(0);
+                    this.applyEffect(effect, selfPlayer);
+                }
             }
         }
     }

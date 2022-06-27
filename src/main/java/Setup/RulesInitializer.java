@@ -14,9 +14,6 @@ public class RulesInitializer {
     // TODO: Read rules from file or something
 
     public static Rules getTestRules() {
-        Collection coll = DeckInitializer.getRandomEnum(Collection.class);
-        Album album = coll.getAffiliatedAlbum();
-
         List<RoundBonus> guaranteedRoundBoni = new ArrayList<>();
         guaranteedRoundBoni.add(getRandomRoundBonus());
         guaranteedRoundBoni.add(getRandomRoundBonus());
@@ -31,12 +28,12 @@ public class RulesInitializer {
     }
 
     public static RoundBonus getRandomRoundBonus() {
-        return getRandomRoundBonus(10, (Main.random.nextInt(6)+1) * 10);
+        return getRandomRoundBonus(10, (Main.random.nextInt(5)+1) * 10);
     }
 
     public static RoundBonus getRandomRoundBonus(boolean noCollectionBonus){
         Album album = DeckInitializer.getRandomEnum(Album.class);
-        return new RoundBonus(album, null, (Main.random.nextInt(6)+1) * 10, 0);
+        return new RoundBonus(album, null, (Main.random.nextInt(4)+1) * 10, 0);
     }
 
     public static RoundBonus getRandomRoundBonus(int albumBonus, int collectionBonus) {

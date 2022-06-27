@@ -2,13 +2,11 @@ package Setup;
 
 import Controlling.Main;
 import Effects.*;
-import Enums.Album;
+import Enums.*;
 import Enums.Collection;
-import Enums.TargetCards;
-import Enums.TargetQualifiers;
-import Enums.TriggerTime;
 import GameElements.Card;
 import GameElements.Deck;
+import GameElements.Target;
 import lombok.Getter;
 
 import java.util.*;
@@ -25,31 +23,33 @@ public class DeckInitializer {
             String iStr = ""+i;
             int cost = Main.random.nextInt(10);
             int power = Math.max(0, (cost * 10) + Main.random.nextInt(40) - 20);
-            Album album = getRandomEnum(Album.class);
-            Enums.Collection collection = getRandomEnum(Collection.class);
+            Collection collection = getRandomEnum(Collection.class);
+            Album album = collection.getAffiliatedAlbum();
             String name = collection + " - " + album+" ("+iStr+")";
 
-            Card card = new Card(iStr, name, album, collection, cost, power, null);
+            Card card = new Card(iStr, name, album, collection, cost, power, this.getRandomEffects());
             this.cardPrototypes.add(card);
         }
     }
 
-    public EffectCollection getFullRandomEffect() {
-        if (Main.random.nextInt(100) < 20) { // 10% chance for any card to have this effect
-            String desc = "ON PLAY  [Cond: loosing round & after round 2, Effect: +50 to own A&C, Expire: end of round]";
+    public Map<TriggerTime,List<Effect>> getRandomEffects() {
+        if (Main.random.nextInt(100) < 20) {
 
-            List<ConditionInterface> cond_list   = new ArrayList<>();
-            cond_list.add(new C_RoundStatus(-2));
-            cond_list.add(new C_AfterRoundX(2));
+            List<Condition> condList = new ArrayList<>();
+            condList.add(new C_BeforeRoundX(4));
 
-            E_Power effect_Plus50  = new E_Power(null, 50, cond_list, TriggerTime.PLAY);
-            effect_Plus50.setInitializationString(TargetCards.OWN + Main.SEPARATOR +
-                    TargetQualifiers.FROM_ALBUM        + Main.SEPARATOR + Album.ARTS_AND_CULTURE + Main.SEPARATOR +
-                    TargetQualifiers.BASE_ENERGY_UNDER + Main.SEPARATOR + "6");
-            E_Power effect_Minus50 = new E_Power(null, -50, null, TriggerTime.END_ROUND);
-            effect_Plus50.setExpiryEffect(effect_Minus50);
+            TriggerTime triggerTime = TriggerTime.PLAY;
 
-            return new EffectCollection(desc,false, effect_Plus50);
+            Target target = new Target(Who.SELF, Where.CARDS_IN_DECK, Album.ARTS_AND_CULTURE);
+
+            Effect effect = new E_Power(triggerTime, target, 50, TriggerTime.END_TURN, condList);
+            List<Effect> effects = new ArrayList<>();
+            effects.add(effect);
+
+            Map<TriggerTime,List<Effect>> map = new HashMap<>();
+            map.put(triggerTime,effects);
+
+            return map;
         }
         return null;
     }

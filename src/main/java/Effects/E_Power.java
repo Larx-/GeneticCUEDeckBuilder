@@ -1,39 +1,43 @@
 package Effects;
 
+import Enums.Where;
 import Enums.TriggerTime;
+import Enums.Who;
 import GameElements.Card;
-import lombok.Getter;
-import lombok.Setter;
+import GameElements.Game;
+import GameElements.Target;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.List;
 
 @Log4j2
-public class E_Power extends Effect { // TODO: Deeper inheritance for player / card specific Effects
+public class E_Power extends Effect {
 
-    @Setter List<Card> effectedCards;
-    @Getter @Setter String initializationString = null;
     int changeBy;
 
-    public E_Power(List<Card> effectedCards, int changeBy, List<ConditionInterface> conditions, TriggerTime triggerTime) {
-        super(triggerTime);
-        super.conditions = conditions;
+    public E_Power(TriggerTime triggerTime, Target targetCards, int changeBy, TriggerTime duration, List<Condition> conditions) {
+        super(triggerTime, targetCards, duration, conditions);
 
-        this.effectedCards = effectedCards;
         this.changeBy = changeBy;
     }
 
     @Override
-    public Effect applyEffect() {
-        if (this.effectedCards == null) {
-            log.error("Initialization went wrong, no cards effected...");
-        }
-        if (super.conditionsFulfilled()) {
-            for (Card card : this.effectedCards) {
+    public Effect applyEffect(Game game, Who selfPlayer) {
+        // 1. Collect Targets
+        List<Card> targetCards = super.selectCards(game,selfPlayer);
+
+        // 2. Check conditions (per card / general)
+        if (super.conditionsFulfilled(game, selfPlayer)) {
+            // 3. In subclass do effect
+            for (Card card : targetCards) {
                 int newPower = card.getModifierPower() + this.changeBy;
                 card.setModifierPower(newPower);
             }
-            return super.expiryEffect;
+
+            // 4. If required return expiryEffect using inverse
+            if (super.duration != null) {
+                return new E_Power(super.duration, super.target, (-this.changeBy), null, super.conditions);
+            }
         }
         return null;
     }

@@ -16,7 +16,7 @@ public class CardCreationTest {
         assertEquals("SST029", card.getId());
         assertEquals("Fireworks Galaxy", card.getName());
         assertEquals("Exploring the Stars", card.getAlbum());
-        assertEquals(2, card.getBaseCost());
+        assertEquals(2, card.getBaseEnergy());
         assertEquals(17, card.getBasePower());
     }
 }

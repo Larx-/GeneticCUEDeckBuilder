@@ -5,5 +5,14 @@ public enum Who {
     OTHER,
     BOTH,
     RESIDENT,
-    OPPONENT
+    OPPONENT;
+
+    public static Who fromString(String search) {
+        for (Who nextElem : Who.values()) {
+            if (nextElem.toString().equalsIgnoreCase(search)) {
+                return nextElem;
+            }
+        }
+        return null;
+    }
 }

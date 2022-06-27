@@ -1,10 +1,6 @@
 package Controlling;
 
 import Agents.*;
-import Enums.Target;
-import Enums.TriggerTime;
-import Enums.What;
-import Enums.Who;
 import GameElements.*;
 import Setup.*;
 import lombok.extern.log4j.Log4j2;

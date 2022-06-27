@@ -6,7 +6,6 @@ import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class AgentRandom implements AgentInterface {
 
@@ -30,7 +29,7 @@ public class AgentRandom implements AgentInterface {
                 invalidChoices.add(cardToPlay);
 
                 if (!deck.getCardsInHand()[cardToPlay].isLocked()) {
-                    int cardCost = deck.getCardsInHand()[cardToPlay].getModifiedCost();
+                    int cardCost = deck.getCardsInHand()[cardToPlay].getModifiedEnergy();
 
                     if ((cardCost + usedEnergy) <= availableEnergy) {
                         usedEnergy += cardCost;

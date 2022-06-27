@@ -1,7 +1,7 @@
 Individual effects are described by following syntax, so I can parse them.
 Categories always have exactly one info, except Condition can have any amount.
 
-EXAMPLE:    {TriggerTime:PLAY;Target:CARD_THIS,Effect:POWER(+68);Duration:TURNS(0);Condition:PLAYED(SELF,NAME,Thor)},
+EXAMPLE:    {TriggerTime:PLAY;Target:CARDS_IN_HAND(SELF,NAME,Mj�lnir)),Effect:POWER(+68);Duration:TURNS(0);Condition:PLAYED(SELF,NAME,Thor)},
             {TriggerTime:RETURN;Target:CARDS_REMAINING(OTHER);Effect:ENERGY(+3);Duration:TURNS(1)}
 
 Usable parameters in some cases are:
@@ -9,9 +9,9 @@ Usable parameters in some cases are:
     what  = ALBUM | COLLECTION | NAME | NAME_CONTAINS
     name  = string to search
     value = int value for power and energy
-    turns = number of turns to wait, can be 0 for same turn
+    turns = number of turns to wait, can be 0 for end of same turn
 
-On:
+TriggerTime:
     START_GAME
     START_ROUND
     START_TURN
@@ -33,7 +33,11 @@ Effect:
     ENERGY(value)
 
 Duration:
-    TURNS(turns)
+    PERMANENT
+    END_ROUND
+    END_TURN
+    END_ROUND
+    TIMER(turns)
 
 Condition:
     PLAYED(who,what,name)

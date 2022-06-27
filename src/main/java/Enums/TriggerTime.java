@@ -5,7 +5,7 @@ import lombok.Getter;
 public enum TriggerTime {
     START_GAME,
     START_ROUND,
-    START_TURN, // Same as draw, but used for START
+    START, // Same as draw, but used for START
     DRAW,
     PLAY,
     RETURN,
@@ -18,5 +18,14 @@ public enum TriggerTime {
     public TriggerTime turns(int turns) {
         this.turns = turns;
         return this;
+    }
+
+    public static TriggerTime fromString(String search) {
+        for (TriggerTime nextElem : TriggerTime.values()) {
+            if (nextElem.toString().equalsIgnoreCase(search)) {
+                return nextElem;
+            }
+        }
+        return null;
     }
 }
