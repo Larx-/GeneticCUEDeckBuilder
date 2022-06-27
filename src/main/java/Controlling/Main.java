@@ -25,8 +25,9 @@ public class Main {
         Deck d1 = deckInitializer.createRandomDeck(18);
         Deck d2 = deckInitializer.createRandomDeck(18);
 
-        AgentInterface a1 = new AgentRandom(d1);
+//        AgentInterface a1 = new AgentRandom(d1);
 //        AgentInterface a2 = new AgentRandom(d2);
+        AgentInterface a1 = new AgentPlayer(d1);
         AgentInterface a2 = new AgentPlayer(d2);
 
         Rules rules = RulesInitializer.getTestRules();

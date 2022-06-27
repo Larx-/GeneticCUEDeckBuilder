@@ -31,6 +31,8 @@ public class Game {
     // FIFO queues of effects to execute (/revert) at different times
     Map<TriggerTime,List<Effect>> effectStackResident;
     Map<TriggerTime,List<Effect>> effectStackOpponent;
+    Map<Integer,List<Effect>> effectStackTimerResident;
+    Map<Integer,List<Effect>> effectStackTimerOpponent;
 
     public Game(Rules rules, AgentInterface resident, AgentInterface opponent) {
         this.rules = rules;
@@ -63,6 +65,8 @@ public class Game {
 
     private void initializeGame() {
         // TODO: potentially more resetting necessary
+        this.effectStackTimerResident = new HashMap<>();
+        this.effectStackTimerOpponent = new HashMap<>();
         this.effectStackResident = new HashMap<>();
         this.effectStackOpponent = new HashMap<>();
         for (TriggerTime triggerTime : TriggerTime.values()) {
@@ -143,6 +147,9 @@ public class Game {
         List<Card> drawnCardsResident = this.resident.getDeck().drawCards();
         List<Card> drawnCardsOpponent = this.opponent.getDeck().drawCards();
 
+        this.resident.getDeck().burnCards();
+        this.opponent.getDeck().burnCards();
+
         this.applyCardEffects(drawnCardsResident,TriggerTime.DRAW,Who.RESIDENT);
         this.applyCardEffects(drawnCardsOpponent,TriggerTime.DRAW,Who.OPPONENT);
         this.applyEffectStack(TriggerTime.DRAW,Who.BOTH);
@@ -151,12 +158,15 @@ public class Game {
         Card[] cardsInHandResident = this.resident.getDeck().getCardsInHand();
         Card[] cardsInHandOpponent = this.opponent.getDeck().getCardsInHand();
 
+        this.resident.applyUnlockIfSet();
+        this.opponent.applyUnlockIfSet();
+
         this.applyCardEffects(cardsInHandResident,TriggerTime.START,Who.RESIDENT);
         this.applyCardEffects(cardsInHandOpponent,TriggerTime.START,Who.OPPONENT);
         this.applyEffectStack(TriggerTime.START,Who.BOTH);
 
-        this.resident.applyUnlockIfSet();         // Fixme: Check if this is correct or does the unlock come before draw effects (relevant for self locking cards)
-        this.opponent.applyUnlockIfSet();
+        this.resident.updateDoUnlock();
+        this.opponent.updateDoUnlock();
 
         this.logHand();
 
@@ -179,7 +189,7 @@ public class Game {
 
         this.logPlay();
 
-        // Add RETURN effects to queue
+        // RETURN effects
         this.applyCardEffects(cardsPlayedResident,TriggerTime.RETURN,Who.RESIDENT);
         this.applyCardEffects(cardsPlayedOpponent,TriggerTime.RETURN,Who.OPPONENT);
         this.applyEffectStack(TriggerTime.RETURN,Who.BOTH);
@@ -192,13 +202,10 @@ public class Game {
         this.resident.updateEnergyAvailable(this.rules.getEnergyMin(), this.rules.getEnergyMax());
         this.opponent.updateEnergyAvailable(this.rules.getEnergyMin(), this.rules.getEnergyMax());
 
-        this.resident.updateDoUnlock(); // Fixme: Check if this is correct or does the unlock come before draw effects (relevant for self locking cards)
-        this.opponent.updateDoUnlock();
-
-        this.totalTurnNumber++;
-
         // execute TIMER based effects
         this.applyEffectStack(TriggerTime.TIMER,Who.BOTH);
+
+        this.totalTurnNumber++;
     }
 
     private void applyCardEffects (Card[] cards, TriggerTime triggerTime, Who selfPlayer) {
@@ -226,10 +233,31 @@ public class Game {
         Effect expiryEffect = effect.applyEffect(this, selfPlayer);
 
         if (expiryEffect != null) {
-            if (selfPlayer == Who.RESIDENT) {
-                this.effectStackResident.get(expiryEffect.getTriggerTime()).add(expiryEffect);
+            TriggerTime triggerTime = expiryEffect.getTriggerTime();
+
+            if (triggerTime == TriggerTime.TIMER) {
+                int timer = this.totalTurnNumber + expiryEffect.getTimer();
+
+                if (selfPlayer == Who.RESIDENT) {
+                    if (!this.effectStackTimerResident.containsKey(timer)) {
+                        this.effectStackTimerResident.put(timer, new ArrayList<>());
+                    }
+                    this.effectStackTimerResident.get(timer).add(expiryEffect);
+
+                } else {
+                    if (!this.effectStackTimerOpponent.containsKey(timer)) {
+                        this.effectStackTimerOpponent.put(timer, new ArrayList<>());
+                    }
+                    this.effectStackTimerOpponent.get(this.totalTurnNumber + expiryEffect.getTimer()).add(expiryEffect);
+                }
+
             } else {
-                this.effectStackOpponent.get(expiryEffect.getTriggerTime()).add(expiryEffect);
+                if (selfPlayer == Who.RESIDENT) {
+                    this.effectStackResident.get(triggerTime).add(expiryEffect);
+                } else {
+                    this.effectStackOpponent.get(triggerTime).add(expiryEffect);
+                }
+
             }
         }
     }
@@ -240,18 +268,28 @@ public class Game {
             this.applyEffectStack(triggerTime, Who.OPPONENT);
 
         } else {
+            List<Effect> effectList = null;
+
             if (triggerTime == TriggerTime.TIMER) {
-                // TODO
+                if (selfPlayer == Who.RESIDENT) {
+                    if (this.effectStackTimerResident.containsKey(this.totalTurnNumber)) {
+                        effectList = this.effectStackTimerResident.get(this.totalTurnNumber);
+                    }
+                } else {
+                    if (this.effectStackTimerResident.containsKey(this.totalTurnNumber)) {
+                        effectList = this.effectStackTimerOpponent.get(this.totalTurnNumber);
+                    }
+                }
 
             } else {
-                List<Effect> effectList;
-
                 if (selfPlayer == Who.RESIDENT) {
                     effectList = this.effectStackResident.get(triggerTime);
                 } else {
                     effectList = this.effectStackOpponent.get(triggerTime);
                 }
+            }
 
+            if (effectList != null) {
                 while (effectList.size() > 0) {
                     Effect effect = effectList.remove(0);
                     this.applyEffect(effect, selfPlayer);

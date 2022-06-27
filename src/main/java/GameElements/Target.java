@@ -17,6 +17,11 @@ public class Target {
         this.who = who;
     }
 
+    public Target(Who who, Where where) {
+        this.who = who;
+        this.where = where;
+    }
+
     public Target(Who who, Where where, Album album) {
         this.who = who;
         this.where = where;

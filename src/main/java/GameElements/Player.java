@@ -116,12 +116,17 @@ public class Player {
     }
 
     private boolean checkCard(Card card, Target compareTo) {
+        if (compareTo.getWhat() == null) {
+            return true;
+        }
+
         switch (compareTo.getWhat()) {
             case NAME:          return card.getName().equals(compareTo.getName());
             case NAME_INCLUDES: return card.getName().contains(compareTo.getName());
             case COLLECTION:    return card.getCollection() == compareTo.getCollection();
             case ALBUM:         return card.getAlbum() == compareTo.getAlbum();
         }
+
         return false;
     }
 }

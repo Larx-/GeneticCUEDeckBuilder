@@ -18,7 +18,16 @@ public class Effect {
     @Getter @Setter TriggerTime triggerTime;
     @Getter @Setter Target target;
     @Getter @Setter TriggerTime duration;
+    @Getter @Setter int timer;
     @Getter @Setter List<Condition> conditions;
+
+    public Effect(TriggerTime triggerTime, Target target, TriggerTime duration, int timer, List<Condition> conditions) {
+        this.triggerTime = triggerTime;
+        this.target = target;
+        this.duration = duration;
+        this.timer = timer;
+        this.conditions = conditions;
+    }
 
     public Effect(TriggerTime triggerTime, Target target, TriggerTime duration, List<Condition> conditions) {
         this.triggerTime = triggerTime;

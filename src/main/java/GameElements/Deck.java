@@ -36,6 +36,13 @@ public class Deck {
         return draw;
     }
 
+    public void burnCards () {
+        for (Card card : this.cardsInHand) {
+            int power = card.getBurntPower();
+            card.setBurntPower(Math.max(0, power - card.getBurnAmount()));
+        }
+    }
+
     public void playCard(int indexInHand, int indexOnBoard) {
         this.cardsPlayed[indexOnBoard] = this.cardsInHand[indexInHand];
         this.cardsInHand[indexInHand] = null;
@@ -55,6 +62,8 @@ public class Deck {
         for (int i = 0; i < 3; i++){
             if (this.cardsPlayed[i] != null) {
                 this.cardsInDeck.addLast(this.cardsPlayed[i]);
+                this.cardsPlayed[i].setBurntPower(this.cardsPlayed[i].getBasePower());
+                this.cardsPlayed[i].setBurnAmount(0);
                 this.cardsPlayed[i] = null;
             }
         }

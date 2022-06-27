@@ -15,6 +15,12 @@ public class E_Power extends Effect {
 
     int changeBy;
 
+    public E_Power(TriggerTime triggerTime, Target targetCards, int changeBy, TriggerTime duration, int timer, List<Condition> conditions) {
+        super(triggerTime, targetCards, duration, timer, conditions);
+
+        this.changeBy = changeBy;
+    }
+
     public E_Power(TriggerTime triggerTime, Target targetCards, int changeBy, TriggerTime duration, List<Condition> conditions) {
         super(triggerTime, targetCards, duration, conditions);
 
@@ -36,7 +42,7 @@ public class E_Power extends Effect {
 
             // 4. If required return expiryEffect using inverse
             if (super.duration != null) {
-                return new E_Power(super.duration, super.target, (-this.changeBy), null, super.conditions);
+                return new E_Power(super.duration, super.target, (-this.changeBy), null, super.timer, super.conditions);
             }
         }
         return null;

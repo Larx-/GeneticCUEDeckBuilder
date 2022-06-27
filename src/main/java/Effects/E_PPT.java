@@ -15,6 +15,12 @@ public class E_PPT extends Effect {
 
     int changeBy;
 
+    public E_PPT(TriggerTime triggerTime, Target target, int changeBy, TriggerTime duration, int timer, List<Condition> conditions) {
+        super(triggerTime, target, duration, timer, conditions);
+
+        this.changeBy = changeBy;
+    }
+
     public E_PPT(TriggerTime triggerTime, Target target, int changeBy, TriggerTime duration, List<Condition> conditions) {
         super(triggerTime, target, duration, conditions);
 
@@ -36,7 +42,7 @@ public class E_PPT extends Effect {
 
             // 4. If required return expiryEffect using inverse
             if (super.duration != null) {
-                return new E_PPT(super.duration, super.target, (-this.changeBy), null, super.conditions);
+                return new E_PPT(super.duration, super.target, (-this.changeBy), null, super.timer, super.conditions);
             }
         }
         return null;

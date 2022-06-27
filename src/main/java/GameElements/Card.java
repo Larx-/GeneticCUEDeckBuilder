@@ -24,7 +24,8 @@ public class Card {
     @Getter @Setter private int modifierEnergy;
     @Getter @Setter private int modifierPower;
     @Getter @Setter private boolean isLocked;
-    // TODO: On Fire
+    @Getter @Setter private int burntPower;
+    @Getter @Setter private int burnAmount;
 
     public Card(String id, String name, Album album, Collection collection,
                 int baseEnergy, int basePower, Map<TriggerTime,List<Effect>> effects){
@@ -39,6 +40,8 @@ public class Card {
         this.modifierEnergy = 0;
         this.modifierPower = 0;
         this.isLocked = false;
+        this.burntPower = this.basePower;
+        this.burnAmount = 0;
     }
 
     public int getModifiedEnergy() {
@@ -46,7 +49,7 @@ public class Card {
     }
 
     public int getModifiedPower() {
-        return Math.max(0, (this.basePower + this.modifierPower));
+        return Math.max(0, (this.burntPower + this.modifierPower));
     }
 
     public List<Effect> getEffectsByTriggerTime(TriggerTime triggerTime) {
@@ -63,11 +66,12 @@ public class Card {
 
     @Override
     public String toString(){
-        return String.format("%s]  %s  E:%d (%d)   P:%d (%d)   %s  %s",
+        return String.format("%s]  %s  E:%d (%d)   P:%d (%d)  %s  %s  %s",
                 StringUtils.leftPad(this.id,3),
                 StringUtils.rightPad(StringUtils.abbreviate(this.name,30),30),
                 this.getModifiedEnergy(), this.baseEnergy, this.getModifiedPower(), this.basePower,
-                (this.isLocked ? "[\uD83D\uDD12]" : "   "),
+                (this.isLocked ? " \uD83D\uDD12 " : "   "),
+                (this.burnAmount > 0 ? " \uD83D\uDD25 " : "   "),
                 (this.effects == null ? "" : "*"));
     }
 }

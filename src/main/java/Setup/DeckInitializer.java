@@ -33,16 +33,21 @@ public class DeckInitializer {
     }
 
     public Map<TriggerTime,List<Effect>> getRandomEffects() {
-        if (Main.random.nextInt(100) < 20) {
+        if (Main.random.nextInt(100) < 80) {
 
             List<Condition> condList = new ArrayList<>();
             condList.add(new C_BeforeRoundX(4));
 
             TriggerTime triggerTime = TriggerTime.PLAY;
 
-            Target target = new Target(Who.SELF, Where.CARDS_IN_DECK, Album.ARTS_AND_CULTURE);
+//            Target target = new Target(Who.SELF, Where.CARDS_IN_DECK, Album.ARTS_AND_CULTURE);
+            Target target = new Target(Who.OTHER,Where.CARDS_IN_HAND,"History",false);
+//            Target target = new Target(Who.OTHER,Where.CARDS_REMAINING);
 
-            Effect effect = new E_Power(triggerTime, target, 50, TriggerTime.END_TURN, condList);
+//            Effect effect = new E_Power(triggerTime, target, 50, TriggerTime.END_TURN, condList);
+            Effect effect = new E_Burn(triggerTime, target, 30, TriggerTime.TIMER, 1, condList);
+//            Effect effect = new E_Lock(triggerTime, target, true, TriggerTime.TIMER, 2, condList);
+
             List<Effect> effects = new ArrayList<>();
             effects.add(effect);
 

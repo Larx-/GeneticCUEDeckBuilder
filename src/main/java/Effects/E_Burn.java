@@ -1,6 +1,5 @@
 package Effects;
 
-import Enums.Where;
 import Enums.TriggerTime;
 import Enums.Who;
 import GameElements.Card;
@@ -11,20 +10,20 @@ import lombok.extern.log4j.Log4j2;
 import java.util.List;
 
 @Log4j2
-public class E_Energy extends Effect {
+public class E_Burn extends Effect {
 
-    int changeBy;
+    int burnAmount;
 
-    public E_Energy(TriggerTime triggerTime, Target targetCards, int changeBy, TriggerTime duration, int timer, List<Condition> conditions) {
+    public E_Burn(TriggerTime triggerTime, Target targetCards, int burnAmount, TriggerTime duration, int timer, List<Condition> conditions) {
         super(triggerTime, targetCards, duration, timer, conditions);
 
-        this.changeBy = changeBy;
+        this.burnAmount = burnAmount;
     }
 
-    public E_Energy(TriggerTime triggerTime, Target targetCards, int changeBy, TriggerTime duration, List<Condition> conditions) {
+    public E_Burn(TriggerTime triggerTime, Target targetCards, int burnAmount, TriggerTime duration, List<Condition> conditions) {
         super(triggerTime, targetCards, duration, conditions);
 
-        this.changeBy = changeBy;
+        this.burnAmount = burnAmount;
     }
 
     @Override
@@ -36,13 +35,12 @@ public class E_Energy extends Effect {
         if (super.conditionsFulfilled(game, selfPlayer)) {
             // 3. In subclass do effect
             for (Card card : targetCards) {
-                int newEnergy = card.getModifierEnergy() + this.changeBy;
-                card.setModifierEnergy(newEnergy);
+                card.setBurnAmount(this.burnAmount);
             }
 
             // 4. If required return expiryEffect using inverse
             if (super.duration != null) {
-                return new E_Energy(super.duration, super.target, (-this.changeBy), null, super.timer, super.conditions);
+                return new E_Burn(super.duration, super.target, 0, null, super.timer, super.conditions);
             }
         }
         return null;

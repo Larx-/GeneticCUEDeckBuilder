@@ -1,7 +1,5 @@
 package Enums;
 
-import lombok.Getter;
-
 public enum TriggerTime {
     START_GAME,
     START_ROUND,
@@ -11,14 +9,7 @@ public enum TriggerTime {
     RETURN,
     END_TURN, // Same as return, but only ever used as "counter effect"
     END_ROUND,
-    TIMER;
-
-    @Getter private Integer turns;
-
-    public TriggerTime turns(int turns) {
-        this.turns = turns;
-        return this;
-    }
+    TIMER;    // Only ever in expiry
 
     public static TriggerTime fromString(String search) {
         for (TriggerTime nextElem : TriggerTime.values()) {
