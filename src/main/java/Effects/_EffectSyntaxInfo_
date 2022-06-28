@@ -20,7 +20,6 @@ TriggerTime:
     RETURN
     END_TURN
     END_ROUND
-    TIMER(turns)
 
 Target:
     CARDS_IN_DECK(who(,what,name))
@@ -33,11 +32,12 @@ Effect:
     ENERGY(value)
 
 Duration:
-    PERMANENT
+    RETURN
     END_ROUND
     END_TURN
     END_ROUND
-    TIMER(turns)
+    TIMER(value)
+    PERMANENT
 
 Condition:
     PLAYED(who,what,name)

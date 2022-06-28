@@ -9,7 +9,8 @@ public enum TriggerTime {
     RETURN,
     END_TURN, // Same as return, but only ever used as "counter effect"
     END_ROUND,
-    TIMER;    // Only ever in expiry
+    TIMER,    // Only ever in expiry
+    PERMANENT;
 
     public static TriggerTime fromString(String search) {
         for (TriggerTime nextElem : TriggerTime.values()) {
