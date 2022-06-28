@@ -2,14 +2,14 @@ package Setup;
 
 import Effects.*;
 import Enums.*;
+import Enums.Collection;
+import GameElements.Card;
 import GameElements.Target;
 import lombok.extern.log4j.Log4j2;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 
 @Log4j2
@@ -72,18 +72,35 @@ public class EffectParser {
                     "  }]" +
                     "}";
 
-    public List<Effect> parseEffects(String effectsString) {
-        List<Effect> effects = new ArrayList<>();
+    public String translateEffects(String naturalEffectString) {
+        // TODO: Matching based translator of effects to JSONstring
+        return null;
+    }
+
+    public Map<TriggerTime,List<Effect>> parseEffects(String effectsString) {
+        if (effectsString == null || effectsString.equals("") || effectsString.equals("-")){
+            return null;
+        }
+
+        Map<TriggerTime,List<Effect>> effectMap = new HashMap<>();
 
         JSONObject jsonEffects = new JSONObject(effectsString);
         JSONArray jsonEffectArray = jsonEffects.getJSONArray("Effects");
 
         for (int i = 0; i < jsonEffectArray.length(); i++) {
             JSONObject jsonEffect = jsonEffectArray.getJSONObject(i);
-            effects.add(this.parseEffect(jsonEffect));
+            Effect effect = this.parseEffect(jsonEffect);
+
+            if (effectMap.containsKey(effect.getTriggerTime())) {
+                List<Effect> effectList = new ArrayList<>();
+                effectList.add(effect);
+                effectMap.put(effect.getTriggerTime(),effectList);
+            } else {
+                effectMap.get(effect.getTriggerTime()).add(effect);
+            }
         }
 
-        return effects;
+        return effectMap;
     }
 
     public Effect parseEffect(JSONObject jsonEffect){

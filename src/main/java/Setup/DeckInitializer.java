@@ -27,13 +27,13 @@ public class DeckInitializer {
             Album album = collection.getAffiliatedAlbum();
             String name = collection + " - " + album+" ("+iStr+")";
 
-            Card card = new Card(iStr, name, album, collection, cost, power, this.getRandomEffects());
+            Card card = new Card(i, iStr, name, album, collection, cost, power, this.getRandomEffects());
             this.cardPrototypes.add(card);
         }
     }
 
     public Map<TriggerTime,List<Effect>> getRandomEffects() {
-        if (Main.random.nextInt(100) < 80) {
+        if (Main.random.nextInt(100) < 20) {
 
             List<Condition> condList = new ArrayList<>();
             condList.add(new C_BeforeRoundX(4));
@@ -61,7 +61,7 @@ public class DeckInitializer {
 
     public Deck createRandomDeck (int numCards) {
         LinkedList<Card> deckCards = new LinkedList<>();
-        Set<String> addedCardsId = new HashSet<>();
+        Set<Integer> addedCardsId = new HashSet<>();
 
         for (int i = 0; i < numCards; i++) {
             Card nextCard;

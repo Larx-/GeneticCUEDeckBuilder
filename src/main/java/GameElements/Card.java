@@ -12,7 +12,8 @@ import java.util.List;
 import java.util.Map;
 
 public class Card {
-    @Getter private final String id;
+    @Getter private final int id;
+    @Getter private final String idString;
     @Getter private final String name;
     @Getter private final Album album;
     @Getter private final Collection collection;
@@ -27,9 +28,10 @@ public class Card {
     @Getter @Setter private int burntPower;
     @Getter @Setter private int burnAmount;
 
-    public Card(String id, String name, Album album, Collection collection,
+    public Card(int id, String idString, String name, Album album, Collection collection,
                 int baseEnergy, int basePower, Map<TriggerTime,List<Effect>> effects){
         this.id = id;
+        this.idString = idString;
         this.name = name;
         this.album = album;
         this.collection = collection;
@@ -61,13 +63,13 @@ public class Card {
 
     public Card copyFresh(){
         // TODO: Deep copy effects
-        return new Card(id,name, album, collection, baseEnergy, basePower, effects);
+        return new Card(id, idString, name, album, collection, baseEnergy, basePower, effects);
     }
 
     @Override
     public String toString(){
         return String.format("%s]  %s  E:%d (%d)   P:%d (%d)  %s  %s  %s",
-                StringUtils.leftPad(this.id,3),
+                StringUtils.leftPad(this.idString,3),
                 StringUtils.rightPad(StringUtils.abbreviate(this.name,30),30),
                 this.getModifiedEnergy(), this.baseEnergy, this.getModifiedPower(), this.basePower,
                 (this.isLocked ? " \uD83D\uDD12 " : "   "),
