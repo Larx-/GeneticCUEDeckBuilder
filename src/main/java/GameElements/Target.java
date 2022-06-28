@@ -4,6 +4,8 @@ import Enums.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 public class Target {
 
     @Getter @Setter private Who who;
@@ -12,6 +14,7 @@ public class Target {
     @Getter @Setter private String name;
     @Getter @Setter private Collection collection;
     @Getter @Setter private Album album;
+    @Getter @Setter private List<Card> targetCards; // For expiry effects
 
     public Target(Who who) {
         this.who = who;
@@ -44,5 +47,13 @@ public class Target {
 
         this.name = name;
         this.what = exactMatch ? What.NAME : What.NAME_INCLUDES;
+    }
+
+    public Target(List<Card> targetCards) {
+        this.targetCards = targetCards;
+    }
+
+    public boolean hasPresetCards() {
+        return this.targetCards != null;
     }
 }

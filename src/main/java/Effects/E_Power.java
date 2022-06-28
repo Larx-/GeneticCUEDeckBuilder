@@ -33,7 +33,7 @@ public class E_Power extends Effect {
         List<Card> targetCards = super.selectCards(game,selfPlayer);
 
         // 2. Check conditions (per card / general)
-        if (super.conditionsFulfilled(game, selfPlayer)) {
+        if (!targetCards.isEmpty() && super.conditionsFulfilled(game, selfPlayer)) {
             // 3. In subclass do effect
             for (Card card : targetCards) {
                 int newPower = card.getModifierPower() + this.changeBy;
@@ -41,8 +41,9 @@ public class E_Power extends Effect {
             }
 
             // 4. If required return expiryEffect using inverse
-            if (super.duration != null) {
-                return new E_Power(super.duration, super.target, (-this.changeBy), null, super.timer, super.conditions);
+            if (super.duration != null && super.duration != TriggerTime.PERMANENT) {
+                Target selectedTargetCards = new Target(targetCards);
+                return new E_Power(super.duration, selectedTargetCards, (-this.changeBy), null, super.timer, null);
             }
         }
         return null;

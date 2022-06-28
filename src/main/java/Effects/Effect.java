@@ -58,6 +58,10 @@ public class Effect {
     }
 
     public List<Card> selectCards(Game game, Who selfPlayer) {
+        if (this.target.hasPresetCards()) {
+            return this.target.getTargetCards();
+        }
+
         List<Player> players = this.selectPlayers(game, selfPlayer);
         List<Card> targetCards = players.remove(0).findCards(this.target);
         if (!players.isEmpty()) {

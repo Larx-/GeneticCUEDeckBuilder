@@ -1,8 +1,8 @@
 Individual effects are described by following syntax, so I can parse them.
 Categories always have exactly one info, except Condition can have any amount.
 
-EXAMPLE:    {TriggerTime:PLAY;Target:CARDS_IN_HAND(SELF,NAME,Mj�lnir)),Effect:POWER(+68);Duration:TURNS(0);Condition:PLAYED(SELF,NAME,Thor)},
-            {TriggerTime:RETURN;Target:CARDS_REMAINING(OTHER);Effect:ENERGY(+3);Duration:TURNS(1)}
+EXAMPLE: see EffectParser.java
+
 
 Usable parameters in some cases are:
     who   = SELF | OTHER | BOTH
@@ -40,4 +40,6 @@ Duration:
     PERMANENT
 
 Condition:
+    AFTER_ROUND(value)
+    BEFORE_ROUND(value)
     PLAYED(who,what,name)

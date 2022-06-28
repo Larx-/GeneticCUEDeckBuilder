@@ -32,15 +32,16 @@ public class E_Burn extends Effect {
         List<Card> targetCards = super.selectCards(game,selfPlayer);
 
         // 2. Check conditions (per card / general)
-        if (super.conditionsFulfilled(game, selfPlayer)) {
+        if (!targetCards.isEmpty() && super.conditionsFulfilled(game, selfPlayer)) {
             // 3. In subclass do effect
             for (Card card : targetCards) {
                 card.setBurnAmount(this.burnAmount);
             }
 
             // 4. If required return expiryEffect using inverse
-            if (super.duration != null) {
-                return new E_Burn(super.duration, super.target, 0, null, super.timer, super.conditions);
+            if (super.duration != null && super.duration != TriggerTime.PERMANENT) {
+                Target selectedTargetCards = new Target(targetCards);
+                return new E_Burn(super.duration, selectedTargetCards, 0, null, super.timer, null);
             }
         }
         return null;
