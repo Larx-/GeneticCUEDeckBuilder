@@ -22,8 +22,8 @@ public class EffectParser {
                     "    'Effect':{'Type':'POWER','Params':{'Value':'+68'}}," +
                     "    'Duration': {'Type':'TIMER','Params':{'Value':'0'}}," +
                     "    'Conditions': [" +
-                    "      {'Type': 'PLAYED','Params': {'Who': 'SELF','What': 'NAME','CompareTo': 'Mj� lnir'}}, " +
-                    "      {'Type': 'BEFORE_ROUND','Params': {'Value': '4'}}" +
+                    "      {'Type':'PLAYED','Params':{'Who':'SELF','What':'NAME','CompareTo':'Mj� lnir'}}, " +
+                    "      {'Type':'BEFORE_ROUND','Params':{'Value':'4'}}" +
                     "    ]" +
                     "  }, {" + // Second effect
                     "    'TriggerTime': 'RETURN'," +
@@ -33,16 +33,8 @@ public class EffectParser {
                     "  }]" +
                     "}";
 
-    public static void main(String[] args) {
-        EffectParser effectParser = new EffectParser();
-        String effectJSONstring = effectParser.translateEffects("When returned to your deck, your Opponent's cards left in hand cost 3 more Energy next turn.");
-        String effectJSONstring2 = effectParser.translateEffects("When played, all cards have -25 Power this turn.");
-        Map<TriggerTime,List<Effect>> effects = effectParser.parseEffects(effectJSONstring);
-        Map<TriggerTime,List<Effect>> effects2 = effectParser.parseEffects(effectJSONstring2);
-    }
-
     public String translateEffects(String naturalEffectString) {
-        // TODO: Matching based translator of effects to JSONstring
+        String originalNaturalEffect = naturalEffectString;
 
         // No Effect
         if (naturalEffectString == null || naturalEffectString.equals("")) {
@@ -50,6 +42,7 @@ public class EffectParser {
         }
 
         String effectJSON = "{'Effects': [{";
+        List<String> conditions = new ArrayList<>();
 
         if (naturalEffectString.startsWith("When returned to your deck,")) {
             effectJSON += "'TriggerTime': 'RETURN',\n";
@@ -58,6 +51,16 @@ public class EffectParser {
         } else if (naturalEffectString.startsWith("When played,")) {
             effectJSON += "'TriggerTime': 'PLAY',\n";
             naturalEffectString = naturalEffectString.substring("When played,".length()).trim();
+
+        } else if (naturalEffectString.startsWith("When played with")) {
+            effectJSON += "'TriggerTime': 'PLAY',\n";
+            naturalEffectString = naturalEffectString.substring("When played with".length()).trim();
+
+            int nameLength = naturalEffectString.indexOf(", ");
+            String name = naturalEffectString.substring(0,nameLength);
+            naturalEffectString = naturalEffectString.substring(nameLength).trim();
+            // FIXME
+            conditions.add("{'Type':'PLAYED','Params':{'Who':'SELF','What':'NAME','CompareTo':'"+name+"'}}");
 
         } else {
             throw new Error("Translation error: Could not determine '" + naturalEffectString + "'!");
@@ -93,7 +96,6 @@ public class EffectParser {
             } else {
                 throw new Error("Translation error: Could not determine '" + naturalEffectString + "'!");
             }
-
 
         } else if (naturalEffectString.startsWith("have")) {
             naturalEffectString = naturalEffectString.substring("have".length()).trim();

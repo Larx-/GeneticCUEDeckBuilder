@@ -18,6 +18,7 @@ Id,IdString,Name,Limited,Rarity,Collection,Energy,Power,EffectDescription,Effect
 17,ACNO018,Surtr,1,Epic,Norse Mythology,6,50,"When drawn, give your cards +10 Power this turn. If you are losing the round, give them an extra 10 for the rest of the round.",
 18,ACNO019,Sleipnir,1,Rare,Norse Mythology,3,28,"When drawn or played, give Odin +70 Power until played.",
 19,ACNO020,Helheim,1,Common,Norse Mythology,2,19,"When played with Asgard, give it +20 Power this turn.",
+20,invalid,invalid,1,invalid,Norse Mythology,0,0,,
 21,ACNO021,Berserkers,1,Common,Norse Mythology,3,47,"When played, give this card -12 Power this turn. When returned to your deck, give it +26 Power for the rest of the game.",
 22,ACNO022,Laufey,1,Epic,Norse Mythology,2,17,"When played, give Loki and your Common and Rare cards +25 Power this turn.",
 23,ACNO023,Gjallarhorn,1,Legendary,Norse Mythology,2,23,"When drawn, give a random Norse Mythology card in your hand +25 Power until played. When played, give Heimdall (even if it's in your deck) +30 Power until played.",

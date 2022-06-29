@@ -1,0 +1,114 @@
+~BEGIN~
+    "When returned to your deck, ~EFFECT~.~ADDITION~"
+    "When played, ~EFFECT~.~ADDITION~"
+    "When drawn, ~EFFECT~.~ADDITION~"
+    "When drawn, ~EFFECT~.~ADDITION~"
+    "When drawn or played, ~EFFECT~.~ADDITION~"
+    "When played with ~CARDNAME~, ~EFFECT~.~ADDITION~"
+    "When played on the first turn of the round, ~EFFECT~.~ADDITION~"
+    "At the start of every turn, while in hand, ~EFFECT~.~ADDITION~"
+    ""
+
+~ADDITION~
+    " ~BEGIN~"
+    " ~EFFECT~"
+    ""
+
+~EFFECT~
+    "~CONDITION~, ~EFFECT_BODY~"
+    "~EFFECT_BODY~"
+    "~EFFECT_BODY~ and ~EFFECT_BODY~"
+    "~EFFECT_BODY~, and ~EFFECT_BODY~"
+
+~EFFECT_BODY~
+    "Lock ~TARGET~ ~TIME~"
+    "gain ~NUMBER~ Power ~TIME~"
+    "gain ~NUMBER~ Power/Turn ~TIME~"
+    "give ~TARGET~ ~NUMBER~ Power ~TIME~"
+    "give ~TARGET~ an extra ~NUMBER~ Power ~TIME~"
+    "also give ~TARGET~ ~NUMBER~ Power ~TIME~"
+    "reduce the Energy cost of ~TARGET~ by ~NUMBER~ ~TIME~"
+    "increase the Energy cost of ~TARGET~ by ~NUMBER~ ~TIME~"
+    "this card steals ~NUMBER~ Power from ~TARGET~ and keeps it ~TIME~"
+    "~TARGET~ cost ~NUMBER~ more Energy ~TIME~"
+    "~TARGET~ cost ~NUMBER~ less Energy ~TIME~"
+    "~TARGET~ have ~NUMBER~ Power ~TIME~"
+    "~TARGET~ gain ~NUMBER~ Power ~TIME~"
+    "~TARGET~ gain ~NUMBER~ Energy"
+    "~TARGET~ lose ~NUMBER~ power ~TIME~"
+
+~TIME~
+    "for ~TIME_BODY~"
+    "~TIME_BODY~"
+    ""   -> this turn
+
+~TIME_BODY~
+    "next turn"
+    "this turn"
+    "until played"
+    "until it is played"
+    "this round"
+    "the rest of the round"
+    "~NUMBER~ turns"
+    "until the end of the round"
+    "this turn and next"
+    "the rest of the game"
+
+~TARGET~
+    "~TARGET_BODY~~IRRELEVANT_PARENTHESIS~"
+
+~TARGET_BODY~
+    "both players"
+    "this card"
+    "it"
+    "that card"
+    "them"
+    "all cards"
+    "all adjacent and opposite cards"
+    "all of your cards with ~NUMBER~ or less Base Energy"
+    "each of your Opponent�s cards"
+    "a random card in your hand"
+    "a random card in your opponent's hand"
+    "a random ~COLLECTION~ card and a random ~ALBUM~ card in your hand"
+    "a random ~COLLECTION~ card in your hand"
+    "your Opponent's cards left in hand"
+    "your opponent's cards"
+    "your cards"
+    "your cards in hand"
+    "your ~ALBUM~ cards"
+    "your ~ALBUM~ cards in hand"
+    "your ~ALBUM~ and ~ALBUM~ cards"
+    "your ~CARDNAME~ card in hand"
+    "~NUMBER~ random cards (in either player's hand)"
+    "~CARDNAME~ and your Common and Rare cards"
+    "~CARDNAME~ cards"
+    "~CARDNAME~ or ~CARDNAME~"
+    "~CARDNAME~ and ~CARDNAME~"
+    "~CARDNAME~"
+    
+~IRRELEVANT_PARENTHESIS~
+    " (even if they're in your deck)"
+    " (wherever they are)"
+    " (even if it's in your deck)"
+    ""
+
+~CONDITION~
+    "if you won the turn"
+    "If you are losing the round"
+    "if it contains cards from ~NUMBER~ or more Albums"
+    "if you lost this turn"
+    "if you have played ~CARDNAME~"
+    "if you have played ~CARDNAME~ this game"
+    "if you have played ~CARDNAME~, ~CARDNAME~ and ~CARDNAME~"
+    "if your deck contains ~NUMBER~ or more ~ALBUM~ cards"
+    "if your deck contains ~CARDNAME~"
+    "if you have lost ~NUMBER~ Rounds of this game"
+
+~NUMBER~
+    [+|-|][0-9]*
+
+~CARDNAME~
+    [isCardinList()]
+
+~ALBUM~
+    [isAlbum()]
