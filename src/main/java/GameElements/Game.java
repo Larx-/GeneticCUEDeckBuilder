@@ -143,6 +143,10 @@ public class Game {
     }
 
     private void playTurn(){
+        // Unlock mechanic, not 100% sure it's in the correct ordering
+        this.resident.applyUnlockIfSet();
+        this.opponent.applyUnlockIfSet();
+
         // DRAW effects
         List<Card> drawnCardsResident = this.resident.getDeck().drawCards();
         List<Card> drawnCardsOpponent = this.opponent.getDeck().drawCards();
@@ -158,15 +162,9 @@ public class Game {
         Card[] cardsInHandResident = this.resident.getDeck().getCardsInHand();
         Card[] cardsInHandOpponent = this.opponent.getDeck().getCardsInHand();
 
-        this.resident.applyUnlockIfSet();
-        this.opponent.applyUnlockIfSet();
-
         this.applyCardEffects(cardsInHandResident,TriggerTime.START,Who.RESIDENT);
         this.applyCardEffects(cardsInHandOpponent,TriggerTime.START,Who.OPPONENT);
         this.applyEffectStack(TriggerTime.START,Who.BOTH);
-
-        this.resident.updateDoUnlock();
-        this.opponent.updateDoUnlock();
 
         this.logHand();
 
@@ -202,6 +200,10 @@ public class Game {
         this.resident.updateEnergyAvailable(this.rules.getEnergyMin(), this.rules.getEnergyMax());
         this.opponent.updateEnergyAvailable(this.rules.getEnergyMin(), this.rules.getEnergyMax());
 
+        // Update if cards should unlock, not 100% sure it's in the correct ordering
+        this.resident.updateDoUnlock();
+        this.opponent.updateDoUnlock();
+
         // execute TIMER based effects
         this.applyEffectStack(TriggerTime.TIMER,Who.BOTH);
 
@@ -230,6 +232,8 @@ public class Game {
     }
 
     private void applyEffect (Effect effect, Who selfPlayer) {
+        if (effect == null) { return; } // TODO: Figure out why there even is a null effect being added
+
         Effect expiryEffect = effect.applyEffect(this, selfPlayer);
 
         if (expiryEffect != null) {

@@ -69,7 +69,7 @@ public class Card {
     @Override
     public String toString(){
         return String.format("%s]  %s  E:%d (%d)   P:%d (%d)  %s  %s  %s",
-                StringUtils.leftPad(this.idString,3),
+                StringUtils.leftPad(this.idString,5),
                 StringUtils.rightPad(StringUtils.abbreviate(this.name,30),30),
                 this.getModifiedEnergy(), this.baseEnergy, this.getModifiedPower(), this.basePower,
                 (this.isLocked ? " \uD83D\uDD12 " : "   "),

@@ -5,7 +5,8 @@ public enum Collection {
     AMFO ("American Folklore", Album.HISTORY),
     TARO ("Tarot", Album.ARTS_AND_CULTURE),
     NOMY ("Norse Mythology", Album.ARTS_AND_CULTURE),
-    EXST ("Exploring the Stars", Album.SPACE);
+    EXST ("Exploring the Stars", Album.SPACE),
+    LCR ("Little Critters", Album.LIFE_ON_LAND);
 
     private final String name;
     private final Album album;

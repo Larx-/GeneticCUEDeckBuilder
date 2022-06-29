@@ -16,65 +16,124 @@ import java.util.*;
 public class EffectParser {
 
     String example =
-                    "{" +
-                    "  'Effects': [{" +
+                    "{'Effects': [{" +
                     "    'TriggerTime': 'PLAY'," +
-                    "    'Target': {" +
-                    "      'Type': 'CARDS_IN_HAND'," +
-                    "      'Params': {" +
-                    "        'Who': 'SELF'," +
-                    "        'Where': 'CARDS_IN_DECK'," +
-                    "        'What': 'NAME'," +
-                    "        'CompareTo': 'Mj� lnir'" +
-                    "      }" +
-                    "    }," +
-                    "    'Effect': {" +
-                    "      'Type': 'POWER'," +
-                    "      'Params': {" +
-                    "        'Value': '+68'" +
-                    "      }" +
-                    "    }," +
-                    "    'Duration': {" +
-                    "      'Type': 'TIMER'," +
-                    "      'Params': {" +
-                    "        'Value': '0'" +
-                    "      }" +
-                    "    }," +
-                    "    'Conditions': [{" +
-                    "      'Type': 'PLAYED'," +
-                    "      'Params': {" +
-                    "        'Who': 'SELF'," +
-                    "        'What': 'NAME'," +
-                    "        'CompareTo': 'Mj� lnir'" +
-                    "      }" +
-                    "    }, {" +
-                    "      'Type': 'BEFORE_ROUND'," +
-                    "      'Params': {" +
-                    "        'Value': '4'" +
-                    "      }" +
-                    "    }]" +
-                    "" +
-                    "  }, {" +
+                    "    'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'NAME','CompareTo':'Mj� lnir'}" +
+                    "    'Effect':{'Type':'POWER','Params':{'Value':'+68'}}," +
+                    "    'Duration': {'Type':'TIMER','Params':{'Value':'0'}}," +
+                    "    'Conditions': [" +
+                    "      {'Type': 'PLAYED','Params': {'Who': 'SELF','What': 'NAME','CompareTo': 'Mj� lnir'}}, " +
+                    "      {'Type': 'BEFORE_ROUND','Params': {'Value': '4'}}" +
+                    "    ]" +
+                    "  }, {" + // Second effect
                     "    'TriggerTime': 'RETURN'," +
-                    "    'Target': {" +
-                    "      'Type': 'CARDS_REMAINING'," +
-                    "      'Params': {" +
-                    "        'Who': 'OTHER'" +
-                    "      }" +
-                    "    }," +
-                    "    'Effect': {" +
-                    "      'Type': 'ENERGY'," +
-                    "      'Params': {" +
-                    "        'Value': '-1'" +
-                    "      }" +
-                    "    }," +
-                    "    'Duration': 'PERMANENT'" +
+                    "    'Target': {'Who':'OTHER','Where':'CARDS_REMAINING'}," +
+                    "    'Effect': {'Type':'ENERGY','Params':{'Value':'-1'}}," +
+                    "    'Duration':'PERMANENT'" +
                     "  }]" +
                     "}";
 
+    public static void main(String[] args) {
+        EffectParser effectParser = new EffectParser();
+        String effectJSONstring = effectParser.translateEffects("When returned to your deck, your Opponent's cards left in hand cost 3 more Energy next turn.");
+        String effectJSONstring2 = effectParser.translateEffects("When played, all cards have -25 Power this turn.");
+        Map<TriggerTime,List<Effect>> effects = effectParser.parseEffects(effectJSONstring);
+        Map<TriggerTime,List<Effect>> effects2 = effectParser.parseEffects(effectJSONstring2);
+    }
+
     public String translateEffects(String naturalEffectString) {
         // TODO: Matching based translator of effects to JSONstring
-        return null;
+
+        // No Effect
+        if (naturalEffectString == null || naturalEffectString.equals("")) {
+            return "-";
+        }
+
+        String effectJSON = "{'Effects': [{";
+
+        if (naturalEffectString.startsWith("When returned to your deck,")) {
+            effectJSON += "'TriggerTime': 'RETURN',\n";
+            naturalEffectString = naturalEffectString.substring("When returned to your deck,".length()).trim();
+
+        } else if (naturalEffectString.startsWith("When played,")) {
+            effectJSON += "'TriggerTime': 'PLAY',\n";
+            naturalEffectString = naturalEffectString.substring("When played,".length()).trim();
+
+        } else {
+            throw new Error("Translation error: Could not determine '" + naturalEffectString + "'!");
+        }
+
+        if (naturalEffectString.startsWith("your Opponent's cards left in hand")) {
+            effectJSON += "'Target':{'Who':'OTHER','Where':'CARDS_REMAINING'},\n";
+            naturalEffectString = naturalEffectString.substring("your Opponent's cards left in hand".length()).trim();
+
+        } else if (naturalEffectString.startsWith("all cards")) {
+            effectJSON += "'Target':{'Who':'BOTH','Where':'CARDS_IN_DECK'},\n";
+            naturalEffectString = naturalEffectString.substring("all cards".length()).trim();
+
+        } else {
+            throw new Error("Translation error: Could not determine '" + naturalEffectString + "'!");
+        }
+
+        if (naturalEffectString.startsWith("cost")) {
+            naturalEffectString = naturalEffectString.substring("cost".length()).trim();
+
+            int integerLength = naturalEffectString.indexOf(" ");
+            String value = naturalEffectString.substring(0,integerLength);
+            naturalEffectString = naturalEffectString.substring(integerLength).trim();
+
+            if (naturalEffectString.startsWith("more Energy")) {
+                naturalEffectString = naturalEffectString.substring("more Energy".length()).trim();
+                effectJSON += "'Effect':{'Type':'ENERGY','Params':{'Value':'+"+value+"'}},\n";
+
+            } else if (naturalEffectString.startsWith("less Energy")) {
+                naturalEffectString = naturalEffectString.substring("less Energy".length()).trim();
+                effectJSON += "'Effect':{'Type':'ENERGY','Params':{'Value':'-"+value+"'}},\n";
+
+            } else {
+                throw new Error("Translation error: Could not determine '" + naturalEffectString + "'!");
+            }
+
+
+        } else if (naturalEffectString.startsWith("have")) {
+            naturalEffectString = naturalEffectString.substring("have".length()).trim();
+
+            int integerLength = naturalEffectString.indexOf(" ");
+            String value = naturalEffectString.substring(0,integerLength);
+            naturalEffectString = naturalEffectString.substring(integerLength).trim();
+
+            if (naturalEffectString.startsWith("Power")) {
+                naturalEffectString = naturalEffectString.substring("Power".length()).trim();
+                effectJSON += "'Effect':{'Type':'POWER','Params':{'Value':'"+value+"'}},\n";
+
+            } else {
+                throw new Error("Translation error: Could not determine '" + naturalEffectString + "'!");
+            }
+
+        } else {
+            throw new Error("Translation error: Could not determine '" + naturalEffectString + "'!");
+        }
+
+        if (naturalEffectString.startsWith("this turn")) {
+            naturalEffectString = naturalEffectString.substring("this turn".length()).trim();
+            effectJSON += "'Duration':'END_TURN'";
+
+        } else if (naturalEffectString.startsWith("next turn")) {
+            naturalEffectString = naturalEffectString.substring("next turn".length()).trim();
+            effectJSON += "'Duration':{'Type':'TIMER','Params':{'Value':'1'}}";
+
+        } else {
+            throw new Error("Translation error: Could not determine '" + naturalEffectString + "'!");
+        }
+
+        if (naturalEffectString.equals(".")) {
+            effectJSON += "}]}";
+
+        } else {
+            throw new Error("Translation error: Could not determine '" + naturalEffectString + "'!");
+        }
+
+        return effectJSON;
     }
 
     public Map<TriggerTime,List<Effect>> parseEffects(String effectsString) {
@@ -91,7 +150,7 @@ public class EffectParser {
             JSONObject jsonEffect = jsonEffectArray.getJSONObject(i);
             Effect effect = this.parseEffect(jsonEffect);
 
-            if (effectMap.containsKey(effect.getTriggerTime())) {
+            if (!effectMap.containsKey(effect.getTriggerTime())) {
                 List<Effect> effectList = new ArrayList<>();
                 effectList.add(effect);
                 effectMap.put(effect.getTriggerTime(),effectList);
@@ -115,24 +174,22 @@ public class EffectParser {
 
 
         JSONObject objectTarget = jsonEffect.getJSONObject("Target");
-        String stringTarget = objectTarget.getString("Type");
-        JSONObject paramsTarget = objectTarget.getJSONObject("Params");
 
-        if (paramsTarget.keySet().contains("Who")) {
-            Who whoTarget = Who.fromString(paramsTarget.getString("Who"));
+        if (objectTarget.keySet().contains("Who")) {
+            Who whoTarget = Who.fromString(objectTarget.getString("Who"));
 
-            if (!paramsTarget.keySet().contains("Where")) {
+            if (!objectTarget.keySet().contains("Where")) {
                 target = new Target(whoTarget);
 
             } else {
-                Where whereTarget = Where.fromString(paramsTarget.getString("Where"));
+                Where whereTarget = Where.fromString(objectTarget.getString("Where"));
 
-                if (!paramsTarget.keySet().contains("What")) {
+                if (!objectTarget.keySet().contains("What")) {
                     target = new Target(whoTarget, whereTarget);
 
                 } else {
-                    What whatTarget = What.fromString(paramsTarget.getString("What"));
-                    String compareToTarget = paramsTarget.getString("CompareTo");
+                    What whatTarget = What.fromString(objectTarget.getString("What"));
+                    String compareToTarget = objectTarget.getString("CompareTo");
 
                     switch (Objects.requireNonNull(whatTarget)) {
                         case COLLECTION:
@@ -191,7 +248,7 @@ public class EffectParser {
             case "ENERGY":
                 return new E_Energy(triggerTime,target,eParams.getInt("Value"),duration,timer,conditions);
             default:
-                throw new IllegalStateException("Unexpected value: " + effectString);
+                throw new IllegalStateException("Unexpected value parsing effect: " + effectString);
         }
     }
 
@@ -204,11 +261,8 @@ public class EffectParser {
                 return new C_AfterRoundX(cParams.getInt("Value"));
             case "BEFORE_ROUND":
                 return new C_BeforeRoundX(cParams.getInt("Value"));
-            case "PLAYED":
-                log.error("CONDITION PLAYED NOT IMPLEMENTED");
-                return null;
             default:
-                throw new IllegalStateException("Unexpected value: " + conditionString);
+                throw new IllegalStateException("Unexpected value parsing condition: " + conditionString);
         }
     }
 }

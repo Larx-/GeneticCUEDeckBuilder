@@ -94,7 +94,7 @@ public class CardReader {
         String effectJSON = cardCSV[header.EffectJSON.ordinal()];
         if (effectJSON == null || effectJSON.equals("")) {
             effectJSON = this.effectParser.translateEffects(cardCSV[header.EffectDescription.ordinal()]);
-            log.warn("EffectJSON was not found in .csv!");
+            log.warn("EffectJSON for id " + cardCSV[header.Id.ordinal()] + " was not found in .csv!");
         }
         Map<TriggerTime,List<Effect>> effectMap = this.effectParser.parseEffects(effectJSON);
 

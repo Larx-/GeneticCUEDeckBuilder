@@ -21,7 +21,7 @@ TriggerTime:
     END_TURN
     END_ROUND
 
-Target:
+Target: -> Not up to date
     CARDS_IN_DECK(who(,what,name))
     CARDS_IN_HAND(who(,what,name))
     CARDS_IN_REMAINING(who(,what,name))
