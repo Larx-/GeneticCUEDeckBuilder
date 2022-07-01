@@ -66,7 +66,7 @@ public class CardReader {
             log.error(Arrays.toString(e.getStackTrace()));
         }
 
-        this.effectParser = new EffectParser();
+        this.effectParser = new EffectParser(this.nameIndex.keySet());
     }
 
     public Card getCard (int index) {
