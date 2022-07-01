@@ -4,10 +4,12 @@ import Effects.Effect;
 import Enums.TriggerTime;
 import Enums.Album;
 import Enums.Collection;
+import Enums.Who;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +29,7 @@ public class Card {
     @Getter @Setter private boolean isLocked;
     @Getter @Setter private int burntPower;
     @Getter @Setter private int burnAmount;
+    @Getter @Setter private List<Effect> expiryEffectsAfterPlayed;
 
     public Card(int id, String idString, String name, Album album, Collection collection,
                 int baseEnergy, int basePower, Map<TriggerTime,List<Effect>> effects){
@@ -44,6 +47,7 @@ public class Card {
         this.isLocked = false;
         this.burntPower = this.basePower;
         this.burnAmount = 0;
+        this.expiryEffectsAfterPlayed = new ArrayList<>();
     }
 
     public int getModifiedEnergy() {
@@ -52,6 +56,16 @@ public class Card {
 
     public int getModifiedPower() {
         return Math.max(0, (this.burntPower + this.modifierPower));
+    }
+
+    public void applyExpiryEffects(Game game, Who selfPlayer) {
+        for (Effect effect : this.expiryEffectsAfterPlayed) {
+            List<Card> thisCard = new ArrayList<>();
+            thisCard.add(this);
+            effect.setTarget(new Target(thisCard));
+            effect.applyEffect(game, selfPlayer);
+        }
+        this.expiryEffectsAfterPlayed.clear();
     }
 
     public List<Effect> getEffectsByTriggerTime(TriggerTime triggerTime) {

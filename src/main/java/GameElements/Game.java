@@ -190,6 +190,8 @@ public class Game {
         // RETURN effects
         this.applyCardEffects(cardsPlayedResident,TriggerTime.RETURN,Who.RESIDENT);
         this.applyCardEffects(cardsPlayedOpponent,TriggerTime.RETURN,Who.OPPONENT);
+        this.applyCardEffects(cardsPlayedResident,TriggerTime.UNTIL_PLAYED,Who.RESIDENT);
+        this.applyCardEffects(cardsPlayedOpponent,TriggerTime.UNTIL_PLAYED,Who.OPPONENT);
         this.applyEffectStack(TriggerTime.RETURN,Who.BOTH);
         this.applyEffectStack(TriggerTime.END_TURN,Who.BOTH);
 
@@ -222,10 +224,15 @@ public class Game {
 
     private void applyCardEffects (List<Card> cards, TriggerTime triggerTime, Who selfPlayer) {
         for (Card card : cards) {
-            List<Effect> cardEffects = card.getEffectsByTriggerTime(triggerTime);
-            if (cardEffects != null) {
-                for (Effect effect : cardEffects) {
-                    this.applyEffect(effect, selfPlayer);
+            if (triggerTime == TriggerTime.UNTIL_PLAYED) {
+                card.applyExpiryEffects(this, selfPlayer);
+
+            } else {
+                List<Effect> cardEffects = card.getEffectsByTriggerTime(triggerTime);
+                if (cardEffects != null) {
+                    for (Effect effect : cardEffects) {
+                        this.applyEffect(effect, selfPlayer);
+                    }
                 }
             }
         }
@@ -261,7 +268,6 @@ public class Game {
                 } else {
                     this.effectStackOpponent.get(triggerTime).add(expiryEffect);
                 }
-
             }
         }
     }

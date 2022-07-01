@@ -20,39 +20,14 @@ public class NatLangPatternParser {
 
     public NatLangPatternParser(Set<String> cardNames) {
         this.cardNames = cardNames;
-
-        String[] pattern1 = new String[]{"When returned to your deck, your Opponent's cards left in hand cost ","~NUMBER~1~"," more Energy next turn."};
-        String effect1 = "{'Effects': [{" +
-                        "'TriggerTime': 'RETURN'," +
-                        "'Target':{'Who':'OPPONENT','Where':'CARDS_REMAINING'}," +
-                        "'Effect':{'Type':'ENERGY','Params':{'Value':'+~1~'}}," +
-                        "'Duration':{'Type':'TIMER','Params':{'Value':'1'}}" +
-                        "}]}";
-        map.put(pattern1,effect1);
-        String[] pattern2 = new String[]{"When played, all cards have ","~NUMBER~1~"," Power this turn."};
-        String effect2 = "{'Effects': [{" +
-                        "'TriggerTime': 'PLAY'," +
-                        "'Target':{'Who':'BOTH','Where':'CARDS_IN_HAND'}," +
-                        "'Effect':{'Type':'POWER','Params':{'Value':'~1~'}}," +
-                        "'Duration':'END_TURN'" +
-                        "}]}";
-        map.put(pattern2,effect2);
-        String[] pattern3 = new String[]{"When played, ","~CARD_NAME~1~"," cards gain +","~NUMBER~2~"," Power until played."};
-        String effect3 = "{'Effects': [{" +
-                        "'TriggerTime': 'PLAY'," +
-                        "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'NAME','CompareTo':'~1~'}," +
-                        "'Effect':{'Type':'POWER','Params':{'Value':'+~2~'}}," +
-                        "'Duration':'RETURN'" + // FIXME: until played not implemented!?!
-                        "}]}";
-        map.put(pattern3,effect3);
+        this.addPatterns();
     }
-
 
     public String parseEffect(String naturalEffectString) throws Exception {
         String returnString = null;
+        boolean foundPattern = false;
 
         for (String[] pattern : map.keySet()) {
-            boolean foundPattern = false;
             if (naturalEffectString.startsWith(pattern[0])) {
 
                 foundPattern = true;
@@ -92,7 +67,7 @@ public class NatLangPatternParser {
                                 break;
                         }
 
-                        returnString = returnString.replace("~" + replace[2] + "~",toReplace);
+                        returnString = returnString.replaceAll("~" + replace[2] + "~",toReplace);
                     }
                 }
             }
@@ -101,8 +76,86 @@ public class NatLangPatternParser {
             }
         }
 
-        System.out.println("TRANSLATED EFFECT: "+returnString);
+        if (foundPattern) {
+            return returnString;
+        } else {
+            throw new Exception("Pattern '"+naturalEffectString+"' not found!");
+        }
+    }
 
-        return returnString;
+    private void addPatterns() {
+        try {
+            this.addPattern(new String[]{"When returned to your deck, your Opponent's cards left in hand cost ","~NUMBER~1~"," more Energy next turn."},
+                    "{'Effects': [{" +
+                            "'TriggerTime': 'RETURN'," +
+                            "'Target':{'Who':'OPPONENT','Where':'CARDS_REMAINING'}," +
+                            "'Effect':{'Type':'ENERGY','Params':{'Value':'+~1~'}}," +
+                            "'Duration':{'Type':'TIMER','Params':{'Value':'1'}}" +
+                            "}]}");
+
+            this.addPattern(new String[]{"When played, all cards have ","~NUMBER~1~"," Power this turn."},
+                    "{'Effects': [{" +
+                            "'TriggerTime': 'PLAY'," +
+                            "'Target':{'Who':'BOTH','Where':'CARDS_IN_HAND'}," +
+                            "'Effect':{'Type':'POWER','Params':{'Value':'~1~'}}," +
+                            "'Duration':'END_TURN'" +
+                            "}]}");
+
+            this.addPattern(new String[]{"When played, ","~CARD_NAME~1~"," cards gain +","~NUMBER~2~"," Power until played."},
+                    "{'Effects': [{" +
+                            "'TriggerTime': 'PLAY'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'NAME','CompareTo':'~1~'}," +
+                            "'Effect':{'Type':'POWER','Params':{'Value':'+~2~'}}," +
+                            "'Duration':'UNTIL_PLAYED'" +
+                            "}]}");
+
+            this.addPattern(new String[]{"When played with ","~CARD_NAME~1~",", give that card +","~NUMBER~2~"," Power."},
+                    "{'Effects': [{" +
+                            "'TriggerTime': 'PLAY'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'NAME','CompareTo':'~1~'}," +
+                            "'Effect':{'Type':'POWER','Params':{'Value':'+~2~'}}," +
+                            "'Duration':'END_TURN'," +
+                            "'Conditions':[{'Type':'PLAYED_WITH','Params':{'Who':'SELF','What':'NAME','CompareTo':'~1~'}}]" +
+                            "}]}");
+
+            this.addPattern(new String[]{"When played, if you have played ","~CARD_NAME~1~",", give ","~CARD_NAME~2~"," and ","~CARD_NAME~3~"," (wherever they are) +","~NUMBER~4~"," Power until played."},
+                    "{'Effects': [{" +
+                            "'TriggerTime': 'PLAY'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'NAME','CompareTo':'~2~'}," +
+                            "'Effect':{'Type':'POWER','Params':{'Value':'+~4~'}}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "'Conditions':[{'Type':'PLAYED_BEFORE','Params':{'Who':'SELF','What':'NAME','CompareTo':'~1~'}}]" +
+                            "},{" +
+                            "'TriggerTime': 'PLAY'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'NAME','CompareTo':'~3~'}," +
+                            "'Effect':{'Type':'POWER','Params':{'Value':'+~4~'}}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "'Conditions':[{'Type':'PLAYED_BEFORE','Params':{'Who':'SELF','What':'NAME','CompareTo':'~1~'}}]" +
+                            "}]}");
+
+            this.addPattern(new String[]{"When drawn, Lock a random card in your opponent's hand for this turn. If you are losing the round, also give it -","~NUMBER~1~"," Power until it is played."},
+                    "{'Effects': [{" +
+                            "'TriggerTime': 'DRAW'," +
+                            "'Target':{'Who':'OTHER','Where':'CARDS_IN_HAND','What':'RANDOM'}," +
+                            "'Effect':{'Type':'LOCK'}," +
+                            "'Duration':'END_TURN'," +
+                            "},{" +
+                            "'TriggerTime': 'DRAW'," +
+                            "'Target':{'Who':'OTHER','Where':'CARDS_IN_HAND','What':'RANDOM'}," +
+                            "'Effect':{'Type':'POWER','Params':{'Value':'-~1~'}}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "'Conditions':[{'Type':'ROUND_STATE','Params':{'Value':'Loosing'}}]" +
+                            "}]}");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void addPattern(String[] pattern, String jsonString) throws Exception {
+        if (this.map.containsKey(pattern)) {
+            throw new Exception("Pattern already exists!" + pattern.toString());
+        }
+        this.map.put(pattern, jsonString);
     }
 }

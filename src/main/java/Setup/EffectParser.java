@@ -41,6 +41,7 @@ public class EffectParser {
     public String translateEffects (String naturalEffectString) {
         try {
             return parser.parseEffect(naturalEffectString);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -145,7 +146,10 @@ public class EffectParser {
 
             for (int i = 0; i < jsonConditionArray.length(); i++) {
                 JSONObject jsonCondition = jsonConditionArray.getJSONObject(i);
-                conditions.add(this.parseCondition(jsonCondition));
+                Condition condition = this.parseCondition(jsonCondition);
+                if (condition != null) {
+                    conditions.add(condition);
+                }
             }
         }
 
@@ -172,6 +176,10 @@ public class EffectParser {
                 return new C_AfterRoundX(cParams.getInt("Value"));
             case "BEFORE_ROUND":
                 return new C_BeforeRoundX(cParams.getInt("Value"));
+            case "PLAYED_WITH":
+            case "PLAYED_BEFORE":
+                log.error("Not yet implemented condition: " + conditionString);
+                return null;
             default:
                 throw new IllegalStateException("Unexpected value parsing condition: " + conditionString);
         }
