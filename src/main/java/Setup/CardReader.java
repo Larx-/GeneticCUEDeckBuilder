@@ -28,7 +28,7 @@ public class CardReader {
         Id,
         IdString,
         Name,
-        Limited,
+        Lim,
         Rarity,
         Collection,
         Energy,

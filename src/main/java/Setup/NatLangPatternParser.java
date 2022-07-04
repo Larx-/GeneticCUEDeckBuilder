@@ -2,25 +2,23 @@ package Setup;
 
 import Enums.Album;
 import Enums.Collection;
+import lombok.Getter;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class NatLangPatternParser {
 
-    public static void main(String[] args) throws Exception {
-        NatLangPatternParser parser = new NatLangPatternParser(new HashSet<>());
-        System.out.println(parser.parseEffect("When returned to your deck, your Opponent's cards left in hand cost 3 more Energy next turn."));
-    }
-
     Map<String[],String> map = new HashMap<>();
     Set<String> cardNames;
+    @Getter int missingEffectPatterns = 0;
 
     public NatLangPatternParser(Set<String> cardNames) {
         this.cardNames = cardNames;
         this.addPatterns();
+    }
+
+    public int getNumPatterns() {
+        return map.size();
     }
 
     public String parseEffect(String naturalEffectString) throws Exception {
@@ -79,6 +77,7 @@ public class NatLangPatternParser {
         if (foundPattern) {
             return returnString;
         } else {
+            this.missingEffectPatterns++;
             throw new Exception("Pattern '"+naturalEffectString+"' not found!");
         }
     }
@@ -89,7 +88,7 @@ public class NatLangPatternParser {
                     "{'Effects': [{" +
                             "'TriggerTime': 'RETURN'," +
                             "'Target':{'Who':'OPPONENT','Where':'CARDS_REMAINING'}," +
-                            "'Effect':{'Type':'ENERGY','Params':{'Value':'+~1~'}}," +
+                            "'Effect':{'Type':'ENERGY','Value':'+~1~'}," +
                             "'Duration':{'Type':'TIMER','Params':{'Value':'1'}}" +
                             "}]}");
 
@@ -97,7 +96,7 @@ public class NatLangPatternParser {
                     "{'Effects': [{" +
                             "'TriggerTime': 'PLAY'," +
                             "'Target':{'Who':'BOTH','Where':'CARDS_IN_HAND'}," +
-                            "'Effect':{'Type':'POWER','Params':{'Value':'~1~'}}," +
+                            "'Effect':{'Type':'POWER','Value':'~1~'}," +
                             "'Duration':'END_TURN'" +
                             "}]}");
 
@@ -105,7 +104,7 @@ public class NatLangPatternParser {
                     "{'Effects': [{" +
                             "'TriggerTime': 'PLAY'," +
                             "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'NAME','CompareTo':'~1~'}," +
-                            "'Effect':{'Type':'POWER','Params':{'Value':'+~2~'}}," +
+                            "'Effect':{'Type':'POWER','Value':'+~2~'}," +
                             "'Duration':'UNTIL_PLAYED'" +
                             "}]}");
 
@@ -113,7 +112,7 @@ public class NatLangPatternParser {
                     "{'Effects': [{" +
                             "'TriggerTime': 'PLAY'," +
                             "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'NAME','CompareTo':'~1~'}," +
-                            "'Effect':{'Type':'POWER','Params':{'Value':'+~2~'}}," +
+                            "'Effect':{'Type':'POWER','Value':'+~2~'}," +
                             "'Duration':'END_TURN'," +
                             "'Conditions':[{'Type':'PLAYED_WITH','Params':{'Who':'SELF','What':'NAME','CompareTo':'~1~'}}]" +
                             "}]}");
@@ -122,13 +121,13 @@ public class NatLangPatternParser {
                     "{'Effects': [{" +
                             "'TriggerTime': 'PLAY'," +
                             "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'NAME','CompareTo':'~2~'}," +
-                            "'Effect':{'Type':'POWER','Params':{'Value':'+~4~'}}," +
+                            "'Effect':{'Type':'POWER','Value':'+~4~'}," +
                             "'Duration':'UNTIL_PLAYED'," +
                             "'Conditions':[{'Type':'PLAYED_BEFORE','Params':{'Who':'SELF','What':'NAME','CompareTo':'~1~'}}]" +
                             "},{" +
                             "'TriggerTime': 'PLAY'," +
                             "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'NAME','CompareTo':'~3~'}," +
-                            "'Effect':{'Type':'POWER','Params':{'Value':'+~4~'}}," +
+                            "'Effect':{'Type':'POWER','Value':'+~4~'}," +
                             "'Duration':'UNTIL_PLAYED'," +
                             "'Conditions':[{'Type':'PLAYED_BEFORE','Params':{'Who':'SELF','What':'NAME','CompareTo':'~1~'}}]" +
                             "}]}");
@@ -141,10 +140,51 @@ public class NatLangPatternParser {
                             "'Duration':'END_TURN'," +
                             "},{" +
                             "'TriggerTime': 'DRAW'," +
-                            "'Target':{'Who':'OTHER','Where':'CARDS_IN_HAND','What':'RANDOM'}," +
-                            "'Effect':{'Type':'POWER','Params':{'Value':'-~1~'}}," +
+                            "'Target':{'Who':'OTHER','Where':'CARDS_IN_HAND','What':'RANDOM'}," + // FIXME: Currently not the same random card
+                            "'Effect':{'Type':'POWER','Value':'-~1~'}," +
                             "'Duration':'UNTIL_PLAYED'," +
                             "'Conditions':[{'Type':'ROUND_STATE','Params':{'Value':'Loosing'}}]" +
+                            "}]}");
+
+            this.addPattern(new String[]{"When played, if you are winning the round, this card has ","~NUMBER~1~"," Power."},
+                    "{'Effects': [{" +
+                            "'TriggerTime': 'PLAY'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'THIS'}," +
+                            "'Effect':{'Type':'POWER','Value':'~1~'}," +
+                            "'Duration':'END_TURN'," +
+                            "'Conditions':[{'Type':'ROUND_STATE','Params':{'Value':'Winning'}}]" +
+                            "}]}");
+
+            this.addPattern(new String[]{"When played, all ","~ALBUM~1~"," cards have ","~NUMBER~2~"," Power this turn."},
+                    "{'Effects': [{" +
+                            "'TriggerTime': 'PLAY'," +
+                            "'Target':{'Who':'BOTH','Where':'CARDS_IN_DECK','What':'ALBUM','CompareTo':'~1~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':'END_TURN'," +
+                            "}]}");
+
+            this.addPattern(new String[]{"When drawn, reduce the energy cost of ","~COLLECTION~1~"," in your hand by ","~NUMBER~2~"," for the rest of the game."},
+                    "{'Effects': [{" +
+                            "'TriggerTime': 'DRAW'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'COLLECTION','CompareTo':'~1~'}," +
+                            "'Effect':{'Type':'ENERGY','Value':'-~2~'}," +
+                            "'Duration':'PERMANENT'," +
+                            "}]}");
+            this.addPattern(new String[]{"When returned to your deck, if you are losing the round, gain ","~NUMBER~1~"," Energy."},
+                    "{'Effects': [{" +
+                            "'TriggerTime': 'RETURN'," +
+                            "'Target':{'Who':'SELF'}," +
+                            "'Effect':{'Type':'ENERGY','Value':'~1~'}," +
+                            "'Duration':'PERMANENT'," +
+                            "}]}");
+
+            this.addPattern(new String[]{"When played on the first turn of a round, this card has ","~NUMBER~1~"," Power."},
+                    "{'Effects': [{" +
+                            "'TriggerTime': 'PLAY'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'THIS'}," +
+                            "'Effect':{'Type':'POWER','Value':'~1~'}," +
+                            "'Duration':'END_TURN'," +
+                            "'Conditions':[{'Type':'TURN_IN_ROUND','Params':{'Value':'1'}}]" +
                             "}]}");
 
         } catch (Exception e) {
@@ -154,7 +194,7 @@ public class NatLangPatternParser {
 
     private void addPattern(String[] pattern, String jsonString) throws Exception {
         if (this.map.containsKey(pattern)) {
-            throw new Exception("Pattern already exists!" + pattern.toString());
+            throw new Exception("Pattern already exists!" + Arrays.toString(pattern));
         }
         this.map.put(pattern, jsonString);
     }

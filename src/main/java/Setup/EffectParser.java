@@ -14,24 +14,6 @@ import java.util.*;
 @Log4j2
 public class EffectParser {
 
-    String example =
-                    "{'Effects': [{" +
-                    "    'TriggerTime': 'PLAY'," +
-                    "    'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'NAME','CompareTo':'Mj� lnir'}" +
-                    "    'Effect':{'Type':'POWER','Params':{'Value':'+68'}}," +
-                    "    'Duration': {'Type':'TIMER','Params':{'Value':'0'}}," +
-                    "    'Conditions': [" +
-                    "      {'Type':'PLAYED','Params':{'Who':'SELF','What':'NAME','CompareTo':'Mj� lnir'}}, " +
-                    "      {'Type':'BEFORE_ROUND','Params':{'Value':'4'}}" +
-                    "    ]" +
-                    "  }, {" + // Second effect
-                    "    'TriggerTime': 'RETURN'," +
-                    "    'Target': {'Who':'OTHER','Where':'CARDS_REMAINING'}," +
-                    "    'Effect': {'Type':'ENERGY','Params':{'Value':'-1'}}," +
-                    "    'Duration':'PERMANENT'" +
-                    "  }]" +
-                    "}";
-
     NatLangPatternParser parser;
 
     public EffectParser (Set<String> cardNames) {
@@ -40,6 +22,10 @@ public class EffectParser {
 
     public String translateEffects (String naturalEffectString) {
         try {
+            if (naturalEffectString == null || naturalEffectString.equals("") || naturalEffectString.equals("NULL")){
+                return null;
+            }
+
             return parser.parseEffect(naturalEffectString);
 
         } catch (Exception e) {
@@ -48,33 +34,35 @@ public class EffectParser {
         return null;
     }
 
-    public Map<TriggerTime,List<Effect>> parseEffects(String effectsString) {
-        if (effectsString == null || effectsString.equals("") || effectsString.equals("-")){
+    public Map<TriggerTime,List<Effect>> parseEffects (String JSONEffectsString) {
+        if (JSONEffectsString == null || JSONEffectsString.equals("") || JSONEffectsString.equals("NULL")){
             return null;
         }
 
         Map<TriggerTime,List<Effect>> effectMap = new HashMap<>();
 
-        JSONObject jsonEffects = new JSONObject(effectsString);
+        JSONObject jsonEffects = new JSONObject(JSONEffectsString);
         JSONArray jsonEffectArray = jsonEffects.getJSONArray("Effects");
 
         for (int i = 0; i < jsonEffectArray.length(); i++) {
             JSONObject jsonEffect = jsonEffectArray.getJSONObject(i);
             Effect effect = this.parseEffect(jsonEffect);
 
-            if (!effectMap.containsKey(effect.getTriggerTime())) {
-                List<Effect> effectList = new ArrayList<>();
-                effectList.add(effect);
-                effectMap.put(effect.getTriggerTime(),effectList);
-            } else {
-                effectMap.get(effect.getTriggerTime()).add(effect);
+            if (effect != null) {
+                if (!effectMap.containsKey(effect.getTriggerTime())) {
+                    List<Effect> effectList = new ArrayList<>();
+                    effectList.add(effect);
+                    effectMap.put(effect.getTriggerTime(),effectList);
+                } else {
+                    effectMap.get(effect.getTriggerTime()).add(effect);
+                }
             }
         }
 
         return effectMap;
     }
 
-    public Effect parseEffect(JSONObject jsonEffect){
+    private Effect parseEffect (JSONObject jsonEffect) {
         TriggerTime triggerTime;
         Target target = null;
         TriggerTime duration;
@@ -101,23 +89,29 @@ public class EffectParser {
 
                 } else {
                     What whatTarget = What.fromString(objectTarget.getString("What"));
-                    String compareToTarget = objectTarget.getString("CompareTo");
 
-                    switch (Objects.requireNonNull(whatTarget)) {
-                        case COLLECTION:
-                            target = new Target(whoTarget, whereTarget, Collection.fromString(compareToTarget));
-                            break;
-                        case ALBUM:
-                            target = new Target(whoTarget, whereTarget, Album.fromString(compareToTarget));
-                            break;
-                        case NAME:
-                            target = new Target(whoTarget, whereTarget, compareToTarget, true);
-                            break;
-                        case NAME_INCLUDES:
-                            target = new Target(whoTarget, whereTarget, compareToTarget, false);
-                            break;
-                        default:
-                            throw new IllegalStateException("Unexpected value: " + whatTarget);
+                    if (whatTarget == What.RANDOM || whatTarget == What.THIS) {
+                        log.error("Not yet implemented target what: " + whatTarget);
+
+                    } else {
+                        String compareToTarget = objectTarget.getString("CompareTo");
+
+                        switch (Objects.requireNonNull(whatTarget)) {
+                            case COLLECTION:
+                                target = new Target(whoTarget, whereTarget, Collection.fromString(compareToTarget));
+                                break;
+                            case ALBUM:
+                                target = new Target(whoTarget, whereTarget, Album.fromString(compareToTarget));
+                                break;
+                            case NAME:
+                                target = new Target(whoTarget, whereTarget, compareToTarget, true);
+                                break;
+                            case NAME_INCLUDES:
+                                target = new Target(whoTarget, whereTarget, compareToTarget, false);
+                                break;
+                            default:
+                                throw new IllegalStateException("Unexpected value: " + whatTarget);
+                        }
                     }
                 }
             }
@@ -155,13 +149,15 @@ public class EffectParser {
 
         JSONObject effectObject = jsonEffect.getJSONObject("Effect");
         String effectString = effectObject.getString("Type");
-        JSONObject eParams = effectObject.getJSONObject("Params");
 
         switch (effectString) {
             case "POWER":
-                return new E_Power(triggerTime,target,eParams.getInt("Value"),duration,timer,conditions);
+                return new E_Power(triggerTime,target,effectObject.getInt("Value"),duration,timer,conditions);
             case "ENERGY":
-                return new E_Energy(triggerTime,target,eParams.getInt("Value"),duration,timer,conditions);
+                return new E_Energy(triggerTime,target,effectObject.getInt("Value"),duration,timer,conditions);
+            case "LOCK":
+                log.error("Not yet implemented effect: " + effectString);
+                return null;
             default:
                 throw new IllegalStateException("Unexpected value parsing effect: " + effectString);
         }
@@ -178,6 +174,8 @@ public class EffectParser {
                 return new C_BeforeRoundX(cParams.getInt("Value"));
             case "PLAYED_WITH":
             case "PLAYED_BEFORE":
+            case "ROUND_STATE":
+            case "TURN_IN_ROUND":
                 log.error("Not yet implemented condition: " + conditionString);
                 return null;
             default:

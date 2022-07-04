@@ -4,7 +4,9 @@ public enum What {
     NAME,
     NAME_INCLUDES,
     COLLECTION,
-    ALBUM;
+    ALBUM,
+    RANDOM,
+    THIS;
 
     public static What fromString(String search) {
         for (What nextElem : What.values()) {

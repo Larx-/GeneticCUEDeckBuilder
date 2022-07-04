@@ -1,4 +1,4 @@
-Id,IdString,Name,Limited,Rarity,Collection,Energy,Power,EffectDescription,EffectJSON
+Id,IdString,Name,Lim,Rarity,Collection,Energy,Power,EffectDescription,EffectJSON
 1,ACNO001,Loki,1,Legendary,Norse Mythology,5,35,"When returned to your deck, your Opponent's cards left in hand cost 3 more Energy next turn.",
 2,ACNO002,Freya,1,Common,Norse Mythology,2,25,"When played, all cards have -25 Power this turn.",
 3,ACNO003,Thor,1,Legendary,Norse Mythology,5,48,"When played, Thunderstorms cards gain +30 Power until played.",

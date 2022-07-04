@@ -2,7 +2,7 @@ package Enums;
 
 public enum Album {
     ARTS_AND_CULTURE ("Arts & Culture"),
-    OCEANS           ("Oceans"),
+    OCEANS           ("Oceans and Seas"),
     SPACE            ("Space"),
     LIFE_ON_LAND     ("Life on Land"),
     HISTORY          ("History"),
