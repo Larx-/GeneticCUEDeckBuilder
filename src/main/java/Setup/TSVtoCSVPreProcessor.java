@@ -69,7 +69,7 @@ public class TSVtoCSVPreProcessor {
             processedCards.add(cardCSV);
         }
 
-        int missingPatterns = effectParser.parser.getMissingEffectPatterns();
+        int missingPatterns = effectParser.parser.getNumEffectsWithoutPattern();
         int numPatterns = effectParser.parser.getNumPatterns();
         int effMatched = 2700 - missingPatterns;
         float avgEffPerPattern = (float) effMatched / numPatterns;
