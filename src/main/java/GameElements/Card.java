@@ -42,12 +42,7 @@ public class Card {
         this.basePower = basePower;
         this.effects = effects;
 
-        this.modifierEnergy = 0;
-        this.modifierPower = 0;
-        this.isLocked = false;
-        this.burntPower = this.basePower;
-        this.burnAmount = 0;
-        this.expiryEffectsAfterPlayed = new ArrayList<>();
+        this.resetCard();
     }
 
     public int getModifiedEnergy() {
@@ -78,6 +73,15 @@ public class Card {
     public Card copyFresh(){
         // TODO: Deep copy effects
         return new Card(id, idString, name, album, collection, baseEnergy, basePower, effects);
+    }
+
+    public void resetCard() {
+        this.modifierEnergy = 0;
+        this.modifierPower = 0;
+        this.isLocked = false;
+        this.burntPower = this.basePower;
+        this.burnAmount = 0;
+        this.expiryEffectsAfterPlayed = new ArrayList<>();
     }
 
     @Override

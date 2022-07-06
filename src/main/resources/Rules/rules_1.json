@@ -1,0 +1,8 @@
+{
+  "EnergyStarting": 30,
+  "EnergyMin": 0,
+  "EnergyMax": 45,
+  "EnergyPerTurn": 15,
+  "GuaranteedBoni": {"Norse Mythology": 30, "Fearsome Flyers": 60, "Constellations":  40},
+  "AdditionalBoni": {"Science": 30, "Omnivores": 40, "Cool Cats": 20}
+}

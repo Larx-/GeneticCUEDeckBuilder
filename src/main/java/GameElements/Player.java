@@ -20,10 +20,15 @@ public class Player {
 
     public Player(AgentInterface agent, int energyAvailable, int energyPerTurn, int powerPerTurn) {
         this.agent = agent;
+        this.resetPlayer(energyAvailable, energyPerTurn, powerPerTurn);
+    }
+
+    public void resetPlayer(int energyAvailable, int energyPerTurn, int powerPerTurn) {
         this.energyAvailable = energyAvailable;
         this.energyPerTurn = energyPerTurn;
         this.powerPerTurn = powerPerTurn;
         this.doUnlock = false;
+        this.getDeck().resetCards();
     }
 
     public Deck getDeck() {

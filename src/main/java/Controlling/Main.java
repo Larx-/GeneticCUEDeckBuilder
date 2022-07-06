@@ -14,8 +14,11 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Main.random = new SecureRandom(new byte[]{1,1,1,0,0,0,1,1,1,0,0,0});
-        DeckInitializer deckInitializer = new DeckInitializer();
+        Main.random = new SecureRandom();
+        DeckInitializer deckInitializer = new DeckInitializer("src/main/resources/Cards/cards.csv");
+        RulesInitializer rulesInitializer = new RulesInitializer();
+
+        Rules rules = rulesInitializer.getRulesFromFile("src/main/resources/Rules/rules_1.json");
 
         Deck d1 = deckInitializer.createRandomDeck();
         Deck d2 = deckInitializer.createRandomDeck();
@@ -25,14 +28,9 @@ public class Main {
 //        AgentInterface a1 = new AgentPlayer(d1);
 //        AgentInterface a2 = new AgentPlayer(d2);
 
-        Rules rules = RulesInitializer.getTestRules();
         Game game = new Game(rules,a1,a2);
 
         game.playGame();
-
-//        System.out.println("\n");
-
-        // FIXME: Cards not resetting after game
-//        game.playGame();
+        game.playGame();
     }
 }

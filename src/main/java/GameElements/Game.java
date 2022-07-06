@@ -13,10 +13,8 @@ import java.util.*;
 public class Game {
 
     @Getter Rules rules;
-    @Getter
-    Player resident;
-    @Getter
-    Player opponent;
+    @Getter Player resident;
+    @Getter Player opponent;
 
     @Getter int totalTurnNumber;
     @Getter int roundNumber;
@@ -64,7 +62,6 @@ public class Game {
     }
 
     private void initializeGame() {
-        // TODO: potentially more resetting necessary
         this.effectStackTimerResident = new HashMap<>();
         this.effectStackTimerOpponent = new HashMap<>();
         this.effectStackResident = new HashMap<>();
@@ -79,7 +76,11 @@ public class Game {
         this.totalTurnNumber = 1;
         this.roundNumber = 1;
 
+        this.resident.resetPlayer(this.rules.getEnergyStarting(), this.rules.getEnergyPerTurn(), 0);
+        this.resident.resetPlayer(this.rules.getEnergyStarting(), this.rules.getEnergyPerTurn(), 0);
+
         this.rules.chooseRoundBoni();
+
         this.resident.getDeck().shuffleDeck();
         this.opponent.getDeck().shuffleDeck();
 

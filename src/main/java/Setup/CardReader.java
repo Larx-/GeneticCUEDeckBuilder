@@ -59,7 +59,7 @@ public class CardReader {
             for (int i = 1; i < this.numberOfCards; i++) {
                 String[] cardCSV = this.cardsFromCSV.get(i);
                 this.idStringIndex.put(cardCSV[header.IdString.ordinal()],i);
-                this.nameIndex.put(cardCSV[header.Name.ordinal()],i);
+                this.nameIndex.put(cardCSV[header.Name.ordinal()].toLowerCase(),i);
             }
 
         } catch (IOException | CsvException e) {

@@ -19,6 +19,13 @@ public class Deck {
         this.cardsInDeck = cards;
         this.cardsInHand = new Card[5];
         this.cardsPlayed = new Card[3];
+        this.resetCards();
+    }
+
+    public void resetCards() {
+        for (Card c : this.cardsInDeck) {
+            c.resetCard();
+        }
     }
 
     public void shuffleDeck() {

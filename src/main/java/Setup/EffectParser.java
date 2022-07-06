@@ -23,7 +23,7 @@ public class EffectParser {
     public String translateEffects (String naturalEffectString) {
         try {
             if (naturalEffectString == null || naturalEffectString.equals("") || naturalEffectString.equals("NULL")){
-                return null;
+                return "NULL";
             }
 
             return parser.parseEffect(naturalEffectString);
@@ -90,7 +90,7 @@ public class EffectParser {
                 } else {
                     What whatTarget = What.fromString(objectTarget.getString("What"));
 
-                    if (whatTarget == What.RANDOM || whatTarget == What.THIS) {
+                    if (whatTarget == What.RANDOM || whatTarget == What.THIS) { // TODO
                         log.error("Not yet implemented target what: " + whatTarget);
 
                     } else {
@@ -127,9 +127,8 @@ public class EffectParser {
             String stringDuration = ((JSONObject) objectDuration).getString("Type");
             duration = TriggerTime.fromString(stringDuration);
 
-            JSONObject paramsDuration = ((JSONObject) objectDuration).getJSONObject("Params");
-            if (paramsDuration.keySet().contains("Value")) {
-                timer = paramsDuration.getInt("Value");
+            if (((JSONObject) objectDuration).keySet().contains("Value")) {
+                timer = ((JSONObject) objectDuration).getInt("Value");
             }
         }
 
@@ -155,7 +154,7 @@ public class EffectParser {
                 return new E_Power(triggerTime,target,effectObject.getInt("Value"),duration,timer,conditions);
             case "ENERGY":
                 return new E_Energy(triggerTime,target,effectObject.getInt("Value"),duration,timer,conditions);
-            case "LOCK":
+            case "LOCK": // TODO
                 log.error("Not yet implemented effect: " + effectString);
                 return null;
             default:
@@ -165,17 +164,21 @@ public class EffectParser {
 
     private Condition parseCondition(JSONObject jsonCondition) {
         String conditionString = jsonCondition.getString("Type");
-        JSONObject cParams = jsonCondition.getJSONObject("Params");
 
         switch (conditionString) {
             case "AFTER_ROUND":
-                return new C_AfterRoundX(cParams.getInt("Value"));
+                return new C_AfterRoundX(jsonCondition.getInt("Value"));
             case "BEFORE_ROUND":
-                return new C_BeforeRoundX(cParams.getInt("Value"));
-            case "PLAYED_WITH":
+                return new C_BeforeRoundX(jsonCondition.getInt("Value"));
+            case "PLAYED_WITH": // TODO
             case "PLAYED_BEFORE":
             case "ROUND_STATE":
             case "TURN_IN_ROUND":
+            case "TURN_WON":
+            case "TURN_LOST":
+            case "ROUNDS_LOST":
+            case "ROUNDS_WON":
+            case "DECK_CONTAINS":
                 log.error("Not yet implemented condition: " + conditionString);
                 return null;
             default:

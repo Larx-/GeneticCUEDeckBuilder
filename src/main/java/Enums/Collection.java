@@ -2,7 +2,7 @@ package Enums;
 
 public enum Collection {
     OMA ("Ocean Mammals", Album.OCEANS),
-    OWA ("Riding the Waves!", Album.OCEANS),
+    OWA ("Riding the Waves!", Album.OCEANS, "Riding the Waves"),
     LRE ("Reptiles", Album.LIFE_ON_LAND),
     LMA ("Mammals", Album.LIFE_ON_LAND),
     LDG ("Dogs", Album.LIFE_ON_LAND),
@@ -14,7 +14,7 @@ public enum Collection {
     PHE ("Herbivores", Album.PALEONTOLOGY),
     SAA ("Awesome Aviation", Album.SCIENCE),
     STR ("Super Structures", Album.SCIENCE),
-    OSH ("Sharks!", Album.OCEANS),
+    OSH ("Sharks!", Album.OCEANS,"Sharks"),
     SFN ("Forces of Nature", Album.SCIENCE),
     LAM ("Amphibians", Album.LIFE_ON_LAND),
     SCC ("Climate Change", Album.SCIENCE),
@@ -115,7 +115,7 @@ public enum Collection {
     ACMU ("Musically Minded", Album.ARTS_AND_CULTURE),
     ETT ("Turbulent Tudors", Album.HISTORY),
     EWO ("Weird World", Album.HISTORY),
-    SPP ("Donald R. Prothero's Story of Evolution", Album.SCIENCE),
+    SPP ("Donald R. Protheros Story of Evolution", Album.SCIENCE),
     ACWS ("The Write Stuff", Album.ARTS_AND_CULTURE),
     SPL ("Planetside", Album.SPACE),
     OFF ("Feisty Fish", Album.OCEANS),
@@ -126,7 +126,7 @@ public enum Collection {
     ACFF ("Fancy Fashions", Album.ARTS_AND_CULTURE),
     SSC ("Stage and Screen", Album.SCIENCE),
     ELT ("Lost Treasures", Album.HISTORY),
-    SIB ("Sue Black's In The Bones", Album.SCIENCE),
+    SIB ("Sue Blacks In The Bones", Album.SCIENCE),
     ACPY ("Playtime", Album.ARTS_AND_CULTURE),
     ACTA ("Tarot", Album.ARTS_AND_CULTURE),
     ACTO ("The Occult", Album.ARTS_AND_CULTURE),
@@ -148,19 +148,33 @@ public enum Collection {
     SLP ("Moon In Motion", Album.SPACE),
     SCD ("Debunked!", Album.SCIENCE),
     SHN ("History of the Internet", Album.SCIENCE),
-    ACAM ("Angela Maxwell's Walking the World", Album.ARTS_AND_CULTURE);
+    ACAM ("Angela Maxwells Walking the World", Album.ARTS_AND_CULTURE),
+
+    // Non-official collections that are referenced in card effects
+    NAN_WS ("Web Surfers", Album.SCIENCE),
+    NAN("NAN",Album.NAN);
 
     private final String name;
     private final Album album;
+    private final String altName;
 
     Collection (String s, Album album) {
         this.name = s;
         this.album = album;
+        this.altName = null;
+    }
+
+    Collection (String s, Album album, String altName) {
+        this.name = s;
+        this.album = album;
+        this.altName = altName;
     }
 
     public static Collection fromString(String search) {
         for (Collection nextElem : Collection.values()) {
-            if (nextElem.toString().equalsIgnoreCase(search)) {
+            if (nextElem.name.equalsIgnoreCase(search)) {
+                return nextElem;
+            } else if (nextElem.altName != null && nextElem.altName.equalsIgnoreCase(search)) {
                 return nextElem;
             }
         }

@@ -7,7 +7,8 @@ public enum Album {
     LIFE_ON_LAND     ("Life on Land"),
     HISTORY          ("History"),
     PALEONTOLOGY     ("Paleontology"),
-    SCIENCE          ("Science");
+    SCIENCE          ("Science"),
+    NAN              ("NAN");
 
     private final String name;
 

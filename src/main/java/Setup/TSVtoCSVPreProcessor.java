@@ -33,7 +33,7 @@ public class TSVtoCSVPreProcessor {
         // Collect all names to feed to the effect parser
         Set<String> allCardNames = new HashSet<>();
         for (String[] tsvCard : cardsFromTSV) {
-            allCardNames.add(tsvCard[1]);
+            allCardNames.add(tsvCard[1].toLowerCase());
         }
 
         EffectParser effectParser = new EffectParser(allCardNames);
@@ -42,6 +42,7 @@ public class TSVtoCSVPreProcessor {
 
         // Translate all effects and write new file in expected format
 //        List<String[]> subList = cardsFromTSV.subList(0, 10);
+        int intId = 1;
         for (int i = 0; i < cardsFromTSV.size(); i++) {
             String[] tsvCard    = cardsFromTSV.get(i);
             String idString     = tsvCard[0];
@@ -59,14 +60,15 @@ public class TSVtoCSVPreProcessor {
             rarity = rarity.replace("Ltd ", "");
 
             String jsonEffect = effectParser.translateEffects(effects.trim());
-            jsonEffect = jsonEffect == null ? "NULL" : jsonEffect;
-//            System.out.println(idString + " " + jsonEffect);
+            if (jsonEffect != null) {
+//                System.out.println(idString + " " + jsonEffect);
+                // Make sure EffectParser can handle all added cases
+                Map<TriggerTime, List<Effect>> effectsParsed = effectParser.parseEffects(jsonEffect);
 
-            // Make sure EffectParser can handle all added cases
-            Map<TriggerTime, List<Effect>> effectsParsed = effectParser.parseEffects(jsonEffect);
-
-            String[] cardCSV = new String[]{String.valueOf((i+1)),idString,cardName,limited,rarity,collection,energy,power,effects,jsonEffect};
-            processedCards.add(cardCSV);
+                String[] cardCSV = new String[]{String.valueOf(intId),idString,cardName,limited,rarity,collection,energy,power,effects,jsonEffect};
+                processedCards.add(cardCSV);
+                intId++;
+            }
         }
 
         int missingPatterns = effectParser.parser.getNumEffectsWithoutPattern();

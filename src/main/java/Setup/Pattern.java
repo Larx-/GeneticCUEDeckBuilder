@@ -15,6 +15,16 @@ public class Pattern implements Comparable<Pattern> {
 
     @Override
     public int compareTo(Pattern other) {
-        return -Integer.compare(this.natLangKey[0].length(), other.natLangKey[0].length());
+        int thisLen = 0;
+        for (int i = 0; i < this.natLangKey.length; i+=2) {
+            thisLen += this.natLangKey[i].length();
+        }
+
+        int otherLen = 0;
+        for (int i = 0; i < other.natLangKey.length; i+=2) {
+            otherLen += other.natLangKey[i].length();
+        }
+
+        return -Integer.compare(thisLen, otherLen);
     }
 }
