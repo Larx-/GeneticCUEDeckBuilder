@@ -39,7 +39,7 @@ public class Game {
         this.opponent = new Player(opponent, this.rules.getEnergyStarting(), this.rules.getEnergyPerTurn(), 0);
     }
 
-    public void playGame(){
+    public Who playGame(){
         this.initializeGame();
 
         while(this.rWin < 3 && this.oWin < 3){
@@ -48,17 +48,22 @@ public class Game {
             if (resWon) { this.rWin++; }
             else        { this.oWin++; }
 
-            log.debug("Resident  "+this.rWin+" - "+this.oWin+"  Opponent");
+//            log.debug("Resident  "+this.rWin+" - "+this.oWin+"  Opponent");
             this.roundNumber++;
         }
 
         if (this.rWin > this.oWin) {
-            log.debug("--> Resident won game <--");
+//            log.debug("--> Resident won game <--");
+//            log.debug("");
+//            log.debug("");
+            return Who.RESIDENT;
+
         } else {
-            log.debug("--> Opponent won game <--");
+//            log.debug("--> Opponent won game <--");
+//            log.debug("");
+//            log.debug("");
+            return Who.OPPONENT;
         }
-        log.debug("");
-        log.debug("");
     }
 
     private void initializeGame() {
@@ -134,11 +139,11 @@ public class Game {
         this.effectStackResident.get(TriggerTime.END_ROUND).add(albumExpiry);
 
         if (roundBonus.getCollection() == null) {
-            log.debug(String.format("ROUND %d  (+%d %s)", this.roundNumber,
-                    roundBonus.getAlbumBonus(), bonusAlbum));
+//            log.debug(String.format("ROUND %d  (+%d %s)", this.roundNumber,
+//                    roundBonus.getAlbumBonus(), bonusAlbum));
         } else {
-            log.debug(String.format("ROUND %d  (+%d %s / +%d %s)", this.roundNumber,
-                    (roundBonus.getCollectionBonus() + roundBonus.getAlbumBonus()), bonusCollection, roundBonus.getAlbumBonus(), bonusAlbum));
+//            log.debug(String.format("ROUND %d  (+%d %s / +%d %s)", this.roundNumber,
+//                    (roundBonus.getCollectionBonus() + roundBonus.getAlbumBonus()), bonusCollection, roundBonus.getAlbumBonus(), bonusAlbum));
         }
 
     }
@@ -167,7 +172,7 @@ public class Game {
         this.applyCardEffects(cardsInHandOpponent,TriggerTime.START,Who.OPPONENT);
         this.applyEffectStack(TriggerTime.START,Who.BOTH);
 
-        this.logHand();
+//        this.logHand();
 
         this.resident.decideNextTurn();
         this.opponent.decideNextTurn();
@@ -186,7 +191,7 @@ public class Game {
         this.lastPowerDiff = rPow - oPow;
         this.powerBalance += this.lastPowerDiff;
 
-        this.logPlay();
+//        this.logPlay();
 
         // RETURN effects
         this.applyCardEffects(cardsPlayedResident,TriggerTime.RETURN,Who.RESIDENT);

@@ -1,5 +1,6 @@
 package Setup;
 
+import Controlling.Main;
 import Effects.Effect;
 import Enums.TriggerTime;
 import GameElements.Card;
@@ -69,6 +70,10 @@ public class CardReader {
         this.effectParser = new EffectParser(this.nameIndex.keySet());
     }
 
+    public Card getRandomCard () {
+        return getCard(Main.random.nextInt(this.numberOfCards));
+    }
+
     public Card getCard (int index) {
         // Caching
         if (this.cardsInMemory.containsKey(index)) {
@@ -93,7 +98,7 @@ public class CardReader {
         // TODO: EffectDescription might be useful in card too
         String effectJSON = cardCSV[header.EffectJSON.ordinal()];
         if (effectJSON == null || effectJSON.equals("")) {
-            effectJSON = this.effectParser.translateEffects(cardCSV[header.EffectDescription.ordinal()]);
+            effectJSON = this.effectParser.translateEffects(cardCSV[header.EffectDescription.ordinal()], name);
             log.warn("EffectJSON for id " + cardCSV[header.Id.ordinal()] + " was not found in .csv!");
         }
         Map<TriggerTime,List<Effect>> effectMap = this.effectParser.parseEffects(effectJSON);

@@ -14,7 +14,7 @@ import java.util.*;
 public class DeckInitializer {
 
     @Getter CardReader cardReader;
-    private final int defaultNumCards = 18;
+    public static final int defaultNumCards = 18;
 
     public DeckInitializer () {
         cardReader = new CardReader();
@@ -25,7 +25,7 @@ public class DeckInitializer {
     }
 
     public Deck createRandomDeck () {
-        return this.createRandomDeck(this.defaultNumCards);
+        return this.createRandomDeck(defaultNumCards);
     }
 
     public Deck createRandomDeck (int numCards) {
@@ -48,6 +48,14 @@ public class DeckInitializer {
             deckCards.add(nextCard.copyFresh());
         }
 
+        return new Deck(deckCards);
+    }
+
+    public Deck createDeckFromCardList (String[] cardIds) {
+        LinkedList<Card> deckCards = new LinkedList<>();
+        for (String cardId : cardIds) {
+            deckCards.add(this.cardReader.getCardByStringIndex(cardId));
+        }
         return new Deck(deckCards);
     }
 

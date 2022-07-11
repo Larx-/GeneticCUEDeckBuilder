@@ -20,13 +20,13 @@ public class EffectParser {
         parser = new NatLangPatternParser(cardNames);
     }
 
-    public String translateEffects (String naturalEffectString) {
+    public String translateEffects (String naturalEffectString, String cardname) {
         try {
             if (naturalEffectString == null || naturalEffectString.equals("") || naturalEffectString.equals("NULL")){
                 return "NULL";
             }
 
-            return parser.parseEffect(naturalEffectString);
+            return parser.parseEffect(naturalEffectString, cardname);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -90,7 +90,7 @@ public class EffectParser {
                 } else {
                     What whatTarget = What.fromString(objectTarget.getString("What"));
 
-                    if (whatTarget == What.RANDOM || whatTarget == What.THIS) { // TODO
+                    if (whatTarget == What.RANDOM) { // TODO
                         log.error("Not yet implemented target what: " + whatTarget);
 
                     } else {
@@ -154,9 +154,9 @@ public class EffectParser {
                 return new E_Power(triggerTime,target,effectObject.getInt("Value"),duration,timer,conditions);
             case "ENERGY":
                 return new E_Energy(triggerTime,target,effectObject.getInt("Value"),duration,timer,conditions);
-            case "LOCK": // TODO
-                log.error("Not yet implemented effect: " + effectString);
-                return null;
+            case "LOCK":
+                return new E_Lock(triggerTime,target,true,duration,timer,conditions);
+//                log.error("Not yet implemented effect: " + effectString);
             default:
                 throw new IllegalStateException("Unexpected value parsing effect: " + effectString);
         }
@@ -170,8 +170,10 @@ public class EffectParser {
                 return new C_AfterRoundX(jsonCondition.getInt("Value"));
             case "BEFORE_ROUND":
                 return new C_BeforeRoundX(jsonCondition.getInt("Value"));
-            case "PLAYED_WITH": // TODO
-            case "PLAYED_BEFORE":
+            case "PLAYED_WITH":
+                return new C_PlayedWith(Who.fromString(jsonCondition.getString("Who")),
+                        What.fromString(jsonCondition.getString("What")), jsonCondition.getString("CompareTo"));
+            case "PLAYED_BEFORE": // TODO
             case "ROUND_STATE":
             case "TURN_IN_ROUND":
             case "TURN_WON":

@@ -186,7 +186,7 @@ public enum Collection {
     }
 
     public boolean equalsName(String otherName) {
-        return this.name.equals(otherName);
+        return this.name.equalsIgnoreCase(otherName) || (this.altName != null && this.altName.equalsIgnoreCase(otherName));
     }
 
     public String toString() {
