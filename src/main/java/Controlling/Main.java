@@ -27,7 +27,7 @@ public class Main {
         Rules rules = rulesInitializer.getRulesFromFile("src/main/resources/Rules/rules_1.json");
 
         int repetitions = 1000;
-        int numCandidates = 50;
+        int numCandidates = 500;
         int tournamentSize = 5;
         int generations = 100;
 
@@ -107,7 +107,7 @@ public class Main {
             List<Candidate> newPopulation = new ArrayList<>(numCandidates - 1);
             for (int i = 0; i < numCandidates - 1; i++) {
                 Candidate bestParticipant = candidateList.get(random.nextInt(numCandidates));
-                for (int participant = 0; participant < tournamentSize; participant++) {
+                for (int participant = 0; participant < tournamentSize-1; participant++) {
                     Candidate nextParticipant = candidateList.get(random.nextInt(numCandidates));
                     if (nextParticipant.fitness > bestParticipant.fitness) {
                         bestParticipant = nextParticipant;
