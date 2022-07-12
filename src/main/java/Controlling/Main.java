@@ -31,8 +31,13 @@ public class Main {
         int tournamentSize = 5;
         int generations = 100;
 
+        int numThreads = 3;
+
         // Initialization of residents
-        List<AgentInterface> residentList = new ArrayList<>();
+        List<List<AgentInterface>> residentList = new ArrayList<>();
+        for (int i = 0; i < numThreads; i++) {
+            residentList.add(new ArrayList<>());
+        }
         List<String[]> residentDecks = new ArrayList<>();
         int numResidents = 0;
         try (CSVReader reader = new CSVReader(new FileReader("src/main/resources/Cards/residents.csv"))) {
@@ -41,7 +46,9 @@ public class Main {
         } catch (IOException | CsvException e) {
             log.error(Arrays.toString(e.getStackTrace()));
         }
-        for (String[] resDeck : residentDecks) {
+
+        for (int j = 0; j < numResidents; j++) {
+            String[] resDeck = residentDecks.get(j);
             String[] resDeckFilled = new String[DeckInitializer.defaultNumCards];
             for (int i = 0; i < DeckInitializer.defaultNumCards; i++) {
                 if (resDeck.length > i && !resDeck[i].equals("random")) {
@@ -51,7 +58,8 @@ public class Main {
                 }
             }
             Deck deck = deckInitializer.createDeckFromCardList(resDeckFilled);
-            residentList.add(new AgentRandom(deck));
+
+            residentList.get(j % numThreads).add(new AgentRandom(deck));
         }
 
         // Initialization of first generation (from file or random)
@@ -67,7 +75,7 @@ public class Main {
 
             // Fitness evaluation
             FitnessCollector collector = new FitnessCollector(numResidents, numCandidates);
-            for (int i = 0; i < numResidents; i++) {
+            for (int i = 0; i < numThreads; i++) {
                 List<AgentInterface> candidateAgents = new ArrayList<>();
                 for (int j = 0; j < numCandidates; j++) {
                     candidateAgents.add(new AgentRandom(deckInitializer.createDeckFromCardList(candidateList.get(j).getDeckStrArray())));
@@ -77,6 +85,7 @@ public class Main {
                 threadEval.start();
             }
 
+            // TODO: replace with wait() / notify()
             while (!collector.allFitnessCollected()) {
                 Thread.yield();
             }
