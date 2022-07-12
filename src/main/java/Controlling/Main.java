@@ -27,9 +27,9 @@ public class Main {
         Rules rules = rulesInitializer.getRulesFromFile("src/main/resources/Rules/rules_1.json");
 
         int repetitions = 1000;
-        int numCandidates = 500;
+        int numCandidates = 50;
         int tournamentSize = 5;
-        int generations = 100;
+        int generations = 1000;
 
         int numThreads = 3;
 
@@ -87,7 +87,11 @@ public class Main {
 
             // TODO: replace with wait() / notify()
             while (!collector.allFitnessCollected()) {
-                Thread.yield();
+                try {
+                    Thread.sleep(numCandidates);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
 
             float[] fitness = collector.calcAvgWinPercentages();
@@ -107,10 +111,11 @@ public class Main {
                     canWorst = can;
                 }
             }
+            float calcTime = (float) (System.currentTimeMillis() - time) / 1000;
             log.debug("Best fitness : " + canBest.fitness + " " + Arrays.toString(canBest.getDeckStrArray()));
             log.debug("Avg fitness  : " + avgFitness);
             log.debug("Worst fitness: " + canWorst.fitness + " " + Arrays.toString(canWorst.getDeckStrArray()));
-            log.debug("Calculated in: " + (System.currentTimeMillis() - time) + "ms");
+            log.debug("Calculated in: " + calcTime + "s \n");
 
             // Selection (Tournament)
             List<Candidate> newPopulation = new ArrayList<>(numCandidates - 1);
