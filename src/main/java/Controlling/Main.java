@@ -69,53 +69,13 @@ public class Main {
             candidateList.add(new Candidate(deck.toStringArray()));
         }
 
+        FitnessEvaluator evaluator = new FitnessEvaluator(numResidents, numCandidates, numThreads, repetitions, deckInitializer, rules, residentList);
+
         for (int gen = 0; gen < generations; gen++) {
             log.debug("Generation " + gen);
-            long time = System.currentTimeMillis();
 
-            // Fitness evaluation
-            FitnessCollector collector = new FitnessCollector(numResidents, numCandidates);
-            for (int i = 0; i < numThreads; i++) {
-                List<AgentInterface> candidateAgents = new ArrayList<>();
-                for (int j = 0; j < numCandidates; j++) {
-                    candidateAgents.add(new AgentRandom(deckInitializer.createDeckFromCardList(candidateList.get(j).getDeckStrArray())));
-                }
-                FitnessEvaluator evaluator = new FitnessEvaluator(rules, repetitions, collector, residentList.get(i), candidateAgents);
-                Thread threadEval = new Thread(evaluator);
-                threadEval.start();
-            }
-
-            // TODO: replace with wait() / notify()
-            while (!collector.allFitnessCollected()) {
-                try {
-                    Thread.sleep(numCandidates);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            float[] fitness = collector.calcAvgWinPercentages();
-            float fitnessTotal = 0;
-            for (int i = 0; i < numCandidates; i++) {
-                candidateList.get(i).setFitness(fitness[i]);
-                fitnessTotal += fitness[i];
-            }
-            float avgFitness = fitnessTotal / numCandidates;
-            Candidate canBest = null;
-            Candidate canWorst = null;
-            for (Candidate can : candidateList) {
-                if (canBest == null || can.fitness > canBest.fitness) {
-                    canBest = can;
-                }
-                if (canWorst == null || can.fitness < canWorst.fitness) {
-                    canWorst = can;
-                }
-            }
-            float calcTime = (float) (System.currentTimeMillis() - time) / 1000;
-            log.debug("Best fitness : " + canBest.fitness + " " + Arrays.toString(canBest.getDeckStrArray()));
-            log.debug("Avg fitness  : " + avgFitness);
-            log.debug("Worst fitness: " + canWorst.fitness + " " + Arrays.toString(canWorst.getDeckStrArray()));
-            log.debug("Calculated in: " + calcTime + "s \n");
+            // Evaluate candidates
+            Candidate canBest = evaluator.evaluateFitness(candidateList);
 
             // Selection (Tournament)
             List<Candidate> newPopulation = new ArrayList<>(numCandidates - 1);
