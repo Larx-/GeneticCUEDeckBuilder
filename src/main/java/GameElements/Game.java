@@ -82,7 +82,7 @@ public class Game {
         this.roundNumber = 1;
 
         this.resident.resetPlayer(this.rules.getEnergyStarting(), this.rules.getEnergyPerTurn(), 0);
-        this.resident.resetPlayer(this.rules.getEnergyStarting(), this.rules.getEnergyPerTurn(), 0);
+        this.opponent.resetPlayer(this.rules.getEnergyStarting(), this.rules.getEnergyPerTurn(), 0);
 
         this.rules.chooseRoundBoni();
 

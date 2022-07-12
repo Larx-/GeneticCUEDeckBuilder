@@ -4,10 +4,15 @@ import Agents.*;
 import Enums.Who;
 import GameElements.*;
 import Setup.*;
+import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvException;
 import lombok.extern.log4j.Log4j2;
 
+import java.io.FileReader;
+import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Log4j2
@@ -22,9 +27,32 @@ public class Main {
         Rules rules = rulesInitializer.getRulesFromFile("src/main/resources/Rules/rules_1.json");
 
         int repetitions = 1000;
-        int numCandidates = 10;
+        int numCandidates = 50;
         int tournamentSize = 5;
-        int generations = 1000;
+        int generations = 100;
+
+        // Initialization of residents
+        List<AgentInterface> residentList = new ArrayList<>();
+        List<String[]> residentDecks = new ArrayList<>();
+        int numResidents = 0;
+        try (CSVReader reader = new CSVReader(new FileReader("src/main/resources/Cards/residents.csv"))) {
+            residentDecks = reader.readAll();
+            numResidents = residentDecks.size();
+        } catch (IOException | CsvException e) {
+            log.error(Arrays.toString(e.getStackTrace()));
+        }
+        for (String[] resDeck : residentDecks) {
+            String[] resDeckFilled = new String[DeckInitializer.defaultNumCards];
+            for (int i = 0; i < DeckInitializer.defaultNumCards; i++) {
+                if (resDeck.length > i && !resDeck[i].equals("random")) {
+                    resDeckFilled[i] = resDeck[i];
+                } else {
+                    resDeckFilled[i] = deckInitializer.getCardReader().getRandomCardStr();
+                }
+            }
+            Deck deck = deckInitializer.createDeckFromCardList(resDeckFilled);
+            residentList.add(new AgentRandom(deck));
+        }
 
         // Initialization of first generation (from file or random)
         List<Candidate> candidateList = new ArrayList<>();
@@ -35,27 +63,22 @@ public class Main {
 
         for (int gen = 0; gen < generations; gen++) {
             log.debug("Generation " + gen);
-            // Fitness evaluation TODO: evaluate against preset decks, otherwise avg fitness will never go up
-            for (int i = 0; i < numCandidates; i++) {
+
+            // Fitness evaluation
+            for (int i = 0; i < numResidents; i++) {
                 for (int j = 0; j < numCandidates; j++) {
-                    if (i < j) {
-                        Candidate residentCan = candidateList.get(i);
                         Candidate opponentCan = candidateList.get(j);
 
-                        Game game = new Game(rules, residentCan.agent, opponentCan.agent);
+                        Game game = new Game(rules, residentList.get(i), opponentCan.agent);
 
-                        int residentWins = 0;
+                        int opponentWins = 0;
                         for (int k = 0; k < repetitions; k++) {
-                            if (game.playGame() == Who.RESIDENT) {
-                                residentWins++;
+                            if (game.playGame() == Who.OPPONENT) {
+                                opponentWins++;
                             }
                         }
-                        float residentWinPercentage = (float) residentWins / repetitions * 100;
-                        float opponentWinPercentage = (float) 100 - residentWinPercentage;
-
-                        residentCan.results.add(residentWinPercentage);
+                        float opponentWinPercentage = (float) opponentWins / repetitions * 100;
                         opponentCan.results.add(opponentWinPercentage);
-                    }
                 }
             }
             float fitnessTotal = 0;
