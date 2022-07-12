@@ -27,7 +27,7 @@ public class Main {
         Rules rules = rulesInitializer.getRulesFromFile("src/main/resources/Rules/rules_1.json");
 
         int repetitions = 1000;
-        int numCandidates = 50;
+        int numCandidates = 500;
         int tournamentSize = 5;
         int generations = 100;
 
@@ -63,6 +63,7 @@ public class Main {
 
         for (int gen = 0; gen < generations; gen++) {
             log.debug("Generation " + gen);
+            long time = System.currentTimeMillis();
 
             // Fitness evaluation
             for (int i = 0; i < numResidents; i++) {
@@ -100,6 +101,7 @@ public class Main {
             log.debug("Best fitness:  " + canBest.fitness + " " + canBest.agent.getDeck().toString());
             log.debug("Avg fitness:   " + avgFitness);
             log.debug("Worst fitness: " + canWorst.fitness + " " + canWorst.agent.getDeck().toString());
+            log.debug("Calculated in: " + (System.currentTimeMillis() - time) + "ms");
 
             // Selection (Tournament)
             List<Candidate> newPopulation = new ArrayList<>(numCandidates - 1);
