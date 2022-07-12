@@ -30,9 +30,7 @@ public class Main {
         List<Candidate> candidateList = new ArrayList<>();
         for (int i = 0; i < numCandidates; i++) {
             Deck deck = deckInitializer.createRandomDeck();
-            AgentInterface agent = new AgentRandom(deck);
-            candidateList.add(new Candidate(agent));
-//            log.debug(agent.getDeck().toString());
+            candidateList.add(new Candidate(deck));
         }
 
         for (int gen = 0; gen < generations; gen++) {
@@ -53,7 +51,7 @@ public class Main {
                             }
                         }
                         float residentWinPercentage = (float) residentWins / repetitions * 100;
-                        float opponentWinPercentage = (float) 100 - residentWins;
+                        float opponentWinPercentage = (float) 100 - residentWinPercentage;
 
                         residentCan.results.add(residentWinPercentage);
                         opponentCan.results.add(opponentWinPercentage);
@@ -76,9 +74,9 @@ public class Main {
                     canWorst = can;
                 }
             }
-            log.debug("Best fitness:  " + canBest.fitness + " [" + canBest.agent.getDeck().toString() + "]");
+            log.debug("Best fitness:  " + canBest.fitness + " " + canBest.agent.getDeck().toString());
             log.debug("Avg fitness:   " + avgFitness);
-            log.debug("Worst fitness: " + canWorst.fitness + " [" + canWorst.agent.getDeck().toString() + "]");
+            log.debug("Worst fitness: " + canWorst.fitness + " " + canWorst.agent.getDeck().toString());
 
             // Selection (Tournament)
             List<Candidate> newPopulation = new ArrayList<>(numCandidates - 1);
@@ -92,23 +90,20 @@ public class Main {
                 }
                 newPopulation.add(bestParticipant);
             }
-            candidateList = newPopulation;
+            candidateList = new ArrayList<>();
 
             // Mutation (Single point)
-            for (Candidate can : candidateList) {
-                can.agent.getDeck().returnPlayedCards();
-                can.agent.getDeck().returnCardsInHand();
+            for (Candidate can : newPopulation) {
                 int mutationSpot = random.nextInt(DeckInitializer.defaultNumCards);
-                Card card = deckInitializer.getCardReader().getRandomCard();
-                String deckString = can.agent.getDeck().toString();
-                String cardId = card.getIdString();
-                if (!deckString.contains(cardId)) {
-                    can.agent.getDeck().replaceCard(mutationSpot, card);
-                }
+                String cardStr = deckInitializer.getCardReader().getRandomCardStr();
+                String[] mutatedDeckStr = can.mutate(mutationSpot, cardStr);
+                Deck mutatedDeck = deckInitializer.createDeckFromCardList(mutatedDeckStr);
+                candidateList.add(new Candidate(mutatedDeck));
             }
 
             // Add the best candidate without mutating
-            candidateList.add(canBest);
+            Deck deck = deckInitializer.createDeckFromCardList(canBest.deckStrArray);
+            candidateList.add(new Candidate(deck));
         }
     }
 }

@@ -1,5 +1,6 @@
 package GameElements;
 
+import Setup.DeckInitializer;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
@@ -105,25 +106,24 @@ public class Deck {
         }
     }
 
-    @Override
-    public String toString() {
-        String deckString = "";
+    public String[] toStringArray () {
+        List<String> deckString = new ArrayList<>();
         for (Card c : cardsInDeck) {
-            deckString += c.getIdString() + " | ";
+            deckString.add(c.getIdString());
         }
         for (int i = 0; i < 5; i++) {
             if (this.cardsInHand[i] != null) {
-                deckString += this.cardsInHand[i].getIdString() + " | ";
+                deckString.add(this.cardsInHand[i].getIdString());
             }
             if (i < 3 && this.cardsPlayed[i] != null) {
-                deckString += this.cardsPlayed[i].getIdString() + " | ";
+                deckString.add(this.cardsPlayed[i].getIdString());
             }
         }
-        return deckString.substring(0, deckString.length()-3);
+        return deckString.toArray(new String[0]);
     }
 
-    public void replaceCard(int mutationSpot, Card card) {
-        this.cardsInDeck.remove(mutationSpot);
-        this.cardsInDeck.add(card);
+    @Override
+    public String toString() {
+        return Arrays.toString(this.toStringArray());
     }
 }

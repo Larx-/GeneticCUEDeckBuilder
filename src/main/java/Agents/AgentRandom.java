@@ -28,7 +28,7 @@ public class AgentRandom implements AgentInterface {
             if (!invalidChoices.contains(cardToPlay)){
                 invalidChoices.add(cardToPlay);
 
-                if (deck.getCardsInHand()[cardToPlay] != null && !deck.getCardsInHand()[cardToPlay].isLocked()) {
+                if (!deck.getCardsInHand()[cardToPlay].isLocked()) {
                     int cardCost = deck.getCardsInHand()[cardToPlay].getModifiedEnergy();
 
                     if ((cardCost + usedEnergy) <= availableEnergy) {

@@ -74,6 +74,15 @@ public class CardReader {
         return getCard(Main.random.nextInt(this.numberOfCards));
     }
 
+    public String getRandomCardStr () {
+        String[] cardCsv = this.getCardCSV(Main.random.nextInt(this.numberOfCards-1)+1);
+        if (cardCsv == null){
+            return null;
+        } else {
+            return cardCsv[header.IdString.ordinal()];
+        }
+    }
+
     public Card getCard (int index) {
         // Caching
         if (this.cardsInMemory.containsKey(index)) {
