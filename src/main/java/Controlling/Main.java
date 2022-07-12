@@ -58,35 +58,36 @@ public class Main {
         List<Candidate> candidateList = new ArrayList<>();
         for (int i = 0; i < numCandidates; i++) {
             Deck deck = deckInitializer.createRandomDeck();
-            candidateList.add(new Candidate(deck));
+            candidateList.add(new Candidate(deck.toStringArray()));
         }
 
         for (int gen = 0; gen < generations; gen++) {
             log.debug("Generation " + gen);
+            long time = System.currentTimeMillis();
 
             // Fitness evaluation
+            FitnessCollector collector = new FitnessCollector(numResidents, numCandidates);
             for (int i = 0; i < numResidents; i++) {
+                List<AgentInterface> candidateAgents = new ArrayList<>();
                 for (int j = 0; j < numCandidates; j++) {
-                        Candidate opponentCan = candidateList.get(j);
-
-                        Game game = new Game(rules, residentList.get(i), opponentCan.agent);
-
-                        int opponentWins = 0;
-                        for (int k = 0; k < repetitions; k++) {
-                            if (game.playGame() == Who.OPPONENT) {
-                                opponentWins++;
-                            }
-                        }
-                        float opponentWinPercentage = (float) opponentWins / repetitions * 100;
-                        opponentCan.results.add(opponentWinPercentage);
+                    candidateAgents.add(new AgentRandom(deckInitializer.createDeckFromCardList(candidateList.get(j).getDeckStrArray())));
                 }
+                FitnessEvaluator evaluator = new FitnessEvaluator(rules, repetitions, collector, residentList.get(i), candidateAgents);
+                Thread threadEval = new Thread(evaluator);
+                threadEval.start();
             }
+
+            while (!collector.allFitnessCollected()) {
+                Thread.yield();
+            }
+
+            float[] fitness = collector.calcAvgWinPercentages();
             float fitnessTotal = 0;
-            for (Candidate can : candidateList) {
-                can.fitness = can.addResults() / can.results.size();
-                fitnessTotal += can.fitness;
+            for (int i = 0; i < numCandidates; i++) {
+                candidateList.get(i).setFitness(fitness[i]);
+                fitnessTotal += fitness[i];
             }
-            float avgFitness = fitnessTotal / candidateList.size();
+            float avgFitness = fitnessTotal / numCandidates;
             Candidate canBest = null;
             Candidate canWorst = null;
             for (Candidate can : candidateList) {
@@ -97,9 +98,10 @@ public class Main {
                     canWorst = can;
                 }
             }
-            log.debug("Best fitness:  " + canBest.fitness + " " + canBest.agent.getDeck().toString());
-            log.debug("Avg fitness:   " + avgFitness);
-            log.debug("Worst fitness: " + canWorst.fitness + " " + canWorst.agent.getDeck().toString());
+            log.debug("Best fitness : " + canBest.fitness + " " + Arrays.toString(canBest.getDeckStrArray()));
+            log.debug("Avg fitness  : " + avgFitness);
+            log.debug("Worst fitness: " + canWorst.fitness + " " + Arrays.toString(canWorst.getDeckStrArray()));
+            log.debug("Calculated in: " + (System.currentTimeMillis() - time) + "ms");
 
             // Selection (Tournament)
             List<Candidate> newPopulation = new ArrayList<>(numCandidates - 1);
@@ -120,13 +122,11 @@ public class Main {
                 int mutationSpot = random.nextInt(DeckInitializer.defaultNumCards);
                 String cardStr = deckInitializer.getCardReader().getRandomCardStr();
                 String[] mutatedDeckStr = can.mutate(mutationSpot, cardStr);
-                Deck mutatedDeck = deckInitializer.createDeckFromCardList(mutatedDeckStr);
-                candidateList.add(new Candidate(mutatedDeck));
+                candidateList.add(new Candidate(mutatedDeckStr));
             }
 
             // Add the best candidate without mutating
-            Deck deck = deckInitializer.createDeckFromCardList(canBest.deckStrArray);
-            candidateList.add(new Candidate(deck));
+            candidateList.add(new Candidate(canBest.deckStrArray));
         }
     }
 }

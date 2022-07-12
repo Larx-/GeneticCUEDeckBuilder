@@ -3,6 +3,8 @@ package Controlling;
 import Agents.AgentInterface;
 import Agents.AgentRandom;
 import GameElements.Deck;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,24 +12,12 @@ import java.util.List;
 
 public class Candidate {
 
-    AgentInterface agent;
-    List<Float> results;
-    float fitness;
-    String[] deckStrArray;
+    @Getter @Setter float fitness;
+    @Getter String[] deckStrArray;
 
-    public Candidate(Deck deck) {
-        this.agent = new AgentRandom(deck);
-        this.results = new ArrayList<>();
+    public Candidate(String[] deckStrArray) {
         this.fitness = 0.0f;
-        this.deckStrArray = deck.toStringArray();
-    }
-
-    public float addResults() {
-        float rc = 0;
-        for (Float f : results) {
-            rc += f;
-        }
-        return rc;
+        this.deckStrArray = deckStrArray;
     }
 
     public String[] mutate(int mutationSpot, String cardStr) {
