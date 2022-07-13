@@ -38,12 +38,6 @@ public class CardReader {
         EffectJSON
     }
 
-    String defaultFilename = "src/main/resources/Cards/TestCards.csv";
-
-    public CardReader() {
-        this.initCardReader(this.defaultFilename);
-    }
-
     public CardReader(String filename) {
         this.initCardReader(filename);
     }

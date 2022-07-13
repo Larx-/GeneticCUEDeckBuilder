@@ -16,22 +16,9 @@ import java.util.List;
 public class FitnessEvaluator {
 
     // TODO: Make a lot of these static in Main (?)
-    private final int numResidents;
-    private final int numCandidates;
-    private final int numThreads;
-    private final int repetitions;
-    private final DeckInitializer deckInitializer;
-    private final Rules rules;
     private final List<List<AgentInterface>> residentList;
 
-    public FitnessEvaluator(int numResidents, int numCandidates, int numThreads, int repetitions,
-                            DeckInitializer deckInitializer, Rules rules, List<List<AgentInterface>> residentList) {
-        this.numResidents = numResidents;
-        this.numCandidates = numCandidates;
-        this.numThreads = numThreads;
-        this.repetitions = repetitions;
-        this.deckInitializer = deckInitializer;
-        this.rules = rules;
+    public FitnessEvaluator(List<List<AgentInterface>> residentList) {
         this.residentList = residentList;
     }
 
@@ -39,22 +26,22 @@ public class FitnessEvaluator {
     public Candidate evaluateFitness (List<Candidate> candidateList) {
         long time = System.currentTimeMillis();
 
-        FitnessCollector collector = new FitnessCollector(this.numResidents, this.numCandidates);
-        Thread[] threads = new Thread[this.numThreads];
+        FitnessCollector collector = new FitnessCollector(GenAlg.numResidents, GenAlg.numCandidates);
+        Thread[] threads = new Thread[GenAlg.numThreads];
 
         // Split workload to Threads
-        for (int i = 0; i < this.numThreads; i++) {
+        for (int i = 0; i < GenAlg.numThreads; i++) {
             List<AgentInterface> candidateAgents = new ArrayList<>();
-            for (int j = 0; j < this.numCandidates; j++) {
-                candidateAgents.add(new AgentRandom(this.deckInitializer.createDeckFromCardList(candidateList.get(j).getDeckStrArray())));
+            for (int j = 0; j < GenAlg.numCandidates; j++) {
+                candidateAgents.add(new AgentRandom(GenAlg.deckInitializer.createDeckFromCardList(candidateList.get(j).getDeckStrArray())));
             }
-            FitnessEvalWorker evaluator = new FitnessEvalWorker(this.rules, this.repetitions, collector, this.residentList.get(i), candidateAgents);
+            FitnessEvalWorker evaluator = new FitnessEvalWorker(GenAlg.rules, GenAlg.repetitions, collector, this.residentList.get(i), candidateAgents);
             threads[i] = new Thread(evaluator);
             threads[i].start();
         }
 
         // Wait for threads to finish
-        for (int i = 0; i < this.numThreads; i++) {
+        for (int i = 0; i < GenAlg.numThreads; i++) {
             try {
                 threads[i].join();
             } catch (InterruptedException e) {
@@ -68,7 +55,7 @@ public class FitnessEvaluator {
         Candidate canBest = null;
         Candidate canWorst = null;
 
-        for (int i = 0; i < this.numCandidates; i++) {
+        for (int i = 0; i < GenAlg.numCandidates; i++) {
             Candidate can = candidateList.get(i);
             float fit = fitness[i];
 
@@ -82,7 +69,7 @@ public class FitnessEvaluator {
                 canWorst = can;
             }
         }
-        float avgFitness = fitnessTotal / this.numCandidates;
+        float avgFitness = fitnessTotal / GenAlg.numCandidates;
 
         // Debug log
         float calcTime = (float) (System.currentTimeMillis() - time) / 1000;

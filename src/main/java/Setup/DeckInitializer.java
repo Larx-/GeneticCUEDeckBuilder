@@ -16,12 +16,8 @@ public class DeckInitializer {
     @Getter CardReader cardReader;
     public static final int defaultNumCards = 18;
 
-    public DeckInitializer () {
-        cardReader = new CardReader();
-    }
-
     public DeckInitializer (String cardsCSVPath) {
-        cardReader = new CardReader(cardsCSVPath);
+        this.cardReader = new CardReader(cardsCSVPath);
     }
 
     public Deck createRandomDeck () {
