@@ -38,7 +38,7 @@ public class TSVtoCSVPreProcessor {
 
         EffectParser effectParser = new EffectParser(allCardNames);
         List<String[]> processedCards = new ArrayList<>();
-        processedCards.add(new String[]{"Id","IdString","Name","Lim","Rarity","Collection","Energy","Power","EffectDescription","EffectJSON"});
+        processedCards.add(new String[]{"Id","IdString","Name","Lim","Rarity","Collection","Energy","Power","EffectDescription","EffectJSON","CombosWith"});
 
         // Translate all effects and write new file in expected format
 //        List<String[]> subList = cardsFromTSV.subList(0, 10);
@@ -60,12 +60,13 @@ public class TSVtoCSVPreProcessor {
             rarity = rarity.replace("Ltd ", "");
 
             String jsonEffect = effectParser.translateEffects(effects.trim(), cardName);
+            String combosWith = effectParser.getCombos(jsonEffect);
             if (jsonEffect != null) {
 //                System.out.println(idString + " " + jsonEffect);
                 // Make sure EffectParser can handle all added cases
                 Map<TriggerTime, List<Effect>> effectsParsed = effectParser.parseEffects(jsonEffect);
 
-                String[] cardCSV = new String[]{String.valueOf(intId),idString,cardName,limited,rarity,collection,energy,power,effects,jsonEffect};
+                String[] cardCSV = new String[]{String.valueOf(intId),idString,cardName,limited,rarity,collection,energy,power,effects,jsonEffect,combosWith};
                 processedCards.add(cardCSV);
                 intId++;
             }

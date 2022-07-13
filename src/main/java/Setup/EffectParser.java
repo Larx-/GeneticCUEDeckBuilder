@@ -62,6 +62,14 @@ public class EffectParser {
         return effectMap;
     }
 
+    public String getCombos (String JSONEffectsString) {
+        if (JSONEffectsString == null || JSONEffectsString.equals("") || JSONEffectsString.equals("NULL")) {
+            return "[]";
+        }
+        JSONObject jsonEffects = new JSONObject(JSONEffectsString);
+        return jsonEffects.getString("Combos");
+    }
+
     private Effect parseEffect (JSONObject jsonEffect) {
         TriggerTime triggerTime;
         Target target = null;

@@ -17,11 +17,15 @@ public class Card {
     @Getter private final int id;
     @Getter private final String idString;
     @Getter private final String name;
+    @Getter private final String rarity;
+    @Getter private final String effectString;
     @Getter private final Album album;
     @Getter private final Collection collection;
     @Getter private final int baseEnergy;
     @Getter private final int basePower;
     @Getter private final Map<TriggerTime,List<Effect>> effects;
+    @Getter private final String[] combosWith; // TODO: use when mutating, do not forget to explode Albums and Collections
+
 
     // Transient "in-play" variables
     @Getter @Setter private int modifierEnergy;
@@ -31,16 +35,19 @@ public class Card {
     @Getter @Setter private int burnAmount;
     @Getter @Setter private List<Effect> expiryEffectsAfterPlayed;
 
-    public Card(int id, String idString, String name, Album album, Collection collection,
-                int baseEnergy, int basePower, Map<TriggerTime,List<Effect>> effects){
+    public Card(int id, String idString, String name, String rarity, String effectString, Album album, Collection collection,
+                int baseEnergy, int basePower, Map<TriggerTime,List<Effect>> effects, String[] combosWith){
         this.id = id;
         this.idString = idString;
         this.name = name;
+        this.rarity = rarity;
+        this.effectString = effectString;
         this.album = album;
         this.collection = collection;
         this.baseEnergy = baseEnergy;
         this.basePower = basePower;
         this.effects = effects;
+        this.combosWith = combosWith;
 
         this.resetCard();
     }
@@ -71,8 +78,8 @@ public class Card {
     }
 
     public Card copyFresh(){
-        // TODO: Deep copy effects
-        return new Card(id, idString, name, album, collection, baseEnergy, basePower, effects);
+        // TODO: Deep copy effects maybe
+        return new Card(id, idString, name, rarity, effectString, album, collection, baseEnergy, basePower, effects, combosWith);
     }
 
     public void resetCard() {

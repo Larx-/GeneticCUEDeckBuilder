@@ -35,7 +35,8 @@ public class CardReader {
         Energy,
         Power,
         EffectDescription,
-        EffectJSON
+        EffectJSON,
+        CombosWith
     }
 
     public CardReader(String filename) {
@@ -91,22 +92,20 @@ public class CardReader {
         int id = Integer.parseInt(cardCSV[header.Id.ordinal()]);
         String idString = cardCSV[header.IdString.ordinal()];
         String name = cardCSV[header.Name.ordinal()];
-        // TODO: Skipping limited and rarity for now
+        String rarity = cardCSV[header.Rarity.ordinal()];
 
         Enums.Collection collection = Enums.Collection.fromString(cardCSV[header.Collection.ordinal()]);
         Enums.Album album = collection.getAffiliatedAlbum();
         int baseEnergy = Integer.parseInt(cardCSV[header.Energy.ordinal()]);
         int basePower = Integer.parseInt(cardCSV[header.Power.ordinal()]);
 
-        // TODO: EffectDescription might be useful in card too
+        String effectString = cardCSV[header.EffectDescription.ordinal()];
         String effectJSON = cardCSV[header.EffectJSON.ordinal()];
-        if (effectJSON == null || effectJSON.equals("")) {
-            effectJSON = this.effectParser.translateEffects(cardCSV[header.EffectDescription.ordinal()], name);
-            log.warn("EffectJSON for id " + cardCSV[header.Id.ordinal()] + " was not found in .csv!");
-        }
         Map<TriggerTime,List<Effect>> effectMap = this.effectParser.parseEffects(effectJSON);
+        String comboString = cardCSV[header.CombosWith.ordinal()];
+        String[] combosWith = comboString.equals("[]") ? new String[0] : comboString.replace("[","").replace("]","").split(",");
 
-        Card card = new Card(id, idString, name, album, collection, baseEnergy, basePower, effectMap);
+        Card card = new Card(id, idString, name, rarity, effectString, album, collection, baseEnergy, basePower, effectMap, combosWith);
 
         // Caching
         this.cardsInMemory.put(index,card);

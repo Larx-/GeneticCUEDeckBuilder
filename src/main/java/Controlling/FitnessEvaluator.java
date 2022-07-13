@@ -15,7 +15,6 @@ import java.util.List;
 @Log4j2
 public class FitnessEvaluator {
 
-    // TODO: Make a lot of these static in Main (?)
     private final List<List<AgentInterface>> residentList;
 
     public FitnessEvaluator(List<List<AgentInterface>> residentList) {

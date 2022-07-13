@@ -78,7 +78,7 @@ public class GenAlg {
     }
 
     private List<Candidate> mutateGen(List<Candidate> canList) {
-        // Mutation (Single point TODO: Chance and multiple mutations)
+        // Mutation (Single point) TODO: Chance based and possibly multiple mutations, using the combo markers, also crossover
         List<Candidate> mutatedPopulation = new ArrayList<>();
         for (Candidate can : canList) {
             int mutationSpot = Main.random.nextInt(DeckInitializer.defaultNumCards);
@@ -135,6 +135,9 @@ public class GenAlg {
                 if (deck.length == DeckInitializer.defaultNumCards) {
                     decksFilled.add(deck);
 
+                }else if (deck.length > DeckInitializer.defaultNumCards) {
+                    decksFilled.add(Arrays.copyOfRange(deck,0,DeckInitializer.defaultNumCards));
+
                 } else {
                     String[] deckFilled = new String[DeckInitializer.defaultNumCards];
                     for (int i = 0; i < DeckInitializer.defaultNumCards; i++) {
@@ -145,6 +148,7 @@ public class GenAlg {
                         }
                     }
                     decksFilled.add(deckFilled);
+
                 }
             }
         }
