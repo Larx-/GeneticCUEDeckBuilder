@@ -1,5 +1,6 @@
 package Effects;
 
+import EffectConditions.Condition;
 import Enums.*;
 import GameElements.Card;
 import GameElements.Game;

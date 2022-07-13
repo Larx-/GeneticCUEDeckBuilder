@@ -1,5 +1,6 @@
 package Effects;
 
+import EffectConditions.Condition;
 import Enums.TriggerTime;
 import Enums.Who;
 import GameElements.Card;

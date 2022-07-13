@@ -26,7 +26,7 @@ Effect:
     ENERGY (Value)
     POWER (Value)
     BURN (Value)
-    LOCK
+    LOCK                                                // May not have the duration UNTIL_PLAYED
 
 Duration:
     END_TURN

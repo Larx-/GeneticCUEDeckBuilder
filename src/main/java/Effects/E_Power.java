@@ -1,11 +1,10 @@
 package Effects;
 
-import Enums.Where;
+import EffectConditions.Condition;
 import Enums.TriggerTime;
 import Enums.Who;
 import GameElements.Card;
 import GameElements.Game;
-import GameElements.Player;
 import GameElements.Target;
 import lombok.extern.log4j.Log4j2;
 

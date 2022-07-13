@@ -1,5 +1,6 @@
 package Effects;
 
+import EffectConditions.Condition;
 import Enums.TriggerTime;
 import Enums.Who;
 import GameElements.Card;
@@ -8,6 +9,7 @@ import GameElements.Target;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.List;
+import java.util.Map;
 
 @Log4j2
 public class E_Lock extends Effect {
@@ -38,10 +40,12 @@ public class E_Lock extends Effect {
                 card.setLocked(this.lock);
             }
 
+            // TODO: this would still unlock a card that was relocked / permanently locked
+
             // 4. If required return expiryEffect using inverse
             if (super.duration != null && super.duration != TriggerTime.PERMANENT) {
                 Target selectedTargetCards = new Target(targetCards);
-                return new E_Lock(super.duration, selectedTargetCards, !this.lock,null, super.timer, null); // TODO: this would still unlock a card that was relocked
+                return new E_Lock(super.duration, selectedTargetCards, !this.lock,null, super.timer, null);
             }
         }
         return null;

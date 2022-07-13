@@ -1,16 +1,16 @@
-package Effects;
+package EffectConditions;
 
 import Enums.Who;
 import GameElements.Game;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class C_RoundsLost extends Condition {
+public class C_RoundsWon extends Condition {
 
     String sign;
     int rounds;
 
-    public C_RoundsLost(String signedRounds) {
+    public C_RoundsWon(String signedRounds) {
         this.sign = "==";
 
         if (signedRounds.charAt(0) == '>' || signedRounds.charAt(0) == '<') {
@@ -29,15 +29,15 @@ public class C_RoundsLost extends Condition {
 
     @Override
     public boolean checkConditionFulfilled(Game game, Who selfPlayer) {
-        int losses = selfPlayer == Who.RESIDENT ? game.getOppWins() : game.getResWins();
+        int wins = selfPlayer == Who.RESIDENT ? game.getResWins(): game.getOppWins();
 
         switch (this.sign) {
-            case ">":  return losses >  this.rounds;
-            case ">=": return losses >= this.rounds;
-            case "<=": return losses <= this.rounds;
-            case "<":  return losses <  this.rounds;
+            case ">":  return wins >  this.rounds;
+            case ">=": return wins >= this.rounds;
+            case "<=": return wins <= this.rounds;
+            case "<":  return wins <  this.rounds;
             case "==":
-            default:   return losses == this.rounds;
+            default:   return wins == this.rounds;
         }
     }
 }

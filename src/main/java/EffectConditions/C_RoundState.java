@@ -1,21 +1,21 @@
-package Effects;
+package EffectConditions;
 
 import Enums.Who;
 import GameElements.Game;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class C_TurnState extends Condition {
+public class C_RoundState extends Condition {
 
     String state;
 
-    public C_TurnState(String state) {
+    public C_RoundState(String state) {
         this.state = state;
     }
 
     @Override
     public boolean checkConditionFulfilled (Game game, Who selfPlayer) {
-        int power = game.getLastPowerDiff(); // Positive means resident is winning
+        int power = game.getPowerBalance(); // Positive means resident is winning
         
         // Assuming view from resident, so flip power if view from opponent
         if (selfPlayer == Who.OPPONENT) {

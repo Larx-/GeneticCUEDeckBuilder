@@ -1,5 +1,6 @@
 package Setup;
 
+import EffectConditions.*;
 import Effects.*;
 import Enums.*;
 import Enums.Collection;

@@ -1,4 +1,4 @@
-package Effects;
+package EffectConditions;
 
 import Enums.Who;
 import GameElements.Game;

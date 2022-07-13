@@ -1,6 +1,6 @@
 package Effects;
 
-import Enums.Where;
+import EffectConditions.Condition;
 import Enums.TriggerTime;
 import Enums.Who;
 import GameElements.Card;
