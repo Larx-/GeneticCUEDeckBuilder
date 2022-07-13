@@ -49,4 +49,23 @@ public class Rules {
         }
         this.roundBoni[toChooseRounds.remove(0)] = this.additionalRoundBoni.get(secondAdditional);
     }
+
+    @Override
+    public String toString() {
+        String guaranteedStr = guaranteedRoundBoni.get(0).toString() + "\t|\t" +
+                               guaranteedRoundBoni.get(1).toString() + "\t|\t" +
+                               guaranteedRoundBoni.get(2).toString();
+
+        String additionalStr = additionalRoundBoni.get(0).toString() + "\t|\t" +
+                               additionalRoundBoni.get(1).toString() + "\t|\t" +
+                               additionalRoundBoni.get(2).toString();
+
+        return "Rule Set: \n" +
+                "  Energy Starting: " + energyStarting + "\n" +
+                "  Energy Min:      " + energyMin + "\n" +
+                "  Energy Max:      " + energyMax + "\n" +
+                "  Energy Per Turn: " + energyPerTurn + "\n" +
+                "  Guaranteed Boni: " + guaranteedStr + "\n" +
+                "  Additional Boni: " + additionalStr;
+    }
 }

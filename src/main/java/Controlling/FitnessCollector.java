@@ -19,10 +19,6 @@ public class FitnessCollector {
         this.winPercentages.add(opponentWinPercentages);
     }
 
-    public boolean allFitnessCollected () {
-        return this.numResidents == winPercentages.size();
-    }
-
     public float[] calcAvgWinPercentages () {
         float[] avgWinPercent = new float[this.numOpponents];
 
@@ -37,6 +33,16 @@ public class FitnessCollector {
         }
 
         return avgWinPercent;
+    }
+
+    public float[] getWinPercentDistribution (int candidateNum) {
+        float[] winDistribution = new float[this.numResidents];
+
+        for (int i = 0; i < this.numResidents; i++) {
+            winDistribution[i] = this.winPercentages.get(i)[candidateNum];
+        }
+
+        return winDistribution;
     }
 
     public void resetWinPercentages () {

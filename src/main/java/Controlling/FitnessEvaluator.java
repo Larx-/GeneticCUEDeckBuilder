@@ -22,7 +22,7 @@ public class FitnessEvaluator {
     }
 
     // Returns the best candidate, evaluates all others in place
-    public Candidate evaluateFitness (List<Candidate> candidateList) {
+    public Candidate evaluateFitness (List<Candidate> candidateList, int gen) {
         long time = System.currentTimeMillis();
 
         FitnessCollector collector = new FitnessCollector(GenAlg.numResidents, GenAlg.numCandidates);
@@ -53,6 +53,7 @@ public class FitnessEvaluator {
         float fitnessTotal = 0;
         Candidate canBest = null;
         Candidate canWorst = null;
+        int canBestNum = 0;
 
         for (int i = 0; i < GenAlg.numCandidates; i++) {
             Candidate can = candidateList.get(i);
@@ -63,6 +64,7 @@ public class FitnessEvaluator {
 
             if (canBest == null || fit > canBest.fitness) {
                 canBest = can;
+                canBestNum = i;
             }
             if (canWorst == null || fit < canWorst.fitness) {
                 canWorst = can;
@@ -76,6 +78,9 @@ public class FitnessEvaluator {
         log.debug("Avg fitness  : " + avgFitness);
         log.debug("Worst fitness: " + canWorst.fitness + " " + Arrays.toString(canWorst.getDeckStrArray()));
         log.debug("Calculated in: " + calcTime + "s \n");
+
+        GenAlg.resultWriter.appendCurrentFitness(gen, canWorst.getFitness()*100, avgFitness*100,
+                canBest.getFitness()*100, collector.getWinPercentDistribution(canBestNum), canBest.getDeckStrArray());
 
         return canBest;
     }

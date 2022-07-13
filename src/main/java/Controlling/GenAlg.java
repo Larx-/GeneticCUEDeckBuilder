@@ -30,7 +30,11 @@ public class GenAlg {
     public static final int tournamentSize = 5;
     public static final int generations = 1000;
 
-    public static final int numThreads = 1;
+    public static final int numThreads = 1; // FIXME: Figure out why there is a ConcurrentModificationException
+
+    public static ResultWriter resultWriter;
+    private List<String[]> resDecks;
+    private List<String[]> canDecks;
 
     private final List<List<AgentInterface>> residentList;
     private List<Candidate> candidateList;
@@ -41,23 +45,30 @@ public class GenAlg {
 
         rules = rulesInitializer.getRulesFromFile(rulesFile);
 
+        resultWriter = new ResultWriter(Main.resultsDir, Main.resultsName);
+
         this.residentList = this.initResidents(residentsFile);
         this.candidateList = this.initCandidates(candidatesFile);
     }
 
     public void runGeneticAlgorithm() {
+        resultWriter.writeInitial(rules, this.resDecks, this.canDecks);
+
         FitnessEvaluator evaluator = new FitnessEvaluator(this.residentList);
 
         for (int gen = 0; gen < generations; gen++) {
             log.debug("Generation " + gen);
 
-            Candidate canBest = evaluator.evaluateFitness(candidateList);
+            Candidate canBest = evaluator.evaluateFitness(candidateList, gen);
+            // Write evaluated candidates, instead of new ones to be able to confirm evaluation, if restarting is necessary, also makes more sense logically
+            resultWriter.writeCurrentCandidates(this.canDecks);
 
             this.candidateList = this.selectNextGen(this.candidateList);
             this.candidateList = this.mutateGen(this.candidateList);
 
             // Add the best candidate without mutating
             this.candidateList.add(new Candidate(canBest.getDeckStrArray()));
+            this.canDecks.add(canBest.getDeckStrArray());
         }
     }
 
@@ -80,6 +91,8 @@ public class GenAlg {
     private List<Candidate> mutateGen(List<Candidate> canList) {
         // Mutation (Single point) TODO: Chance based and possibly multiple mutations, using the combo markers, also crossover
         List<Candidate> mutatedPopulation = new ArrayList<>();
+        this.canDecks = new ArrayList<>();
+
         for (Candidate can : canList) {
             int mutationSpot = Main.random.nextInt(DeckInitializer.defaultNumCards);
 
@@ -89,6 +102,7 @@ public class GenAlg {
             }
 
             String[] mutatedDeckStr = can.mutate(mutationSpot, cardStr);
+            this.canDecks.add(mutatedDeckStr);
             mutatedPopulation.add(new Candidate(mutatedDeckStr));
         }
         return mutatedPopulation;
@@ -101,9 +115,9 @@ public class GenAlg {
             resList.add(new ArrayList<>());
         }
 
-        List<String[]> resDecks = this.initDecks(fileName, numResidents);
+        this.resDecks = this.initDecks(fileName, numResidents);
         for (int i = 0; i < numResidents; i++) {
-            Deck deck = deckInitializer.createDeckFromCardList(resDecks.get(i));
+            Deck deck = deckInitializer.createDeckFromCardList(this.resDecks.get(i));
             resList.get(i % numThreads).add(new AgentRandom(deck));
         }
 
@@ -114,9 +128,9 @@ public class GenAlg {
         // Initialization of first generation (from file or random)
         List<Candidate> canList = new ArrayList<>();
 
-        List<String[]> canDecks = this.initDecks(fileName, numCandidates);
+        this.canDecks = this.initDecks(fileName, numCandidates);
         for (int i = 0; i < numCandidates; i++) {
-            canList.add(new Candidate(canDecks.get(i)));
+            canList.add(new Candidate(this.canDecks.get(i)));
         }
 
         return canList;

@@ -13,6 +13,9 @@ public class Main {
     public static final String residentsFile = "src/main/resources/Residents/residents.csv";
     public static final String candidatesFile = null;
 
+    public static final String resultsDir = "src/main/resources/Results";
+    public static final String resultsName = "Test_1";
+
     public static void main(String[] args) {
         Main.random = new SecureRandom();
         System.out.println("\n");

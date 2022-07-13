@@ -34,4 +34,11 @@ public class RoundBonus {
         this.collection = collection;
         this.collectionBonus = collectionBonus;
     }
+
+    @Override
+    public String toString() {
+        String collectionStr = collection.toString() + " (" + collectionBonus + ") & ";
+        String albumStr = album.toString() + " (" + albumBonus + ")";
+        return collection == Collection.NAN ? albumStr : collectionStr + albumStr;
+    }
 }
