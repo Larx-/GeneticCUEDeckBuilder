@@ -1,7 +1,7 @@
 package GameElements;
 
 import Agents.AgentInterface;
-import Enums.Where;
+import Enums.TriggerTime;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -82,7 +82,7 @@ public class Player {
     public void applyUnlockIfSet() {
         if (this.doUnlock) {
             this.doUnlock = false;
-            this.agent.getDeck().unlockCards();
+            this.agent.getDeck().subtractLocks(TriggerTime.PERMANENT);
         }
     }
 

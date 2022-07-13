@@ -170,7 +170,7 @@ public class EffectParser {
             case "BURN":
                 return new E_Burn(triggerTime,target,effectObject.getInt("Value"),duration,timer,conditions);
             case "LOCK":
-                return new E_Lock(triggerTime,target,true,duration,timer,conditions);
+                return new E_Lock(triggerTime,target,duration,timer,conditions);
             default:
 //                log.error("Not yet implemented effect: " + effectString);
                 throw new IllegalStateException("Unexpected value parsing effect: " + effectString);

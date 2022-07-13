@@ -1,6 +1,6 @@
 package GameElements;
 
-import Setup.DeckInitializer;
+import Enums.TriggerTime;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
@@ -98,10 +98,10 @@ public class Deck {
         return lockedCards;
     }
 
-    public void unlockCards() {
+    public void subtractLocks(TriggerTime triggerTime) {
         for (int i = 0; i < 5; i++){
             if (this.cardsInHand[i] != null && this.cardsInHand[i].isLocked()) {
-                this.cardsInHand[i].setLocked(false);
+                this.cardsInHand[i].subtractLockDuration(triggerTime);
             }
         }
     }

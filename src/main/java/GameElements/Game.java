@@ -121,6 +121,8 @@ public class Game {
 
         // execute EndOfRound effects
         this.applyEffectStack(TriggerTime.END_ROUND, Who.BOTH);
+        this.resident.getDeck().subtractLocks(TriggerTime.END_ROUND);
+        this.opponent.getDeck().subtractLocks(TriggerTime.END_ROUND);
 
         return this.powerBalance > 0;
     }
@@ -195,7 +197,7 @@ public class Game {
         this.resPower = this.resident.getDeck().calcPower() + this.resident.getPowerPerTurn();
         this.oppPower = this.opponent.getDeck().calcPower() + this.opponent.getPowerPerTurn();
         this.lastPowerDiff = resPower - oppPower;
-        this.powerBalance += this.lastPowerDiff;
+        this.powerBalance = this.powerBalance + this.lastPowerDiff;
 
 //        this.logPlay();
 
@@ -217,6 +219,8 @@ public class Game {
         // Update if cards should unlock, not 100% sure it's in the correct ordering
         this.resident.updateDoUnlock();
         this.opponent.updateDoUnlock();
+        this.resident.getDeck().subtractLocks(TriggerTime.END_TURN);
+        this.opponent.getDeck().subtractLocks(TriggerTime.END_TURN);
 
         // execute TIMER based effects
         this.applyEffectStack(TriggerTime.TIMER,Who.BOTH);

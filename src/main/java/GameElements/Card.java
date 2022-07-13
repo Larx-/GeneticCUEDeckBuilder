@@ -9,9 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Card {
     @Getter private final int id;
@@ -30,7 +28,8 @@ public class Card {
     // Transient "in-play" variables
     @Getter @Setter private int modifierEnergy;
     @Getter @Setter private int modifierPower;
-    @Getter @Setter private boolean isLocked;
+    @Getter @Setter private Set<TriggerTime> locks;
+    @Getter @Setter private int lockTimer;
     @Getter @Setter private int burntPower;
     @Getter @Setter private int burnAmount;
     @Getter @Setter private List<Effect> expiryEffectsAfterPlayed;
@@ -85,10 +84,49 @@ public class Card {
     public void resetCard() {
         this.modifierEnergy = 0;
         this.modifierPower = 0;
-        this.isLocked = false;
+        this.locks = new HashSet<>();
+        this.lockTimer = 0;
         this.burntPower = this.basePower;
         this.burnAmount = 0;
         this.expiryEffectsAfterPlayed = new ArrayList<>();
+    }
+
+    public void subtractLockDuration(TriggerTime subtract) {
+        if (subtract == TriggerTime.PERMANENT) {
+            // Remove all, because only over-locking can do this
+            this.locks.clear();
+            this.lockTimer = 0;
+
+        } else if (subtract == TriggerTime.END_ROUND) {
+            this.locks.remove(TriggerTime.END_ROUND);
+
+        } else if (subtract == TriggerTime.END_TURN) {
+            this.locks.remove(TriggerTime.END_TURN);
+
+            // Also count down the timer
+            if (this.locks.contains(TriggerTime.TIMER)) {
+                if (this.lockTimer == 0) {
+                    this.locks.remove(TriggerTime.TIMER);
+                } else {
+                    this.lockTimer--;
+                }
+            }
+        }
+    }
+
+    public void addLockDuration(TriggerTime duration) {
+        this.locks.add(duration);
+    }
+
+    public void addLockTimer(int timer) {
+        this.locks.add(TriggerTime.TIMER);
+        if (this.lockTimer < timer) {
+            this.lockTimer = timer;
+        }
+    }
+
+    public boolean isLocked() {
+        return !this.locks.isEmpty();
     }
 
     @Override
@@ -97,7 +135,7 @@ public class Card {
                 StringUtils.leftPad(this.idString,5),
                 StringUtils.rightPad(StringUtils.abbreviate(this.name,30),30),
                 this.getModifiedEnergy(), this.baseEnergy, this.getModifiedPower(), this.basePower,
-                (this.isLocked ? " \uD83D\uDD12 " : "   "),
+                (this.isLocked() ? " \uD83D\uDD12 " : "   "),
                 (this.burnAmount > 0 ? " \uD83D\uDD25 " : "   "),
                 (this.effects == null ? "" : "*"));
     }

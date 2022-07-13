@@ -14,18 +14,12 @@ import java.util.Map;
 @Log4j2
 public class E_Lock extends Effect {
 
-    boolean lock;
-
-    public E_Lock(TriggerTime triggerTime, Target targetCards, boolean lock, TriggerTime duration, int timer, List<Condition> conditions) {
+    public E_Lock(TriggerTime triggerTime, Target targetCards, TriggerTime duration, int timer, List<Condition> conditions) {
         super(triggerTime, targetCards, duration, timer, conditions);
-
-        this.lock = lock;
     }
 
-    public E_Lock(TriggerTime triggerTime, Target targetCards, boolean lock, TriggerTime duration, List<Condition> conditions) {
+    public E_Lock(TriggerTime triggerTime, Target targetCards, TriggerTime duration, List<Condition> conditions) {
         super(triggerTime, targetCards, duration, conditions);
-
-        this.lock = lock;
     }
 
     @Override
@@ -37,15 +31,11 @@ public class E_Lock extends Effect {
         if (!targetCards.isEmpty() && super.conditionsFulfilled(game, selfPlayer)) {
             // 3. In subclass do effect
             for (Card card : targetCards) {
-                card.setLocked(this.lock);
-            }
+                card.addLockDuration(super.duration);
 
-            // TODO: this would still unlock a card that was relocked / permanently locked
-
-            // 4. If required return expiryEffect using inverse
-            if (super.duration != null && super.duration != TriggerTime.PERMANENT) {
-                Target selectedTargetCards = new Target(targetCards);
-                return new E_Lock(super.duration, selectedTargetCards, !this.lock,null, super.timer, null);
+                if (super.duration == TriggerTime.TIMER) {
+                    card.addLockTimer(super.timer);
+                }
             }
         }
         return null;

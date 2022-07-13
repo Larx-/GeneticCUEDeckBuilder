@@ -176,20 +176,20 @@ public class NatLangPatternParser {
                             "}]," +
                             "'Combos':'[~1~,~2~,~3~]'}");
 
-//            this.addPattern(new String[]{"~TIME~ Lock a random card in your opponent's hand for this turn. If you are losing the round, also give it ","~NUM~1~"," Power until it is played."},
-//                    "{'Effects': [{" +
-//                            "'TriggerTime': '~TIME~'," +
-//                            "'Target':{'Who':'OTHER','Where':'CARDS_IN_HAND','What':'RANDOM'}," +
-//                            "'Effect':{'Type':'LOCK'}," +
-//                            "'Duration':'END_TURN'," +
-//                            "},{" +
-//                            "'TriggerTime': '~TIME~'," +
-//                            "'Target':{'Who':'OTHER','Where':'CARDS_IN_HAND','What':'RANDOM'}," + // FIXME: Currently not the same random card
-//                            "'Effect':{'Type':'POWER','Value':'~1~'}," +
-//                            "'Duration':'UNTIL_PLAYED'," +
-//                            "'Conditions':[{'Type':'ROUND_STATE','Value':'Loss'}]" +
-//                            "}]," +
-//                            "'Combos':'[]'}");
+            this.addPattern(new String[]{"~TIME~ Lock a random card in your opponent's hand for this turn. If you are losing the round, also give it ","~NUM~1~"," Power until it is played."},
+                    "{'Effects': [{" +
+                            "'TriggerTime': '~TIME~'," +
+                            "'Target':{'Who':'OTHER','Where':'CARDS_IN_HAND'}," + // FIXME: Missing ",'What':'RANDOM'" - Currently not the same random card
+                            "'Effect':{'Type':'LOCK'}," +
+                            "'Duration':'END_TURN'," +
+                            "},{" +
+                            "'TriggerTime': '~TIME~'," +
+                            "'Target':{'Who':'OTHER','Where':'CARDS_IN_HAND'}," + // FIXME: Missing ",'What':'RANDOM'" - Currently not the same random card
+                            "'Effect':{'Type':'POWER','Value':'~1~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "'Conditions':[{'Type':'ROUND_STATE','Value':'Loss'}]" +
+                            "}]," +
+                            "'Combos':'[]'}");
 
             this.addPattern(new String[]{"~TIME~ if you are winning the round, this card has ","~NUM~1~"," Power."},
                     "{'Effects': [{" +
