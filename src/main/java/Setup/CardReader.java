@@ -2,15 +2,13 @@ package Setup;
 
 import Controlling.Main;
 import Effects.Effect;
+import Enums.Album;
 import Enums.TriggerTime;
 import GameElements.Card;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
-import com.opencsv.exceptions.CsvValidationException;
 import lombok.extern.log4j.Log4j2;
 
-import javax.sql.rowset.CachedRowSet;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
@@ -22,6 +20,7 @@ public class CardReader {
     Map<Integer,Card> cardsInMemory;
     Map<String,Integer> idStringIndex;
     Map<String,Integer> nameIndex;
+    Map<String,String[]> stringIndexToCombosMap;
     private int numberOfCards;
     EffectParser effectParser;
 
@@ -49,6 +48,7 @@ public class CardReader {
             this.cardsInMemory = new HashMap<>();
             this.idStringIndex = new HashMap<>();
             this.nameIndex = new HashMap<>();
+            this.stringIndexToCombosMap = new HashMap<>();
 
             this.numberOfCards = this.cardsFromCSV.size();
 
@@ -102,10 +102,13 @@ public class CardReader {
         String effectString = cardCSV[header.EffectDescription.ordinal()];
         String effectJSON = cardCSV[header.EffectJSON.ordinal()];
         Map<TriggerTime,List<Effect>> effectMap = this.effectParser.parseEffects(effectJSON);
+
+        // Save combos here, instead of in the cards
         String comboString = cardCSV[header.CombosWith.ordinal()];
         String[] combosWith = comboString.equals("[]") ? new String[0] : comboString.replace("[","").replace("]","").split(",");
+        this.stringIndexToCombosMap.put(idString, combosWith);
 
-        Card card = new Card(id, idString, name, rarity, effectString, album, collection, baseEnergy, basePower, effectMap, combosWith);
+        Card card = new Card(id, idString, name, rarity, effectString, album, collection, baseEnergy, basePower, effectMap);
 
         // Caching
         this.cardsInMemory.put(index,card);
@@ -115,6 +118,11 @@ public class CardReader {
 
     public Card getCardByStringIndex (String stringIndex) {
         return this.getCard(this.idStringIndex.get(stringIndex));
+    }
+
+    // TODO: use when mutating, do not forget to explode Albums and Collections (by saving a index of all albums to cards and collections to cards)
+    public String[] getCombosOf (String stringIndex) {
+        return this.stringIndexToCombosMap.get(stringIndex);
     }
 
     public Card getCardByName (String name) {

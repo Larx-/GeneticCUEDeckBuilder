@@ -38,18 +38,19 @@ public class ResultWriter {
         Path initialFilePath = Paths.get(this.filePath.toString(), "initialSettings.txt");
 
         if (!SAFE_MODE || !Files.exists(initialFilePath)) {
-            String initalInfo = rules.toString() + "\n\n";
+            StringBuilder initalInfo = new StringBuilder(rules.toString() + "\n\n");
 
-            initalInfo += "Resident decks:\n";
+            initalInfo.append("Resident decks:\n");
             for (String[] deck : residentDecks) {
-                initalInfo += "   " + Arrays.toString(deck) + "\n";
+                Arrays.sort(deck);
+                initalInfo.append("   ").append(Arrays.toString(deck)).append("\n");
             }
+            initalInfo.append("\n");
 
-            initalInfo += "\n";
-
-            initalInfo += "Initial candidate decks:\n";
+            initalInfo.append("Initial candidate decks:\n");
             for (String[] deck : initialCandidateDecks) {
-                initalInfo += "   " + Arrays.toString(deck) + "\n";
+                Arrays.sort(deck);
+                initalInfo.append("   ").append(Arrays.toString(deck)).append("\n");
             }
 
             try {
@@ -57,7 +58,7 @@ public class ResultWriter {
                 file.getParentFile().mkdirs();
 
                 FileWriter myWriter = new FileWriter(file);
-                myWriter.write(initalInfo);
+                myWriter.write(initalInfo.toString());
                 myWriter.close();
 
             } catch (IOException e) {
@@ -69,14 +70,15 @@ public class ResultWriter {
     public void writeCurrentCandidates (List<String[]> currentCandidateDecks) {
         Path initialFilePath = Paths.get(this.filePath.toString(), "currentCandidates.txt");
 
-            String currentCandidates = "";
+            StringBuilder currentCandidates = new StringBuilder();
             for (String[] deck : currentCandidateDecks) {
-                currentCandidates += Arrays.toString(deck) + "\n";
+                Arrays.sort(deck);
+                currentCandidates.append(Arrays.toString(deck)).append("\n");
             }
 
             try {
                 FileWriter myWriter = new FileWriter(initialFilePath.toFile());
-                myWriter.write(currentCandidates);
+                myWriter.write(currentCandidates.toString());
                 myWriter.close();
 
             } catch (IOException e) {
@@ -100,6 +102,7 @@ public class ResultWriter {
             }
         }
 
+        Arrays.sort(bestDeck);
         String currentFitness = gen + ", " + worst + ", " + avg + ", " + best + ", \"" + Arrays.toString(bestDistribution) + "\", \"" + Arrays.toString(bestDeck) + "\"\n";
 
         try {

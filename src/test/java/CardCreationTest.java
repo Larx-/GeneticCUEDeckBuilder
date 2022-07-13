@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class CardCreationTest {
 
     private final Card card = new Card(0,"SST029", "Fireworks Galaxy", "Cmmn", "NULL",
-            Album.SPACE, Collection.SST, 2, 17, null, new String[0]);
+            Album.SPACE, Collection.SST, 2, 17, null);
 
     @Test
     void cardSetCorrectly() {
