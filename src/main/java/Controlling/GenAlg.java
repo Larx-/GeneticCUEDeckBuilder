@@ -30,7 +30,7 @@ public class GenAlg {
     public static final int tournamentSize = 5;
     public static final int generations = 1000;
 
-    public static final int numThreads = 3;
+    public static final int numThreads = 1;
 
     private final List<List<AgentInterface>> residentList;
     private List<Candidate> candidateList;
@@ -82,7 +82,12 @@ public class GenAlg {
         List<Candidate> mutatedPopulation = new ArrayList<>();
         for (Candidate can : canList) {
             int mutationSpot = Main.random.nextInt(DeckInitializer.defaultNumCards);
+
             String cardStr = deckInitializer.getCardReader().getRandomCardStr();
+            while (can.containsCard(cardStr)) {
+                cardStr = deckInitializer.getCardReader().getRandomCardStr();
+            }
+
             String[] mutatedDeckStr = can.mutate(mutationSpot, cardStr);
             mutatedPopulation.add(new Candidate(mutatedDeckStr));
         }
@@ -139,15 +144,20 @@ public class GenAlg {
                     decksFilled.add(Arrays.copyOfRange(deck,0,DeckInitializer.defaultNumCards));
 
                 } else {
-                    String[] deckFilled = new String[DeckInitializer.defaultNumCards];
+                    List<String> deckFilled = new ArrayList<>();
                     for (int i = 0; i < DeckInitializer.defaultNumCards; i++) {
                         if (deck.length > i) {
-                            deckFilled[i] = deck[i];
+                            deckFilled.add(deck[i]);
                         } else {
-                            deckFilled[i] = deckInitializer.getCardReader().getRandomCardStr();
+                            // Make sure there are no double cards in the deck
+                            String cardStr = deckInitializer.getCardReader().getRandomCardStr();
+                            while (deckFilled.contains(cardStr)) {
+                                cardStr = deckInitializer.getCardReader().getRandomCardStr();
+                            }
+                            deckFilled.add(cardStr);
                         }
                     }
-                    decksFilled.add(deckFilled);
+                    decksFilled.add(deckFilled.toArray(new String[0]));
 
                 }
             }

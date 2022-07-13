@@ -57,7 +57,7 @@ public class NatLangPatternParser {
                             if (replace[1].equals("NUM")) {
                                 int integer = Integer.parseInt(toReplace);
 
-                            } else { // COLLECTION, ALBUM or CARD_NAME = CAM
+                            } else { // COLLECTION, ALBUM or CARD_NAME = CAN
                                 if (Album.fromString(toReplace) != null) {
                                     returnString = returnString.replaceAll("~CAN~", "ALBUM");
 
@@ -70,6 +70,11 @@ public class NatLangPatternParser {
                                 } else {
                                     throw new Exception("Could not find Collection, Album or Card '"+toReplace+"' to replace!");
                                 }
+
+                                // Manually telling it what it is
+                                returnString = returnString.replaceAll("~C~", "COLLECTION");
+                                returnString = returnString.replaceAll("~A~", "ALBUM");
+                                returnString = returnString.replaceAll("~N~", "NAME");
                             }
                             returnString = returnString.replaceAll("~" + replace[2] + "~", toReplace);
                         }
@@ -108,7 +113,7 @@ public class NatLangPatternParser {
                             "\"'Target':{'Who':'','Where':'','What':'','CompareTo':''},\" +\n" +
                             "\"'Effect':{'Type':'','Value':''},\" +\n" +
                             "\"'Duration':'',\" +\n" +
-                            "\"'Conditions':[{'Type':'','Who':'','What':'','CompareTo':''}]\" +\n" +
+                            "\"'Conditions':[{'Type':'','Who':'','Where':'','What':'','CompareTo':''}]\" +\n" +
                             "\"}],\" +\n" +
                             "'Combos':'[]'}\");";
 
@@ -144,33 +149,33 @@ public class NatLangPatternParser {
                             "'Duration':'UNTIL_PLAYED'" +
                             "}]," +
                             "'Combos':'[~1~]'}");
-//
-//            this.addPattern(new String[]{"When played with ","~CAN~1~",", give that card +","~NUM~2~"," Power."},
-//                    "{'Effects': [{" +
-//                            "'TriggerTime': 'PLAY'," +
-//                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'~CAN~','CompareTo':'~1~'}," +
-//                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
-//                            "'Duration':'END_TURN'," +
-//                            "'Conditions':[{'Type':'PLAYED_WITH','Who':'SELF','What':'~CAN~','CompareTo':'~1~'}]" +
-//                            "}]," +
-//                            "'Combos':'[~1~]'}");
-//
-//            this.addPattern(new String[]{"~TIME~ if you have played ","~CAN~1~",", give ","~CAN~2~"," and ","~CAN~3~"," (wherever they are) ","~NUM~4~"," Power until played."},
-//                    "{'Effects': [{" +
-//                            "'TriggerTime': '~TIME~'," +
-//                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~2~'}," +
-//                            "'Effect':{'Type':'POWER','Value':'~4~'}," +
-//                            "'Duration':'UNTIL_PLAYED'," +
-//                            "'Conditions':[{'Type':'PLAYED_BEFORE','Who':'SELF','What':'~CAN~','CompareTo':'~1~'}]" +
-//                            "},{" +
-//                            "'TriggerTime': 'PLAY'," +
-//                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~3~'}," +
-//                            "'Effect':{'Type':'POWER','Value':'~4~'}," +
-//                            "'Duration':'UNTIL_PLAYED'," +
-//                            "'Conditions':[{'Type':'PLAYED_BEFORE','Who':'SELF','What':'~CAN~','CompareTo':'~1~'}]" +
-//                            "}]," +
-//                            "'Combos':'[~1~,~2~,~3~]'}");
-//
+
+            this.addPattern(new String[]{"When played with ","~CAN~1~",", give that card +","~NUM~2~"," Power."},
+                    "{'Effects': [{" +
+                            "'TriggerTime': 'PLAY'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'~CAN~','CompareTo':'~1~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':'END_TURN'," +
+                            "'Conditions':[{'Type':'PLAYED_WITH','Who':'SELF','Where':'CARDS_PLAYED','What':'~CAN~','CompareTo':'~1~'}]" +
+                            "}]," +
+                            "'Combos':'[~1~]'}");
+
+            this.addPattern(new String[]{"~TIME~ if you have played ","~CAN~1~",", give ","~CAN~2~"," and ","~CAN~3~"," (wherever they are) ","~NUM~4~"," Power until played."},
+                    "{'Effects': [{" +
+                            "'TriggerTime': '~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~N~','CompareTo':'~2~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~4~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "'Conditions':[{'Type':'PLAYED_BEFORE','Who':'SELF','Where':'CARDS_IN_DECK','What':'~N~','CompareTo':'~1~'}]" +
+                            "},{" +
+                            "'TriggerTime': 'PLAY'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~N~','CompareTo':'~3~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~4~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "'Conditions':[{'Type':'PLAYED_BEFORE','Who':'SELF','Where':'CARDS_IN_DECK','What':'~N~','CompareTo':'~1~'}]" +
+                            "}]," +
+                            "'Combos':'[~1~,~2~,~3~]'}");
+
 //            this.addPattern(new String[]{"~TIME~ Lock a random card in your opponent's hand for this turn. If you are losing the round, also give it ","~NUM~1~"," Power until it is played."},
 //                    "{'Effects': [{" +
 //                            "'TriggerTime': '~TIME~'," +
@@ -182,257 +187,258 @@ public class NatLangPatternParser {
 //                            "'Target':{'Who':'OTHER','Where':'CARDS_IN_HAND','What':'RANDOM'}," + // FIXME: Currently not the same random card
 //                            "'Effect':{'Type':'POWER','Value':'~1~'}," +
 //                            "'Duration':'UNTIL_PLAYED'," +
-//                            "'Conditions':[{'Type':'ROUND_STATE','Value':'Loosing'}]" +
+//                            "'Conditions':[{'Type':'ROUND_STATE','Value':'Loss'}]" +
 //                            "}]," +
 //                            "'Combos':'[]'}");
-//
-//            this.addPattern(new String[]{"~TIME~ if you are winning the round, this card has ","~NUM~1~"," Power."},
-//                    "{'Effects': [{" +
-//                            "'TriggerTime': '~TIME~'," +
-//                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'THIS'}," +
-//                            "'Effect':{'Type':'POWER','Value':'~1~'}," +
-//                            "'Duration':'END_TURN'," +
-//                            "'Conditions':[{'Type':'ROUND_STATE','Value':'Winning'}]" +
-//                            "}]," +
-//                            "'Combos':'[]'}");
-//
-//            this.addPattern(new String[]{"~TIME~ all ","~CAN~1~"," cards have ","~NUM~2~"," Power this turn."},
-//                    "{'Effects': [{" +
-//                            "'TriggerTime': '~TIME~'," +
-//                            "'Target':{'Who':'BOTH','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," +
-//                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
-//                            "'Duration':'END_TURN'," +
-//                            "}]," +
-//                            "'Combos':'[~1~]'}");
-//
-//            this.addPattern(new String[]{"~TIME~ all your cards have ","~NUM~2~"," Power this turn."},
-//                    "{'Effects': [{" +
-//                            "'TriggerTime': '~TIME~'," +
-//                            "'Target':{'Who':'BOTH','Where':'CARDS_IN_DECK'}," +
-//                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
-//                            "'Duration':'END_TURN'," +
-//                            "}]}");
-//
-//            this.addPattern(new String[]{"~TIME~ reduce the energy cost of ","~CAN~1~"," in your hand by ","~NUM~2~"," for the rest of the game."},
-//                    "{'Effects': [{" +
-//                            "'TriggerTime': '~TIME~'," +
-//                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'~CAN~','CompareTo':'~1~'}," +
-//                            "'Effect':{'Type':'ENERGY','Value':'-~2~'}," +
-//                            "'Duration':'PERMANENT'," +
-//                            "}]," +
-//                            "'Combos':'[~1~]'}");
-//
-//            this.addPattern(new String[]{"~TIME~ reduce the energy cost of ","~CAN~1~"," cards in your hand by ","~NUM~2~"," for the rest of the game."},
-//                    "{'Effects': [{" +
-//                            "'TriggerTime': '~TIME~'," +
-//                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'~CAN~','CompareTo':'~1~'}," +
-//                            "'Effect':{'Type':'ENERGY','Value':'-~2~'}," +
-//                            "'Duration':'PERMANENT'," +
-//                            "}]," +
-//                            "'Combos':'[~1~]'}");
-//
-//            this.addPattern(new String[]{"~TIME~ if you are losing the round, gain ","~NUM~1~"," Energy."},
-//                    "{'Effects': [{" +
-//                            "'TriggerTime': '~TIME~'," +
-//                            "'Target':{'Who':'SELF'}," +
-//                            "'Effect':{'Type':'ENERGY','Value':'~1~'}," +
-//                            "'Duration':'PERMANENT'," +
-//                            "}]," +
-//                            "'Combos':'[]'}");
-//
-//            this.addPattern(new String[]{"When played on the first turn of a round, this card has ","~NUM~1~"," Power."},
-//                    "{'Effects': [{" +
-//                            "'TriggerTime': 'PLAY'," +
-//                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'THIS'}," +
-//                            "'Effect':{'Type':'POWER','Value':'~1~'}," +
-//                            "'Duration':'END_TURN'," +
-//                            "'Conditions':[{'Type':'TURN_IN_ROUND','Value':'1'}]" +
-//                            "}]," +
-//                            "'Combos':'[]'}");
-//
-//            this.addPattern(new String[]{"~TIME~ gain ","~NUM~1~"," Energy. If you won the turn, gain an extra ","~NUM~2~"," Energy."},
-//                    "{'Effects': [{" +
-//                            "'TriggerTime': '~TIME~'," +
-//                            "'Target':{'Who':'SELF'}," +
-//                            "'Effect':{'Type':'ENERGY','Value':'~1~'}," +
-//                            "'Duration':'PERMANENT'," +
-//                            "},{" +
-//                            "'TriggerTime': 'RETURN'," +
-//                            "'Target':{'Who':'SELF'}," +
-//                            "'Effect':{'Type':'ENERGY','Value':'~2~'}," +
-//                            "'Duration':'PERMANENT'," +
-//                            "'Conditions':[{'Type':'ROUND_STATE','Value':'Winning'}]" +
-//                            "}]," +
-//                            "'Combos':'[]'}");
-//
-//            this.addPattern(new String[]{"When this card returns to your deck, steal ","~NUM~1~"," Energy from your opponent."},
-//                    "{'Effects': [{" +
-//                            "'TriggerTime': 'RETURN'," +
-//                            "'Target':{'Who':'SELF'}," +
-//                            "'Effect':{'Type':'ENERGY','Value':'~1~'}," +
-//                            "'Duration':'PERMANENT'," +
-//                            "},{" +
-//                            "'TriggerTime': 'RETURN'," +
-//                            "'Target':{'Who':'OTHER'}," +
-//                            "'Effect':{'Type':'ENERGY','Value':'-~1~'}," +
-//                            "'Duration':'PERMANENT'," +
-//                            "}]," +
-//                            "'Combos':'[]'}");
-//
-//            this.addPattern(new String[]{"When this returns to your deck, if you won this turn, gain ","~NUM~1~"," Power next turn."},
-//                    "{'Effects': [{" +
-//                            "'TriggerTime': 'RETURN'," +
-//                            "'Target':{'Who':'SELF'}," +
-//                            "'Effect':{'Type':'POWER','Value':'~1~'}," +
-//                            "'Duration':{'Type':'TIMER','Value':'1'}," +
-//                            "'Conditions':[{'Type':'TURN_WON'}]" +
-//                            "}]," +
-//                            "'Combos':'[]'}");
-//
-//            this.addPattern(new String[]{"~TIME~ if you are winning the round, you have ","~NUM~1~"," Power next turn."},
-//                    "{'Effects': [{" +
-//                            "'TriggerTime': '~TIME~'," +
-//                            "'Target':{'Who':'SELF'}," +
-//                            "'Effect':{'Type':'POWER','Value':'~1~'}," +
-//                            "'Duration':{'Type':'TIMER','Value':'1'}," +
-//                            "'Conditions':[{'Type':'ROUND_STATE','Value':'Winning'}]" +
-//                            "}]," +
-//                            "'Combos':'[]'}");
-//
-//            this.addPattern(new String[]{"~TIME~ if you won the turn, gain ","~NUM~1~"," Energy next turn."},
-//                    "{'Effects': [{" +
-//                            "'TriggerTime': '~TIME~'," +
-//                            "'Target':{'Who':'SELF'}," +
-//                            "'Effect':{'Type':'POWER','Value':'~1~'}," +
-//                            "'Duration':{'Type':'TIMER','Value':'1'}," +
-//                            "'Conditions':[{'Type':'TURN_WON'}]" +
-//                            "}]," +
-//                            "'Combos':'[]'}");
-//
-//            // When drawn, if you have lost at least 1 round, give your Angela Maxwell's Walking the World cards (wherever they are) +15 Power this turn.
-//            this.addPattern(new String[]{"~TIME~ if you have lost at least ","~NUM~1~"," round, give your ","~CAN~2~"," cards (wherever they are) ","~NUM~3~"," Power this turn."},
-//                    "{'Effects':[{" +
-//                            "'TriggerTime':'~TIME~'," +
-//                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~2~'}," +
-//                            "'Effect':{'Type':'POWER','Value':'~3~'}," +
-//                            "'Duration':'END_TURN'," +
-//                            "'Conditions':[{'Type':'ROUNDS_LOST','Value':'>~1~'}]" +
-//                            "}]," +
-//                            "'Combos':'[~2~]'}");
-//
-//            // When played, if you have lost two or more rounds, give your Angela Maxwells Walking the World (wherever they are) cards +14 Power permanently.
-//            this.addPattern(new String[]{"~TIME~ if you have lost two or more rounds, give your ","~CAN~1~"," (wherever they are) cards ","~NUM~2~"," Power permanently."},
-//                    "{'Effects':[{" +
-//                            "'TriggerTime':'~TIME~'," +
-//                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," +
-//                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
-//                            "'Duration':'PERMANENT'," +
-//                            "'Conditions':[{'Type':'ROUNDS_LOST','Value':'>~2~'}]" +
-//                            "}]," +
-//                            "'Combos':'[~1~]'}");
-//
-//            // While in your hand, at the start of each turn, if you are losing the round, give your Angela Maxwells Walking the World cards (wherever they are) +7 Power for 4 turns.
-//            this.addPattern(new String[]{"While in your hand, at the start of each turn, if you are losing the round, give your ","~CAN~1~"," cards (wherever they are) ","~NUM~2~"," Power for ","~NUM~3~"," turns."},
-//                    "{'Effects':[{" +
-//                            "'TriggerTime':'START'," +
-//                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," +
-//                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
-//                            "'Duration':{'Type':'TIMER','Value':'~3~'}," +
-//                            "'Conditions':[{'Type':'ROUND_STATE','Value':'Losing'}]" +
-//                            "}]," +
-//                            "'Combos':'[~1~]'}");
-//
-//            // When returned to your deck, if you lost the turn, reduce the Energy cost of your Angela Maxwells Walking the World (wherever they are) cards by 2 for 3 turns.
-//            this.addPattern(new String[]{"~TIME~ if you lost the turn, reduce the Energy cost of your ","~CAN~1~"," (wherever they are) cards by ","~NUM~2~"," for ","~NUM~3~"," turns."},
-//                    "{'Effects':[{" +
-//                            "'TriggerTime':'~TIME~'," +
-//                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," +
-//                            "'Effect':{'Type':'ENERGY','Value':'-~2~'}," +
-//                            "'Duration':{'Type':'TIMER','Value':'~3~'}," +
-//                            "'Conditions':[{'Type':'TURN_LOST'}]" +
-//                            "}]," +
-//                            "'Combos':'[~1~]'}");
-//
-//            // When played, if you are losing the round, give your Angela Maxwells Walking the World (wherever they are) cards +25 Power for 3 turns.
-//            this.addPattern(new String[]{"~TIME~ if you are losing the round, give your ","~CAN~1~"," (wherever they are) cards ","~NUM~2~"," Power for ","~NUM~3~"," turns."},
-//                    "{'Effects':[{" +
-//                            "'TriggerTime':'~TIME~'," +
-//                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," +
-//                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
-//                            "'Duration':{'Type':'TIMER','Value':'~3~'}," +
-//                            "'Conditions':[{'Type':'ROUND_STATE','Value':'Losing'}]" +
-//                            "}]," +
-//                            "'Combos':'[~1~]'}");
-//
-//            // When returned to your deck, if you lost the turn, reduce the Energy cost of your Angela Maxwells Walking the World cards (wherever they are) by 1 until played.
-//            this.addPattern(new String[]{"~TIME~ if you lost the turn, reduce the Energy cost of your ","~CAN~1~"," cards (wherever they are) by ","~NUM~2~"," until played."},
-//                    "{'Effects':[{" +
-//                            "'TriggerTime':'~TIME~'," +
-//                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," +
-//                            "'Effect':{'Type':'ENERGY','Value':'-~2~'}," +
-//                            "'Duration':'UNTIL_PLAYED'," +
-//                            "'Conditions':[{'Type':'TURN_LOST'}]" +
-//                            "}]," +
-//                            "'Combos':'[~1~]'}");
-//
-//            // When drawn, if you are losing the round, give your Angela Maxwells Walking the World (wherever they are) cards +15 Power this turn.
-//            this.addPattern(new String[]{"~TIME~ if you are losing the round, give your ","~CAN~1~"," (wherever they are) cards ","~NUM~2~"," Power this turn."},
-//                    "{'Effects':[{" +
-//                            "'TriggerTime':'~TIME~'," +
-//                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," +
-//                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
-//                            "'Duration':'END_TURN'," +
-//                            "'Conditions':[{'Type':'ROUND_STATE','Value':'Losing'}]" +
-//                            "}]," +
-//                            "'Combos':'[~1~]'}");
-//
-//            // When returned to your deck, if it is the first turn of the round, give your Web Surfers cards, wherever they are, +18 Power until played.
-//            this.addPattern(new String[]{"~TIME~ if it is the first turn of the round, give your ","~CAN~1~"," cards, wherever they are, ","~NUM~2~"," Power until played."},
-//                    "{'Effects':[{" +
-//                            "'TriggerTime':'~TIME~'," +
-//                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," +
-//                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
-//                            "'Duration':'UNTIL_PLAYED'," +
-//                            "'Conditions':[{'Type':'TURN_IN_ROUND','Value':'1'}]" +
-//                            "}]," +
-//                            "'Combos':'[~1~]'}");
-//
-//            // When played, if your deck contains Shiba Inu, give your Dogs cards (wherever they are) +19 Power until played.
-//            this.addPattern(new String[]{"~TIME~ if your deck contains ","~CAN~1~",", give your ","~CAN~2~"," cards (wherever they are) ","~NUM~3~"," Power until played."},
-//                    "{'Effects':[{" +
-//                            "'TriggerTime':'~TIME~'," +
-//                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~2~'}," +
-//                            "'Effect':{'Type':'POWER','Value':'~3~'}," +
-//                            "'Duration':'UNTIL_PLAYED'," +
-//                            "'Conditions':[{'Type':'DECK_CONTAINS','Who':'SELF','What':'~CAN~','CompareTo':'~1~','Value':'1'}]" +
-//                            "}]," +
-//                            "'Combos':'[~1~,~2~]'}");
-//
-//            // When played, steal 2 Energy from your Opponent.
-//            this.addPattern(new String[]{"~TIME~ steal ","~NUM~1~"," Energy from your Opponent."},
-//                    "{'Effects':[{" +
-//                            "'TriggerTime':'~TIME~'," +
-//                            "'Target':{'Who':'SELF'}," +
-//                            "'Effect':{'Type':'ENERGY','Value':'~1~'}," +
-//                            "'Duration':'PERMANENT'," +
-//                            "},{" +
-//                            "'TriggerTime':'~TIME~',"+
-//                            "'Target':{'Who':'OTHER'}," +
-//                            "'Effect':{'Type':'ENERGY','Value':'-~1~'}," +
-//                            "'Duration':'PERMANENT'," +
-//                            "}]," +
-//                            "'Combos':'[]'}");
-//
-//            // When played, if your deck contains 9 or more Cute Cats, give them, wherever they are, +14 Power until played.
-//            this.addPattern(new String[]{"~TIME~ if your deck contains ","~NUM~1~"," or more ","~CAN~2~",", give them, wherever they are, ","~NUM~3~"," Power until played."},
-//                    "{'Effects':[{" +
-//                            "'TriggerTime':'~TIME~'," +
-//                            "'Target':{'Who':'SELF','What':'~CAN~','CompareTo':'~2~'}," +
-//                            "'Effect':{'Type':'POWER','Value':'~3~'}," +
-//                            "'Duration':'UNTIL_PLAYED'," +
-//                            "'Conditions':[{'Type':'DECK_CONTAINS','Who':'SELF','What':'~CAN~','CompareTo':'~2~','Value':'>~1~'}]" +
-//                            "}]," +
-//                            "'Combos':'[~2~]'}");
+
+            this.addPattern(new String[]{"~TIME~ if you are winning the round, this card has ","~NUM~1~"," Power."},
+                    "{'Effects': [{" +
+                            "'TriggerTime': '~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'THIS'}," +
+                            "'Effect':{'Type':'POWER','Value':'~1~'}," +
+                            "'Duration':'END_TURN'," +
+                            "'Conditions':[{'Type':'ROUND_STATE','Value':'Win'}]" +
+                            "}]," +
+                            "'Combos':'[]'}");
+
+            this.addPattern(new String[]{"~TIME~ all ","~CAN~1~"," cards have ","~NUM~2~"," Power this turn."},
+                    "{'Effects': [{" +
+                            "'TriggerTime': '~TIME~'," +
+                            "'Target':{'Who':'BOTH','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':'END_TURN'," +
+                            "}]," +
+                            "'Combos':'[~1~]'}");
+
+            this.addPattern(new String[]{"~TIME~ all your cards have ","~NUM~2~"," Power this turn."},
+                    "{'Effects': [{" +
+                            "'TriggerTime': '~TIME~'," +
+                            "'Target':{'Who':'BOTH','Where':'CARDS_IN_DECK'}," +
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':'END_TURN'," +
+                            "}]," +
+                            "'Combos':'[]'}");
+
+            this.addPattern(new String[]{"~TIME~ reduce the energy cost of ","~CAN~1~"," in your hand by ","~NUM~2~"," for the rest of the game."},
+                    "{'Effects': [{" +
+                            "'TriggerTime': '~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'~CAN~','CompareTo':'~1~'}," +
+                            "'Effect':{'Type':'ENERGY','Value':'-~2~'}," +
+                            "'Duration':'PERMANENT'," +
+                            "}]," +
+                            "'Combos':'[~1~]'}");
+
+            this.addPattern(new String[]{"~TIME~ reduce the energy cost of ","~CAN~1~"," cards in your hand by ","~NUM~2~"," for the rest of the game."},
+                    "{'Effects': [{" +
+                            "'TriggerTime': '~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'~CAN~','CompareTo':'~1~'}," +
+                            "'Effect':{'Type':'ENERGY','Value':'-~2~'}," +
+                            "'Duration':'PERMANENT'," +
+                            "}]," +
+                            "'Combos':'[~1~]'}");
+
+            this.addPattern(new String[]{"~TIME~ if you are losing the round, gain ","~NUM~1~"," Energy."},
+                    "{'Effects': [{" +
+                            "'TriggerTime': '~TIME~'," +
+                            "'Target':{'Who':'SELF'}," +
+                            "'Effect':{'Type':'ENERGY','Value':'~1~'}," +
+                            "'Duration':'PERMANENT'," +
+                            "}]," +
+                            "'Combos':'[]'}");
+
+            this.addPattern(new String[]{"When played on the first turn of a round, this card has ","~NUM~1~"," Power."},
+                    "{'Effects': [{" +
+                            "'TriggerTime': 'PLAY'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'THIS'}," +
+                            "'Effect':{'Type':'POWER','Value':'~1~'}," +
+                            "'Duration':'END_TURN'," +
+                            "'Conditions':[{'Type':'TURN_IN_ROUND','Value':'1'}]" +
+                            "}]," +
+                            "'Combos':'[]'}");
+
+            this.addPattern(new String[]{"~TIME~ gain ","~NUM~1~"," Energy. If you won the turn, gain an extra ","~NUM~2~"," Energy."},
+                    "{'Effects': [{" +
+                            "'TriggerTime': '~TIME~'," +
+                            "'Target':{'Who':'SELF'}," +
+                            "'Effect':{'Type':'ENERGY','Value':'~1~'}," +
+                            "'Duration':'PERMANENT'," +
+                            "},{" +
+                            "'TriggerTime': 'RETURN'," +
+                            "'Target':{'Who':'SELF'}," +
+                            "'Effect':{'Type':'ENERGY','Value':'~2~'}," +
+                            "'Duration':'PERMANENT'," +
+                            "'Conditions':[{'Type':'ROUND_STATE','Value':'Win'}]" +
+                            "}]," +
+                            "'Combos':'[]'}");
+
+            this.addPattern(new String[]{"When this card returns to your deck, steal ","~NUM~1~"," Energy from your opponent."},
+                    "{'Effects': [{" +
+                            "'TriggerTime': 'RETURN'," +
+                            "'Target':{'Who':'SELF'}," +
+                            "'Effect':{'Type':'ENERGY','Value':'~1~'}," +
+                            "'Duration':'PERMANENT'," +
+                            "},{" +
+                            "'TriggerTime': 'RETURN'," +
+                            "'Target':{'Who':'OTHER'}," +
+                            "'Effect':{'Type':'ENERGY','Value':'-~1~'}," +
+                            "'Duration':'PERMANENT'," +
+                            "}]," +
+                            "'Combos':'[]'}");
+
+            this.addPattern(new String[]{"When this returns to your deck, if you won this turn, gain ","~NUM~1~"," Power next turn."},
+                    "{'Effects': [{" +
+                            "'TriggerTime': 'RETURN'," +
+                            "'Target':{'Who':'SELF'}," +
+                            "'Effect':{'Type':'POWER_PER_TURN','Value':'~1~'}," +
+                            "'Duration':{'Type':'TIMER','Value':'1'}," +
+                            "'Conditions':[{'Type':'TURN_STATE','Value':'Win'}]" +
+                            "}]," +
+                            "'Combos':'[]'}");
+
+            this.addPattern(new String[]{"~TIME~ if you are winning the round, you have ","~NUM~1~"," Power next turn."},
+                    "{'Effects': [{" +
+                            "'TriggerTime': '~TIME~'," +
+                            "'Target':{'Who':'SELF'}," +
+                            "'Effect':{'Type':'POWER_PER_TURN','Value':'~1~'}," +
+                            "'Duration':{'Type':'TIMER','Value':'1'}," +
+                            "'Conditions':[{'Type':'ROUND_STATE','Value':'Win'}]" +
+                            "}]," +
+                            "'Combos':'[]'}");
+
+            this.addPattern(new String[]{"~TIME~ if you won the turn, gain ","~NUM~1~"," Energy next turn."},
+                    "{'Effects': [{" +
+                            "'TriggerTime': '~TIME~'," +
+                            "'Target':{'Who':'SELF'}," +
+                            "'Effect':{'Type':'ENERGY','Value':'~1~'}," +
+                            "'Duration':{'Type':'TIMER','Value':'1'}," + // FIXME: Is this supposed to remove the energy after next turn?
+                            "'Conditions':[{'Type':'TURN_STATE','Value':'Win'}]" +
+                            "}]," +
+                            "'Combos':'[]'}");
+
+            // When drawn, if you have lost at least 1 round, give your Angela Maxwell's Walking the World cards (wherever they are) +15 Power this turn.
+            this.addPattern(new String[]{"~TIME~ if you have lost at least ","~NUM~1~"," round, give your ","~CAN~2~"," cards (wherever they are) ","~NUM~3~"," Power this turn."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~2~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~3~'}," +
+                            "'Duration':'END_TURN'," +
+                            "'Conditions':[{'Type':'ROUNDS_LOST','Value':'>~1~'}]" +
+                            "}]," +
+                            "'Combos':'[~2~]'}");
+
+            // When played, if you have lost two or more rounds, give your Angela Maxwells Walking the World (wherever they are) cards +14 Power permanently.
+            this.addPattern(new String[]{"~TIME~ if you have lost two or more rounds, give your ","~CAN~1~"," (wherever they are) cards ","~NUM~2~"," Power permanently."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':'PERMANENT'," +
+                            "'Conditions':[{'Type':'ROUNDS_LOST','Value':'>~2~'}]" +
+                            "}]," +
+                            "'Combos':'[~1~]'}");
+
+            // While in your hand, at the start of each turn, if you are losing the round, give your Angela Maxwells Walking the World cards (wherever they are) +7 Power for 4 turns.
+            this.addPattern(new String[]{"While in your hand, at the start of each turn, if you are losing the round, give your ","~CAN~1~"," cards (wherever they are) ","~NUM~2~"," Power for ","~NUM~3~"," turns."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'START'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':{'Type':'TIMER','Value':'~3~'}," +
+                            "'Conditions':[{'Type':'ROUND_STATE','Value':'Loss'}]" +
+                            "}]," +
+                            "'Combos':'[~1~]'}");
+
+            // When returned to your deck, if you lost the turn, reduce the Energy cost of your Angela Maxwells Walking the World (wherever they are) cards by 2 for 3 turns.
+            this.addPattern(new String[]{"~TIME~ if you lost the turn, reduce the Energy cost of your ","~CAN~1~"," (wherever they are) cards by ","~NUM~2~"," for ","~NUM~3~"," turns."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," +
+                            "'Effect':{'Type':'ENERGY','Value':'-~2~'}," +
+                            "'Duration':{'Type':'TIMER','Value':'~3~'}," +
+                            "'Conditions':[{'Type':'TURN_STATE','Value':'Loss'}]" +
+                            "}]," +
+                            "'Combos':'[~1~]'}");
+
+            // When played, if you are losing the round, give your Angela Maxwells Walking the World (wherever they are) cards +25 Power for 3 turns.
+            this.addPattern(new String[]{"~TIME~ if you are losing the round, give your ","~CAN~1~"," (wherever they are) cards ","~NUM~2~"," Power for ","~NUM~3~"," turns."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':{'Type':'TIMER','Value':'~3~'}," +
+                            "'Conditions':[{'Type':'ROUND_STATE','Value':'Loss'}]" +
+                            "}]," +
+                            "'Combos':'[~1~]'}");
+
+            // When returned to your deck, if you lost the turn, reduce the Energy cost of your Angela Maxwells Walking the World cards (wherever they are) by 1 until played.
+            this.addPattern(new String[]{"~TIME~ if you lost the turn, reduce the Energy cost of your ","~CAN~1~"," cards (wherever they are) by ","~NUM~2~"," until played."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," +
+                            "'Effect':{'Type':'ENERGY','Value':'-~2~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "'Conditions':[{'Type':'TURN_STATE','Value':'Loss'}]" +
+                            "}]," +
+                            "'Combos':'[~1~]'}");
+
+            // When drawn, if you are losing the round, give your Angela Maxwells Walking the World (wherever they are) cards +15 Power this turn.
+            this.addPattern(new String[]{"~TIME~ if you are losing the round, give your ","~CAN~1~"," (wherever they are) cards ","~NUM~2~"," Power this turn."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':'END_TURN'," +
+                            "'Conditions':[{'Type':'ROUND_STATE','Value':'Loss'}]" +
+                            "}]," +
+                            "'Combos':'[~1~]'}");
+
+            // When returned to your deck, if it is the first turn of the round, give your Web Surfers cards, wherever they are, +18 Power until played.
+            this.addPattern(new String[]{"~TIME~ if it is the first turn of the round, give your ","~CAN~1~"," cards, wherever they are, ","~NUM~2~"," Power until played."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "'Conditions':[{'Type':'TURN_IN_ROUND','Value':'1'}]" +
+                            "}]," +
+                            "'Combos':'[~1~]'}");
+
+            // When played, if your deck contains Shiba Inu, give your Dogs cards (wherever they are) +19 Power until played.
+            this.addPattern(new String[]{"~TIME~ if your deck contains ","~CAN~1~",", give your ","~CAN~2~"," cards (wherever they are) ","~NUM~3~"," Power until played."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~N~','CompareTo':'~2~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~3~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "'Conditions':[{'Type':'DECK_CONTAINS','Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'~1~','Value':'1'}]" +
+                            "}]," +
+                            "'Combos':'[~1~,~2~]'}");
+
+            // When played, steal 2 Energy from your Opponent.
+            this.addPattern(new String[]{"~TIME~ steal ","~NUM~1~"," Energy from your Opponent."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF'}," +
+                            "'Effect':{'Type':'ENERGY','Value':'~1~'}," +
+                            "'Duration':'PERMANENT'," +
+                            "},{" +
+                            "'TriggerTime':'~TIME~',"+
+                            "'Target':{'Who':'OTHER'}," +
+                            "'Effect':{'Type':'ENERGY','Value':'-~1~'}," +
+                            "'Duration':'PERMANENT'," +
+                            "}]," +
+                            "'Combos':'[]'}");
+
+            // When played, if your deck contains 9 or more Cute Cats, give them, wherever they are, +14 Power until played.
+            this.addPattern(new String[]{"~TIME~ if your deck contains ","~NUM~1~"," or more ","~CAN~2~",", give them, wherever they are, ","~NUM~3~"," Power until played."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'~2~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~3~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "'Conditions':[{'Type':'DECK_CONTAINS','Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'~2~','Value':'>=~1~'}]" +
+                            "}]," +
+                            "'Combos':'[~2~]'}");
 
 
         } catch (Exception e) {

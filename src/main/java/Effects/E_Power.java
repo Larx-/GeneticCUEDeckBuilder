@@ -5,6 +5,7 @@ import Enums.TriggerTime;
 import Enums.Who;
 import GameElements.Card;
 import GameElements.Game;
+import GameElements.Player;
 import GameElements.Target;
 import lombok.extern.log4j.Log4j2;
 
@@ -30,7 +31,7 @@ public class E_Power extends Effect {
     @Override
     public Effect applyEffect(Game game, Who selfPlayer) {
         // 0. Are cards meant?
-        if (super.target.getWhere() != null) {
+        if (super.target.getWhere() != null || this.target.hasPresetCards()) {
             // 1. Collect Targets
             List<Card> targetCards = super.selectCards(game, selfPlayer);
 
@@ -54,8 +55,9 @@ public class E_Power extends Effect {
                     }
                 }
             }
+        } else {
+            log.error("POWER should not be directly applied to players! Use POWER_PER_TURN instead!");
         }
-        // TODO: Player Power
         return null;
     }
 }

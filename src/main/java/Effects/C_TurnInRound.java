@@ -5,16 +5,16 @@ import GameElements.Game;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class C_AfterRoundX extends Condition {
+public class C_TurnInRound extends Condition {
 
-    int afterRound;
+    int turn;
 
-    public C_AfterRoundX(int afterRound) {
-        this.afterRound = afterRound;
+    public C_TurnInRound(int turn) {
+        this.turn = turn;
     }
 
     @Override
     public boolean checkConditionFulfilled(Game game, Who selfPlayer) {
-        return this.afterRound < game.getRoundNumber();
+        return this.turn == game.getTurnNumber();
     }
 }

@@ -5,11 +5,11 @@ import GameElements.Game;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class C_BeforeRoundX extends Condition {
+public class C_BeforeRound extends Condition {
 
     int beforeRound;
 
-    public C_BeforeRoundX(int beforeRound) {
+    public C_BeforeRound(int beforeRound) {
         this.beforeRound = beforeRound;
     }
 

@@ -35,7 +35,7 @@ public class E_Burn extends Effect {
         if (!targetCards.isEmpty() && super.conditionsFulfilled(game, selfPlayer)) {
             // 3. In subclass do effect
             for (Card card : targetCards) {
-                card.setBurnAmount(this.burnAmount);
+                card.setBurnAmount(card.getBurnAmount() + this.burnAmount);
             }
 
             // 4. If required return expiryEffect using inverse

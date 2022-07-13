@@ -7,9 +7,11 @@ public enum TriggerTime {
     DRAW,
     PLAY,
     RETURN,
-    END_TURN, // Same as return, but only ever used as "counter effect"
+
+    // Only ever in expiry effect
+    END_TURN,
     END_ROUND,
-    TIMER,    // Only ever in expiry
+    TIMER,
     PERMANENT,
     UNTIL_PLAYED;
 

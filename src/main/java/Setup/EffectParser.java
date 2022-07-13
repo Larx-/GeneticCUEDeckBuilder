@@ -158,14 +158,20 @@ public class EffectParser {
         String effectString = effectObject.getString("Type");
 
         switch (effectString) {
-            case "POWER":
-                return new E_Power(triggerTime,target,effectObject.getInt("Value"),duration,timer,conditions);
+            case "ENERGY_PER_TURN":
+                return new E_EPT(triggerTime,target,effectObject.getInt("Value"),duration,timer,conditions);
+            case "POWER_PER_TURN":
+                return new E_PPT(triggerTime,target,effectObject.getInt("Value"),duration,timer,conditions);
             case "ENERGY":
                 return new E_Energy(triggerTime,target,effectObject.getInt("Value"),duration,timer,conditions);
+            case "POWER":
+                return new E_Power(triggerTime,target,effectObject.getInt("Value"),duration,timer,conditions);
+            case "BURN":
+                return new E_Burn(triggerTime,target,effectObject.getInt("Value"),duration,timer,conditions);
             case "LOCK":
                 return new E_Lock(triggerTime,target,true,duration,timer,conditions);
-//                log.error("Not yet implemented effect: " + effectString);
             default:
+//                log.error("Not yet implemented effect: " + effectString);
                 throw new IllegalStateException("Unexpected value parsing effect: " + effectString);
         }
     }
@@ -175,23 +181,29 @@ public class EffectParser {
 
         switch (conditionString) {
             case "AFTER_ROUND":
-                return new C_AfterRoundX(jsonCondition.getInt("Value"));
+                return new C_AfterRound(jsonCondition.getInt("Value"));
             case "BEFORE_ROUND":
-                return new C_BeforeRoundX(jsonCondition.getInt("Value"));
+                return new C_BeforeRound(jsonCondition.getInt("Value"));
             case "PLAYED_WITH":
                 return new C_PlayedWith(Who.fromString(jsonCondition.getString("Who")),
                         What.fromString(jsonCondition.getString("What")), jsonCondition.getString("CompareTo"));
-            case "PLAYED_BEFORE": // TODO
+            case "PLAYED_BEFORE":
+                return new C_PlayedBefore(Who.fromString(jsonCondition.getString("Who")),
+                        What.fromString(jsonCondition.getString("What")), jsonCondition.getString("CompareTo"));
             case "ROUND_STATE":
+                return new C_RoundState(jsonCondition.getString("Value"));
+            case "TURN_STATE":
+                return new C_TurnState(jsonCondition.getString("Value"));
             case "TURN_IN_ROUND":
-            case "TURN_WON":
-            case "TURN_LOST":
+                return new C_TurnInRound(jsonCondition.getInt("Value"));
             case "ROUNDS_LOST":
+                return new C_RoundsLost(jsonCondition.getString("Value"));
             case "ROUNDS_WON":
+                return new C_RoundsWon(jsonCondition.getString("Value"));
             case "DECK_CONTAINS":
-                log.error("Not yet implemented condition: " + conditionString);
                 return null;
             default:
+//                log.error("Not yet implemented condition: " + conditionString);
                 throw new IllegalStateException("Unexpected value parsing condition: " + conditionString);
         }
     }

@@ -5,6 +5,7 @@ import Enums.TriggerTime;
 import Enums.Who;
 import GameElements.Card;
 import GameElements.Game;
+import GameElements.Player;
 import GameElements.Target;
 import lombok.extern.log4j.Log4j2;
 
@@ -30,7 +31,7 @@ public class E_Energy extends Effect {
     @Override
     public Effect applyEffect(Game game, Who selfPlayer) {
         // 0. Are cards meant?
-        if (super.target.getWhere() != null) {
+        if (super.target.getWhere() != null || this.target.hasPresetCards()) {
             // 1. Collect Targets
             List<Card> targetCards = super.selectCards(game,selfPlayer);
             // 2. Check conditions (per card / general)
@@ -53,8 +54,20 @@ public class E_Energy extends Effect {
                     }
                 }
             }
+        } else {
+            // 1. Collect Targets
+            List<Player> targetPlayers = super.selectPlayers(game, selfPlayer);
+
+            // 2. Check conditions
+            if (super.conditionsFulfilled(game, selfPlayer)) {
+
+                // 3. In subclass do effect
+                for (Player player : targetPlayers) {
+                    int newEnergy = player.getEnergyAvailable() + this.changeBy;
+                    player.setEnergyAvailable(newEnergy);
+                }
+            }
         }
-        // TODO: Player Energy
         return null;
     }
 }

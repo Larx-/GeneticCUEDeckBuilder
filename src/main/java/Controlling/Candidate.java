@@ -20,12 +20,18 @@ public class Candidate {
         this.deckStrArray = deckStrArray;
     }
 
-    public String[] mutate(int mutationSpot, String cardStr) {
-        if (!Arrays.asList(deckStrArray).contains(cardStr)) {
-            String[] mutated = Arrays.copyOf(this.deckStrArray, this.deckStrArray.length);
-            mutated[mutationSpot] = cardStr;
-            return mutated;
+    public boolean containsCard (String cardStr) {
+        for (String cStr : deckStrArray) {
+            if (cardStr.equals(cStr)) {
+                return false;
+            }
         }
-        return this.deckStrArray;
+        return true;
+    }
+
+    public String[] mutate(int mutationSpot, String cardStr) {
+        String[] mutated = Arrays.copyOf(this.deckStrArray, this.deckStrArray.length);
+        mutated[mutationSpot] = cardStr;
+        return mutated;
     }
 }

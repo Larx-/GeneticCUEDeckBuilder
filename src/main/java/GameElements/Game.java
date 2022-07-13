@@ -19,12 +19,14 @@ public class Game {
     @Getter int totalTurnNumber;
     @Getter int roundNumber;
     @Getter int turnNumber;
-    @Getter int rWin;
-    @Getter int oWin;
-    @Getter int rPow;
-    @Getter int oPow;
+    @Getter int resWins;
+    @Getter int oppWins;
+    @Getter int resPower;
+    @Getter int oppPower;
     @Getter int powerBalance;
     @Getter int lastPowerDiff;
+
+    @Getter Map<Who,List<Card>> playedCardsHistory;
 
     // FIFO queues of effects to execute (/revert) at different times
     Map<TriggerTime,List<Effect>> effectStackResident;
@@ -42,17 +44,17 @@ public class Game {
     public Who playGame(){
         this.initializeGame();
 
-        while(this.rWin < 3 && this.oWin < 3){
+        while(this.resWins < 3 && this.oppWins < 3){
             boolean resWon = playRound();
 
-            if (resWon) { this.rWin++; }
-            else        { this.oWin++; }
+            if (resWon) { this.resWins++; }
+            else        { this.oppWins++; }
 
 //            log.debug("Resident  "+this.rWin+" - "+this.oWin+"  Opponent");
             this.roundNumber++;
         }
 
-        if (this.rWin > this.oWin) {
+        if (this.resWins > this.oppWins) {
 //            log.debug("--> Resident won game <--");
 //            log.debug("");
 //            log.debug("");
@@ -76,10 +78,13 @@ public class Game {
             this.effectStackOpponent.put(triggerTime, new ArrayList<>());
         }
 
-        this.rWin = 0;
-        this.oWin = 0;
+        this.resWins = 0;
+        this.oppWins = 0;
         this.totalTurnNumber = 1;
         this.roundNumber = 1;
+        this.playedCardsHistory = new HashMap<>();
+        this.playedCardsHistory.put(Who.RESIDENT, new ArrayList<>());
+        this.playedCardsHistory.put(Who.OPPONENT, new ArrayList<>());
 
         this.resident.resetPlayer(this.rules.getEnergyStarting(), this.rules.getEnergyPerTurn(), 0);
         this.opponent.resetPlayer(this.rules.getEnergyStarting(), this.rules.getEnergyPerTurn(), 0);
@@ -180,15 +185,16 @@ public class Game {
         // PLAY effects
         Card[] cardsPlayedResident = this.resident.getDeck().getCardsPlayed();
         Card[] cardsPlayedOpponent = this.opponent.getDeck().getCardsPlayed();
+        this.savePlayedCards(cardsPlayedResident, cardsPlayedOpponent);
 
         this.applyCardEffects(cardsPlayedResident,TriggerTime.PLAY,Who.RESIDENT);
         this.applyCardEffects(cardsPlayedOpponent,TriggerTime.PLAY,Who.OPPONENT);
         this.applyEffectStack(TriggerTime.PLAY,Who.BOTH);
 
         // Power calculation
-        this.rPow = this.resident.getDeck().calcPower() + this.resident.getPowerPerTurn();
-        this.oPow = this.opponent.getDeck().calcPower() + this.opponent.getPowerPerTurn();
-        this.lastPowerDiff = rPow - oPow;
+        this.resPower = this.resident.getDeck().calcPower() + this.resident.getPowerPerTurn();
+        this.oppPower = this.opponent.getDeck().calcPower() + this.opponent.getPowerPerTurn();
+        this.lastPowerDiff = resPower - oppPower;
         this.powerBalance += this.lastPowerDiff;
 
 //        this.logPlay();
@@ -216,6 +222,19 @@ public class Game {
         this.applyEffectStack(TriggerTime.TIMER,Who.BOTH);
 
         this.totalTurnNumber++;
+    }
+
+    private void savePlayedCards(Card[] cardsPlayedResident, Card[] cardsPlayedOpponent) {
+        for (Card card : cardsPlayedResident) {
+            if (card != null) {
+                this.playedCardsHistory.get(Who.RESIDENT).add(card);
+            }
+        }
+        for (Card card : cardsPlayedOpponent) {
+            if (card != null) {
+                this.playedCardsHistory.get(Who.OPPONENT).add(card);
+            }
+        }
     }
 
     private void applyCardEffects (Card[] cards, TriggerTime triggerTime, Who selfPlayer) {
@@ -325,10 +344,10 @@ public class Game {
     }
 
     private void logPlay(){
-        log.debug(String.format("[Resident] Energy: %d (⟳%d) \t Power: %d", this.resident.getEnergyAvailable(), this.resident.getEnergyPerTurn(), this.rPow));
+        log.debug(String.format("[Resident] Energy: %d (⟳%d) \t Power: %d", this.resident.getEnergyAvailable(), this.resident.getEnergyPerTurn(), this.resPower));
         logCards(this.resident.getDeck().getCardsPlayed());
 
-        log.debug(String.format("[Opponent] Energy: %d (⟳%d) \t Power: %d", this.opponent.getEnergyAvailable(), this.opponent.getEnergyPerTurn(), this.oPow));
+        log.debug(String.format("[Opponent] Energy: %d (⟳%d) \t Power: %d", this.opponent.getEnergyAvailable(), this.opponent.getEnergyPerTurn(), this.oppPower));
         logCards(this.opponent.getDeck().getCardsPlayed());
         logLeading();
     }
