@@ -68,7 +68,27 @@ public class EffectParser {
             return "[]";
         }
         JSONObject jsonEffects = new JSONObject(JSONEffectsString);
-        return jsonEffects.getString("Combos");
+        String combos = jsonEffects.getString("Combos");
+
+        if (combos.contains("*")) {
+            String combosCopy = combos.toLowerCase();
+            while (combosCopy.contains("*")) {
+                String toExpandNameContains = combos.substring(combos.indexOf("*")+1);
+                combosCopy = toExpandNameContains.substring(toExpandNameContains.indexOf("*")+1);
+                toExpandNameContains = toExpandNameContains.substring(0,toExpandNameContains.indexOf("*"));
+
+                StringBuilder expanded = new StringBuilder();
+                for (String s : this.parser.cardNames) {
+                    if (s.contains(toExpandNameContains)) {
+                        expanded.append(s).append(",");
+                    }
+                }
+                combos = combos.replace("*"+toExpandNameContains+"*", expanded.toString());
+            }
+            combos = combos.replace(",]","]");
+        }
+
+        return combos;
     }
 
     private Effect parseEffect (JSONObject jsonEffect) {
@@ -173,7 +193,7 @@ public class EffectParser {
                             case NAME:
                                 target = new Target(whoTarget, whereTarget, compareToTarget, true);
                                 break;
-                            case NAME_INCLUDES:
+                            case NAME_CONTAINS:
                                 target = new Target(whoTarget, whereTarget, compareToTarget, false);
                                 break;
                             case BASE_ENERGY:

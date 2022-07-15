@@ -8,7 +8,6 @@ import lombok.extern.log4j.Log4j2;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 @Log4j2
 public class C_DeckContains extends Condition {
@@ -67,7 +66,7 @@ public class C_DeckContains extends Condition {
         for (Card c : cardList) {
             switch (this.what) {
                 case NAME:          if (c.getName().equalsIgnoreCase(this.compareTo))       { deckContains++; } break;
-                case NAME_INCLUDES: if (c.getName().contains(this.compareTo.toLowerCase())) { deckContains++; } break;
+                case NAME_CONTAINS: if (c.getName().contains(this.compareTo.toLowerCase())) { deckContains++; } break;
                 case ALBUM:         if (c.getAlbum().equalsName(this.compareTo))            { deckContains++; } break;
                 case COLLECTION:    if (c.getCollection().equalsName(this.compareTo))       { deckContains++; } break;
                 default:            log.error("Error in condition!");

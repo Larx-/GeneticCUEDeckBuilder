@@ -63,7 +63,6 @@ public class TSVtoCSVPreProcessor {
             String jsonEffect = effectParser.translateEffects(effects.trim(), cardName);
             String combosWith = effectParser.getCombos(jsonEffect);
             if (jsonEffect != null) {
-//                System.out.println(idString + " " + jsonEffect);
                 // Make sure EffectParser can handle all added cases
                 Map<TriggerTime, List<Effect>> effectsParsed = effectParser.parseEffects(jsonEffect);
 

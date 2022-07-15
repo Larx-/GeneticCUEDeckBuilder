@@ -46,7 +46,7 @@ public class Target {
         this.where = where;
 
         this.name = name;
-        this.what = exactMatch ? What.NAME : What.NAME_INCLUDES;
+        this.what = exactMatch ? What.NAME : What.NAME_CONTAINS;
     }
 
     public Target(Who who, Where where, What what, String compareTo) {

@@ -127,7 +127,7 @@ public class Player {
 
         switch (compareTo.getWhat()) {
             case NAME:          return card.getName().equals(compareTo.getName());
-            case NAME_INCLUDES: return card.getName().contains(compareTo.getName());
+            case NAME_CONTAINS: return card.getName().contains(compareTo.getName());
             case COLLECTION:    return card.getCollection() == compareTo.getCollection();
             case ALBUM:         return card.getAlbum() == compareTo.getAlbum();
             case BASE_ENERGY:   return this.compareBase(card.getBaseEnergy(), compareTo.getName());

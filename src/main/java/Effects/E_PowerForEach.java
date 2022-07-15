@@ -78,7 +78,7 @@ public class E_PowerForEach extends Effect {
                     for (Card c : cardList) { // TODO: Also this should be central, so it's not doubled with C_DeckContains
                         switch (this.countEach.getWhat()) {
                             case NAME:          if (c.getName().equalsIgnoreCase(this.countEach.getName()))       { fittingCardsNum++; } break;
-                            case NAME_INCLUDES: if (c.getName().contains(this.countEach.getName().toLowerCase())) { fittingCardsNum++; } break;
+                            case NAME_CONTAINS: if (c.getName().contains(this.countEach.getName().toLowerCase())) { fittingCardsNum++; } break;
                             case ALBUM:         if (c.getAlbum().equalsName(this.countEach.getName()))            { fittingCardsNum++; } break;
                             case COLLECTION:    if (c.getCollection().equalsName(this.countEach.getName()))       { fittingCardsNum++; } break;
                             default:            log.error("Error in condition!");
@@ -89,7 +89,7 @@ public class E_PowerForEach extends Effect {
                     List<Card> countEachCards = super.selectCards(this.countEach, game, selfPlayer);
                     fittingCardsNum = countEachCards.size();
                 }
-                int change = this.changeBy * Math.max(fittingCardsNum,this.upTo);
+                int change = this.changeBy * Math.min(fittingCardsNum,this.upTo);
 
                 for (Card card : targetCards) {
                     int newPower = card.getModifierPower() + change;

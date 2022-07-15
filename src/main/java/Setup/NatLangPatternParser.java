@@ -51,6 +51,7 @@ public class NatLangPatternParser {
                         if (startAfterReplacement < 0) {
                             foundPattern = false;
                             break;
+
                         } else {
                             String toReplace = choppedNatEffString.substring(endBeforeReplacement, startAfterReplacement);
                             choppedNatEffString = choppedNatEffString.substring(endBeforeReplacement);
@@ -58,6 +59,9 @@ public class NatLangPatternParser {
                             // Sanity check
                             if (replace[1].equals("NUM")) {
                                 int integer = Integer.parseInt(toReplace);
+
+                            } else if (replace[1].equals("N_C")) { // NAME_CONTAINS
+                                returnString = returnString.replaceAll("~N_C~", "NAME_CONTAINS");
 
                             } else { // COLLECTION, ALBUM or CARD_NAME = CAN
                                 if (Album.fromString(toReplace) != null) {
@@ -72,15 +76,15 @@ public class NatLangPatternParser {
                                 } else {
                                     throw new Exception("Could not find Collection, Album or Card '"+toReplace+"' to replace!");
                                 }
-
-                                // Manually telling it what it is
-                                returnString = returnString.replaceAll("~C~", "COLLECTION");
-                                returnString = returnString.replaceAll("~A~", "ALBUM");
-                                returnString = returnString.replaceAll("~N~", "NAME");
                             }
                             returnString = returnString.replaceAll("~" + replace[2] + "~", toReplace);
                         }
                     }
+
+                    // Manually telling it what it is
+                    returnString = returnString.replaceAll("~C~", "COLLECTION");
+                    returnString = returnString.replaceAll("~A~", "ALBUM");
+                    returnString = returnString.replaceAll("~N~", "NAME");
 
                     // Replace THIS with the card itself
                     returnString = returnString.replaceAll("'What':'THIS'", "'What':'NAME','CompareTo':'"+cardname+"'");
@@ -676,7 +680,7 @@ public class NatLangPatternParser {
                             "'TriggerTime':'PLAY'," +
                             "'Target':{'Who':'BOTH','Where':'CARDS_IN_HAND'}," +
                             "'Effect':{'Type':'POWER','Value':'~2~'}," +
-                            "'Duration':''," +
+                            "'Duration':'END_TURN'," +
                             "}]," +
                             "'Combos':'[]'}");
 
@@ -776,10 +780,139 @@ public class NatLangPatternParser {
                             "}]," +
                             "'Combos':'[]'}");
 
+            // TODO: Can I somehow split combined effects like this on ".n" -> Probably not worth the time and trouble for ~40 such cards...
+            // (D.B. Cooper) When drawn, lock this card in your hand for the rest of the round.nWhen played, for every Awesome Aviation card played this game by either player (up to a maximum of 18), give this card +10 Power this turn.nWhen returned to your deck, give your Money, Money, Money cards, wherever they are, +20 Power until played.
+            this.addPattern(new String[]{"When drawn, lock this card in your hand for the rest of the round.n" +
+                            "When played, for every ","~CAN~1~"," card played this game by either player (up to a maximum of 18), give this card +10 Power this turn.n" +
+                            "When returned to your deck, give your ","~CAN~2~"," cards, wherever they are, +20 Power until played."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'DRAW'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'THIS'}," +
+                            "'Effect':{'Type':'LOCK'}," +
+                            "'Duration':'END_ROUND'," +
+                            "},{" +
+                            "'TriggerTime':'PLAY'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'THIS'}," +
+                            "'Effect':{'Type':'POWER_FOR_EACH','Value':'10','CountEach':" +
+                            "{'Who':'BOTH','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'~1~','UpTo':'18','PlayHistory':'TRUE'}}," +
+                            "'Duration':'END_TURN'," +
+                            "},{" +
+                            "'TriggerTime':'RETURN'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'~2~'}," +
+                            "'Effect':{'Type':'POWER','Value':'20'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "}]," +
+                            "'Combos':'[~1~,~2~]'}");
+
+            // (Mary Toft"s Rabbit Birth) When returned to your deck, reduce the Energy cost of your Marvellous Medicine cards (even if they're in your deck) by 1 until played.
+            this.addPattern(new String[]{"~TIME~ reduce the Energy cost of your ","~CAN~1~"," cards (even if they're in your deck) by ","~NUM~2~"," until played."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," +
+                            "'Effect':{'Type':'ENERGY','Value':'-1'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "}]," +
+                            "'Combos':'[~1~]'}");
+
+            // (Drop Bear) When played, if you have played Koala, your Carnivores cards (even if they're in your deck) gain +18 Power until played.
+            this.addPattern(new String[]{"~TIME~ if you have played ","~CAN~1~",", your ","~CAN~2~"," cards (even if they're in your deck) gain ","~NUM~3~"," Power until played."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'~2~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~3~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "'Conditions':[{'Type':'PLAYED_BEFORE','Who':'SELF','Where':'CARDS_IN_DECK','What':'~N~','CompareTo':'~1~'}]" +
+                            "}]," +
+                            "'Combos':'[~1~,~2~]'}");
+
+            // (The Donation of Constantine) When drawn, if your deck contains 3 or more The Roman Empire cards, give your cards with Alexandria in the name +25 Power until played.
+            this.addPattern(new String[]{"~TIME~ if your deck contains ","~NUM~1~"," or more ","~CAN~2~"," cards, give your cards with ","~N_C~3~"," in the name ","~NUM~4~"," Power until played."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~N_C~','CompareTo':'~3~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~4~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "'Conditions':[{'Type':'DECK_CONTAINS','Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'~2~','Value':'>=~1~'}]" +
+                            "}]," +
+                            "'Combos':'[~2~,*~3~*]'}");
+
+            // (Californian Runner Eggs) When played, give this card -20 Power for the rest of the game.
+            this.addPattern(new String[]{"~TIME~ give this card ","~NUM~1~"," Power for the rest of the game."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'THIS'}," +
+                            "'Effect':{'Type':'POWER','Value':'~1~'}," +
+                            "'Duration':'PERMANENT'," +
+                            "}]," +
+                            "'Combos':'[]'}");
+
+            // (E. Coli) When played in either the left or right slot, give your Science cards +8 Power permanently.
+            this.addPattern(new String[]{"When played in either the left or right slot, give your ","~CAN~1~"," cards ","~NUM~2~"," Power permanently."}, // FIXME: Should I add a condition for this or is it unfair for the bot?
+                    "{'Effects':[{" +
+                            "'TriggerTime':'PLAY'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':'PERMANENT'," +
+                            "}]," +
+                            "'Combos':'[~1~]'}");
+
+            // (Mycoplasma) When played, reduce the power of your opponent's card opposite by 50, and reduce its energy cost by 2, for the rest of the game.
+            this.addPattern(new String[]{"~TIME~ reduce the power of your opponent's card opposite by 50, and reduce its energy cost by 2, for the rest of the game."},
+                    "NULL"); // TODO: Opposite Target
+
+            // (Triassic-Jurassic Extinction Event) When drawn, Lock this card in hand for 3 turns and give your Paleontology cards, wherever they are, +10 Power until played.
+            this.addPattern(new String[]{"~TIME~ Lock this card in hand for ","~NUM~1~"," turns and give your ","~CAN~2~"," cards, wherever they are, ","~NUM~3~"," Power until played."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'THIS'}," +
+                            "'Effect':{'Type':'LOCK'}," +
+                            "'Duration':{'Type':'TIMER','Value':'~1~'}," +
+                            "},{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'~2~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~3~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "}]," +
+                            "'Combos':'[~2~]'}");
+
+            // (Pannotia) While in your hand, at the start of each turn, give this card -10 Power permanently.
+            this.addPattern(new String[]{"While in your hand, at the start of each turn, give this card ","~NUM~1~"," Power permanently."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'START'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'THIS'}," +
+                            "'Effect':{'Type':'POWER','Value':'~1~'}," +
+                            "'Duration':'PERMANENT'," +
+                            "}]," +
+                            "'Combos':'[]'}");
+
+            // (Great Dying) When returned to your deck, for every Paleontology card you have played this game, give your Paleontology cards (wherever they are) -10 Power permanently, and give your Life on Land and Oceans & Seas cards (wherever they are) +6 Power permanently.
+            this.addPattern(new String[]{"~TIME~ for every Paleontology card you have played this game, give your Paleontology cards (wherever they are) -10 Power permanently, and give your Life on Land and Oceans & Seas cards (wherever they are) +6 Power permanently."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'Paleontology'}," +
+                            "'Effect':{'Type':'POWER_FOR_EACH','Value':'-10','CountEach':" +
+                            "{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'Paleontology','UpTo':'1000','PlayHistory':'TRUE'}}," +
+                            "'Duration':'PERMANENT'," +
+                            "},{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'Life on Land'}," +
+                            "'Effect':{'Type':'POWER_FOR_EACH','Value':'6','CountEach':" +
+                            "{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'Paleontology','UpTo':'1000','PlayHistory':'TRUE'}}," +
+                            "'Duration':'PERMANENT'," +
+                            "},{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'Oceans & Seas'}," +
+                            "'Effect':{'Type':'POWER_FOR_EACH','Value':'6','CountEach':" +
+                            "{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'Paleontology','UpTo':'1000','PlayHistory':'TRUE'}}," +
+                            "'Duration':'PERMANENT'," +
+                            "}]," +
+                            "'Combos':'[Oceans & Seas,Life on Land,Paleontology]'}");
+
         } catch (Exception e) {
             e.printStackTrace();
             // ","~CAN~~","
             // ","~NUM~~","
+            // ","~N_C~~","
         }
     }
 }

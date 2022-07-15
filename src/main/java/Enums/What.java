@@ -2,7 +2,7 @@ package Enums;
 
 public enum What {
     NAME,
-    NAME_INCLUDES,
+    NAME_CONTAINS,
     COLLECTION,
     ALBUM,
     BASE_ENERGY,
