@@ -3,6 +3,7 @@ package Setup;
 import Controlling.Main;
 import Effects.Effect;
 import Enums.Album;
+import Enums.Collection;
 import Enums.TriggerTime;
 import GameElements.Card;
 import com.opencsv.CSVReader;
@@ -20,9 +21,13 @@ public class CardReader {
     Map<Integer,Card> cardsInMemory;
     Map<String,Integer> idStringIndex;
     Map<String,Integer> nameIndex;
-    Map<String,String[]> stringIndexToCombosMap;
+    Map<String,String> nameToStringIdIndex;
     private int numberOfCards;
     EffectParser effectParser;
+
+    Map<String,String[]> stringIndexToCombosMap;
+    Map<Collection,List<String>> collectionToCardsMap;
+    Map<Album,List<String>> albumToCardsMap;
 
     enum header {
         Id,
@@ -48,7 +53,13 @@ public class CardReader {
             this.cardsInMemory = new HashMap<>();
             this.idStringIndex = new HashMap<>();
             this.nameIndex = new HashMap<>();
+            this.nameToStringIdIndex = new HashMap<>();
+
             this.stringIndexToCombosMap = new HashMap<>();
+            this.collectionToCardsMap = new HashMap<>();
+            this.albumToCardsMap = new HashMap<>();
+            Arrays.stream(Collection.values()).forEach(collection -> this.collectionToCardsMap.put(collection, new ArrayList<>()));
+            Arrays.stream(Album.values()).forEach(album -> this.albumToCardsMap.put(album, new ArrayList<>()));
 
             this.numberOfCards = this.cardsFromCSV.size();
 
@@ -56,6 +67,12 @@ public class CardReader {
                 String[] cardCSV = this.cardsFromCSV.get(i);
                 this.idStringIndex.put(cardCSV[header.IdString.ordinal()],i);
                 this.nameIndex.put(cardCSV[header.Name.ordinal()].toLowerCase(),i);
+                this.nameToStringIdIndex.put(cardCSV[header.Name.ordinal()].toLowerCase(),cardCSV[header.IdString.ordinal()]);
+
+                Collection collection = Collection.fromString(cardCSV[header.Collection.ordinal()]);
+                Album album = collection.getAffiliatedAlbum();
+                this.collectionToCardsMap.get(collection).add(cardCSV[header.IdString.ordinal()]);
+                this.albumToCardsMap.get(album).add(cardCSV[header.IdString.ordinal()]);
             }
 
         } catch (IOException | CsvException e) {
@@ -78,6 +95,25 @@ public class CardReader {
         }
     }
 
+    public List<String> getPotentialCombos (String comboWith) {
+        List<String> comboList = new ArrayList<>();
+        String[] combosUnexpanded = this.stringIndexToCombosMap.get(comboWith);
+
+        for (String potCombo : combosUnexpanded) {
+            if (Album.fromString(potCombo) != null) {
+                comboList.addAll(this.albumToCardsMap.get(Album.fromString(potCombo)));
+
+            } else if (Collection.fromString(potCombo) != null) {
+                comboList.addAll(this.collectionToCardsMap.get(Collection.fromString(potCombo)));
+
+            } else if (this.nameIndex.containsKey(potCombo.toLowerCase())) {
+                comboList.add(this.nameToStringIdIndex.get(potCombo.toLowerCase()));
+            }
+        }
+
+        return comboList;
+    }
+
     public Card getCard (int index) {
         // Caching
         if (this.cardsInMemory.containsKey(index)) {
@@ -93,9 +129,10 @@ public class CardReader {
         String idString = cardCSV[header.IdString.ordinal()];
         String name = cardCSV[header.Name.ordinal()];
         String rarity = cardCSV[header.Rarity.ordinal()];
+        boolean limited = cardCSV[header.Lim.ordinal()].equals("1");
 
-        Enums.Collection collection = Enums.Collection.fromString(cardCSV[header.Collection.ordinal()]);
-        Enums.Album album = collection.getAffiliatedAlbum();
+        Collection collection = Collection.fromString(cardCSV[header.Collection.ordinal()]);
+        Album album = collection.getAffiliatedAlbum();
         int baseEnergy = Integer.parseInt(cardCSV[header.Energy.ordinal()]);
         int basePower = Integer.parseInt(cardCSV[header.Power.ordinal()]);
 
@@ -108,7 +145,7 @@ public class CardReader {
         String[] combosWith = comboString.equals("[]") ? new String[0] : comboString.replace("[","").replace("]","").split(",");
         this.stringIndexToCombosMap.put(idString, combosWith);
 
-        Card card = new Card(id, idString, name, rarity, effectString, album, collection, baseEnergy, basePower, effectMap);
+        Card card = new Card(id, idString, name, rarity, limited, effectString, album, collection, baseEnergy, basePower, effectMap);
 
         // Caching
         this.cardsInMemory.put(index,card);

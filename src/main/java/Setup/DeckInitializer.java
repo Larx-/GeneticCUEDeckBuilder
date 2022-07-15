@@ -1,5 +1,6 @@
 package Setup;
 
+import Controlling.GenAlg;
 import Controlling.Main;
 import Effects.*;
 import Enums.*;
@@ -14,14 +15,13 @@ import java.util.*;
 public class DeckInitializer {
 
     @Getter CardReader cardReader;
-    public static final int defaultNumCards = 18;
 
     public DeckInitializer (String cardsCSVPath) {
         this.cardReader = new CardReader(cardsCSVPath);
     }
 
     public Deck createRandomDeck () {
-        return this.createRandomDeck(defaultNumCards);
+        return this.createRandomDeck(GenAlg.defaultNumCards);
     }
 
     public Deck createRandomDeck (int numCards) {

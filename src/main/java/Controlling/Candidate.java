@@ -23,10 +23,10 @@ public class Candidate {
     public boolean containsCard (String cardStr) {
         for (String cStr : deckStrArray) {
             if (cardStr.equals(cStr)) {
-                return false;
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     public String[] mutate(int mutationSpot, String cardStr) {

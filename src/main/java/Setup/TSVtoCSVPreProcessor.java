@@ -2,6 +2,7 @@ package Setup;
 
 import Effects.Effect;
 import Enums.Album;
+import Enums.Collection;
 import Enums.TriggerTime;
 import com.opencsv.*;
 import com.opencsv.exceptions.CsvException;

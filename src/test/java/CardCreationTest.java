@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CardCreationTest {
 
-    private final Card card = new Card(0,"SST029", "Fireworks Galaxy", "Cmmn", "NULL",
+    private final Card card = new Card(0,"SST029", "Fireworks Galaxy", "Cmmn", false, "NULL",
             Album.SPACE, Collection.SST, 2, 17, null);
 
     @Test

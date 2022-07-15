@@ -38,7 +38,15 @@ public class ResultWriter {
         Path initialFilePath = Paths.get(this.filePath.toString(), "initialSettings.txt");
 
         if (!SAFE_MODE || !Files.exists(initialFilePath)) {
-            StringBuilder initalInfo = new StringBuilder(rules.toString() + "\n\n");
+            StringBuilder initalInfo = new StringBuilder("Settings for genetic algorithm:\n");
+            initalInfo.append("   Number of residents:       ").append(GenAlg.numResidents).append("\n");
+            initalInfo.append("   Number of candidates:      ").append(GenAlg.numCandidates).append("\n");
+            initalInfo.append("   Number of repetitions:     ").append(GenAlg.repetitions).append("\n");
+            initalInfo.append("   Selection tournament size: ").append(GenAlg.tournamentSize).append("\n");
+            initalInfo.append("   Max number of generations: ").append(GenAlg.generations).append("\n");
+            initalInfo.append("   Chance for combo mutation: ").append(GenAlg.comboMutationChance).append("\n");
+
+            initalInfo.append("\n").append(rules.toString()).append("\n\n");
 
             initalInfo.append("Resident decks:\n");
             for (String[] deck : residentDecks) {
@@ -89,7 +97,7 @@ public class ResultWriter {
     public void appendCurrentFitness (int gen, float worst, float avg, float best, float[] bestDistribution, String[] bestDeck) {
         Path initialFilePath = Paths.get(this.filePath.toString(), "continuousFitness.csv");
 
-        if (!Files.exists(initialFilePath)) {
+        if (!Files.exists(initialFilePath) || !SAFE_MODE) {
             String header = "Generation, WorstFit, AvgFit, BestFit, BestFirDistribution, BestDeck\n";
 
             try {

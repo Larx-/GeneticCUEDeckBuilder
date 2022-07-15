@@ -7,7 +7,7 @@ public enum Collection {
     LMA ("Mammals", Album.LIFE_ON_LAND),
     LDG ("Dogs", Album.LIFE_ON_LAND),
     SOD ("Space Oddities", Album.SPACE),
-    SSS ("The Solar System", Album.SPACE),
+    SSS ("Solar System", Album.SPACE),
     EJP ("Feudal Japan", Album.HISTORY),
     EAG ("Ancient Greece", Album.HISTORY),
     PCA ("Carnivores", Album.PALEONTOLOGY),

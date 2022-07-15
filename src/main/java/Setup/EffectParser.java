@@ -73,7 +73,6 @@ public class EffectParser {
 
     private Effect parseEffect (JSONObject jsonEffect) {
         TriggerTime triggerTime;
-        Target target = null;
         TriggerTime duration;
         int timer = -1;
         List<Condition> conditions = null;
@@ -83,6 +82,63 @@ public class EffectParser {
 
 
         JSONObject objectTarget = jsonEffect.getJSONObject("Target");
+        Target target = this.parseTarget(objectTarget);
+
+        Object objectDuration = jsonEffect.get("Duration");
+
+        if (objectDuration instanceof String) {
+            duration = TriggerTime.fromString((String) objectDuration);
+
+        } else {
+            String stringDuration = ((JSONObject) objectDuration).getString("Type");
+            duration = TriggerTime.fromString(stringDuration);
+
+            if (((JSONObject) objectDuration).keySet().contains("Value")) {
+                timer = ((JSONObject) objectDuration).getInt("Value");
+            }
+        }
+
+
+        if (jsonEffect.keySet().contains("Conditions")) {
+            conditions = new ArrayList<>();
+            JSONArray jsonConditionArray = jsonEffect.getJSONArray("Conditions");
+
+            for (int i = 0; i < jsonConditionArray.length(); i++) {
+                JSONObject jsonCondition = jsonConditionArray.getJSONObject(i);
+                Condition condition = this.parseCondition(jsonCondition);
+                if (condition != null) {
+                    conditions.add(condition);
+                }
+            }
+        }
+
+        JSONObject effectObject = jsonEffect.getJSONObject("Effect");
+        String effectString = effectObject.getString("Type");
+
+        switch (effectString) {
+            case "ENERGY_PER_TURN":
+                return new E_EPT(triggerTime,target,effectObject.getInt("Value"),duration,timer,conditions);
+            case "POWER_PER_TURN":
+                return new E_PPT(triggerTime,target,effectObject.getInt("Value"),duration,timer,conditions);
+            case "ENERGY":
+                return new E_Energy(triggerTime,target,effectObject.getInt("Value"),duration,timer,conditions);
+            case "POWER":
+                return new E_Power(triggerTime,target,effectObject.getInt("Value"),duration,timer,conditions);
+            case "POWER_FOR_EACH":
+                Target countEachTarget = this.parseTarget(effectObject.getJSONObject("CountEach"));
+                return new E_PowerForEach(triggerTime,target,effectObject.getInt("Value"),duration,timer,conditions,countEachTarget);
+            case "BURN":
+                return new E_Burn(triggerTime,target,effectObject.getInt("Value"),duration,timer,conditions);
+            case "LOCK":
+                return new E_Lock(triggerTime,target,duration,timer,conditions);
+            default:
+//                log.error("Not yet implemented effect: " + effectString);
+                throw new IllegalStateException("Unexpected value parsing effect: " + effectString);
+        }
+    }
+
+    private Target parseTarget(JSONObject objectTarget) {
+        Target target = null;
 
         if (objectTarget.keySet().contains("Who")) {
             Who whoTarget = Who.fromString(objectTarget.getString("Who"));
@@ -125,56 +181,7 @@ public class EffectParser {
                 }
             }
         }
-
-
-        Object objectDuration = jsonEffect.get("Duration");
-
-        if (objectDuration instanceof String) {
-            duration = TriggerTime.fromString((String) objectDuration);
-
-        } else {
-            String stringDuration = ((JSONObject) objectDuration).getString("Type");
-            duration = TriggerTime.fromString(stringDuration);
-
-            if (((JSONObject) objectDuration).keySet().contains("Value")) {
-                timer = ((JSONObject) objectDuration).getInt("Value");
-            }
-        }
-
-
-        if (jsonEffect.keySet().contains("Conditions")) {
-            conditions = new ArrayList<>();
-            JSONArray jsonConditionArray = jsonEffect.getJSONArray("Conditions");
-
-            for (int i = 0; i < jsonConditionArray.length(); i++) {
-                JSONObject jsonCondition = jsonConditionArray.getJSONObject(i);
-                Condition condition = this.parseCondition(jsonCondition);
-                if (condition != null) {
-                    conditions.add(condition);
-                }
-            }
-        }
-
-        JSONObject effectObject = jsonEffect.getJSONObject("Effect");
-        String effectString = effectObject.getString("Type");
-
-        switch (effectString) {
-            case "ENERGY_PER_TURN":
-                return new E_EPT(triggerTime,target,effectObject.getInt("Value"),duration,timer,conditions);
-            case "POWER_PER_TURN":
-                return new E_PPT(triggerTime,target,effectObject.getInt("Value"),duration,timer,conditions);
-            case "ENERGY":
-                return new E_Energy(triggerTime,target,effectObject.getInt("Value"),duration,timer,conditions);
-            case "POWER":
-                return new E_Power(triggerTime,target,effectObject.getInt("Value"),duration,timer,conditions);
-            case "BURN":
-                return new E_Burn(triggerTime,target,effectObject.getInt("Value"),duration,timer,conditions);
-            case "LOCK":
-                return new E_Lock(triggerTime,target,duration,timer,conditions);
-            default:
-//                log.error("Not yet implemented effect: " + effectString);
-                throw new IllegalStateException("Unexpected value parsing effect: " + effectString);
-        }
+        return target;
     }
 
     private Condition parseCondition(JSONObject jsonCondition) {

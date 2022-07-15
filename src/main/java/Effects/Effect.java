@@ -59,14 +59,18 @@ public class Effect {
     }
 
     public List<Card> selectCards(Game game, Who selfPlayer) {
-        if (this.target.hasPresetCards()) {
-            return this.target.getTargetCards();
+        return this.selectCards(this.target, game, selfPlayer);
+    }
+
+    public List<Card> selectCards(Target t, Game game, Who selfPlayer) {
+        if (t.hasPresetCards()) {
+            return t.getTargetCards();
         }
 
         List<Player> players = this.selectPlayers(game, selfPlayer);
-        List<Card> targetCards = players.remove(0).findCards(this.target);
+        List<Card> targetCards = players.remove(0).findCards(t);
         if (!players.isEmpty()) {
-            targetCards.addAll(players.remove(0).findCards(this.target));
+            targetCards.addAll(players.remove(0).findCards(t));
         }
         return targetCards;
     }

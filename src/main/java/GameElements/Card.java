@@ -16,6 +16,7 @@ public class Card {
     @Getter private final String idString;
     @Getter private final String name;
     @Getter private final String rarity;
+    @Getter private final boolean limited;
     @Getter private final String effectString;
     @Getter private final Album album;
     @Getter private final Collection collection;
@@ -32,12 +33,13 @@ public class Card {
     @Getter @Setter private int burnAmount;
     @Getter @Setter private List<Effect> expiryEffectsAfterPlayed;
 
-    public Card(int id, String idString, String name, String rarity, String effectString, Album album, Collection collection,
+    public Card(int id, String idString, String name, String rarity, boolean limited, String effectString, Album album, Collection collection,
                 int baseEnergy, int basePower, Map<TriggerTime,List<Effect>> effects){
         this.id = id;
         this.idString = idString;
         this.name = name;
         this.rarity = rarity;
+        this.limited = limited;
         this.effectString = effectString;
         this.album = album;
         this.collection = collection;
@@ -75,7 +77,7 @@ public class Card {
 
     public Card copyFresh(){
         // TODO: Deep copy effects maybe
-        return new Card(id, idString, name, rarity, effectString, album, collection, baseEnergy, basePower, effects);
+        return new Card(id, idString, name, rarity, limited, effectString, album, collection, baseEnergy, basePower, effects);
     }
 
     public void resetCard() {

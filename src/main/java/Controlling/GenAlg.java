@@ -19,9 +19,10 @@ import java.util.List;
 @Log4j2
 public class GenAlg {
 
+    public static Rules rules;
+    public static final int defaultNumCards = 18;
     public static DeckInitializer deckInitializer;
     public static RulesInitializer rulesInitializer;
-    public static Rules rules;
 
     public static final int numResidents = 6;
     public static final int numCandidates = 50;
@@ -29,6 +30,7 @@ public class GenAlg {
     public static final int repetitions = 1000;
     public static final int tournamentSize = 5;
     public static final int generations = 1000;
+    public static final int comboMutationChance = 50;
 
     public static final int numThreads = 1; // FIXME: Figure out why there is a ConcurrentModificationException
 
@@ -89,16 +91,35 @@ public class GenAlg {
     }
 
     private List<Candidate> mutateGen(List<Candidate> canList) {
-        // Mutation (Single point) TODO: Chance based and possibly multiple mutations, using the combo markers, also crossover
+        // Mutation (Single point) TODO: Reducing chance over time and possibly starting with multiple mutations, also crossover
         List<Candidate> mutatedPopulation = new ArrayList<>();
         this.canDecks = new ArrayList<>();
 
         for (Candidate can : canList) {
-            int mutationSpot = Main.random.nextInt(DeckInitializer.defaultNumCards);
+            int mutationSpot = Main.random.nextInt(GenAlg.defaultNumCards);
+            int comboWithInt = 0;
+            String cardStr;
 
-            String cardStr = deckInitializer.getCardReader().getRandomCardStr();
-            while (can.containsCard(cardStr)) {
-                cardStr = deckInitializer.getCardReader().getRandomCardStr();
+            if (Main.random.nextInt(100) < GenAlg.comboMutationChance) {
+                do {
+                    comboWithInt = Main.random.nextInt(GenAlg.defaultNumCards);
+                } while (comboWithInt == mutationSpot);
+
+                List<String> potentialCombos = deckInitializer.getCardReader().getPotentialCombos(can.getDeckStrArray()[comboWithInt]);
+
+                do {
+                    if (potentialCombos.isEmpty()) {
+                        cardStr = deckInitializer.getCardReader().getRandomCardStr();
+                    } else {
+                        int cardInt = Main.random.nextInt(potentialCombos.size());
+                        cardStr = potentialCombos.remove(cardInt);
+                    }
+                } while (can.containsCard(cardStr));
+
+            } else {
+                do {
+                    cardStr = deckInitializer.getCardReader().getRandomCardStr();
+                } while (can.containsCard(cardStr));
             }
 
             String[] mutatedDeckStr = can.mutate(mutationSpot, cardStr);
@@ -151,15 +172,15 @@ public class GenAlg {
             for (int j = 0; j < Math.min(number, decks.size()); j++) {
                 String[] deck = decks.get(j);
 
-                if (deck.length == DeckInitializer.defaultNumCards) {
+                if (deck.length == GenAlg.defaultNumCards) {
                     decksFilled.add(deck);
 
-                }else if (deck.length > DeckInitializer.defaultNumCards) {
-                    decksFilled.add(Arrays.copyOfRange(deck,0,DeckInitializer.defaultNumCards));
+                }else if (deck.length > GenAlg.defaultNumCards) {
+                    decksFilled.add(Arrays.copyOfRange(deck,0,GenAlg.defaultNumCards));
 
                 } else {
                     List<String> deckFilled = new ArrayList<>();
-                    for (int i = 0; i < DeckInitializer.defaultNumCards; i++) {
+                    for (int i = 0; i < GenAlg.defaultNumCards; i++) {
                         if (deck.length > i) {
                             deckFilled.add(deck[i]);
                         } else {

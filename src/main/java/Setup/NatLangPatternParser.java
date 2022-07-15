@@ -41,17 +41,19 @@ public class NatLangPatternParser {
 
                 if (foundPattern) {
                     returnString = pattern.getJsonOutput();
+                    String choppedNatEffString = naturalEffectString;
 
                     for (int i = 1; i < patternKey.length; i += 2) {
                         String[] replace = patternKey[i].split("~");
-                        int endBeforeReplacement = naturalEffectString.indexOf(patternKey[i-1]) + patternKey[i-1].length();
-                        int startAfterReplacement = naturalEffectString.indexOf(patternKey[i+1], endBeforeReplacement);
+                        int endBeforeReplacement = choppedNatEffString.indexOf(patternKey[i-1]) + patternKey[i-1].length();
+                        int startAfterReplacement = choppedNatEffString.indexOf(patternKey[i+1], endBeforeReplacement);
 
                         if (startAfterReplacement < 0) {
                             foundPattern = false;
                             break;
                         } else {
-                            String toReplace = naturalEffectString.substring(endBeforeReplacement, startAfterReplacement);
+                            String toReplace = choppedNatEffString.substring(endBeforeReplacement, startAfterReplacement);
+                            choppedNatEffString = choppedNatEffString.substring(endBeforeReplacement);
 
                             // Sanity check
                             if (replace[1].equals("NUM")) {
@@ -106,7 +108,7 @@ public class NatLangPatternParser {
             }
             String triggerTime = editString.equals(naturalEffectString) ? "" : "~TIME~";
 
-            String suggestion = "// " + naturalEffectString + "\n" +
+            String suggestion = "// (" + cardname + ") " + naturalEffectString + "\n" +
                             "this.addPattern(new String[]{\"" + editString + "\"},\n"+
                             "\"{'Effects':[{\" +\n" +
                             "\"'TriggerTime':'" + triggerTime + "',\" +\n" +
@@ -115,7 +117,7 @@ public class NatLangPatternParser {
                             "\"'Duration':'',\" +\n" +
                             "\"'Conditions':[{'Type':'','Who':'','Where':'','What':'','CompareTo':''}]\" +\n" +
                             "\"}],\" +\n" +
-                            "'Combos':'[]'}\");";
+                            "\"'Combos':'[]'}\");";
 
             throw new Exception("Pattern '"+naturalEffectString+"' not found! Suggested pattern:\n"+suggestion);
         }
@@ -179,12 +181,12 @@ public class NatLangPatternParser {
             this.addPattern(new String[]{"~TIME~ Lock a random card in your opponent's hand for this turn. If you are losing the round, also give it ","~NUM~1~"," Power until it is played."},
                     "{'Effects': [{" +
                             "'TriggerTime': '~TIME~'," +
-                            "'Target':{'Who':'OTHER','Where':'CARDS_IN_HAND'}," + // FIXME: Missing ",'What':'RANDOM'" - Currently not the same random card
+                            "'Target':{'Who':'OTHER','Where':'CARDS_IN_HAND'}," + // FIXME: Missing ",'What':'RANDOM'" because not implemented - Currently not the same random card
                             "'Effect':{'Type':'LOCK'}," +
                             "'Duration':'END_TURN'," +
                             "},{" +
                             "'TriggerTime': '~TIME~'," +
-                            "'Target':{'Who':'OTHER','Where':'CARDS_IN_HAND'}," + // FIXME: Missing ",'What':'RANDOM'" - Currently not the same random card
+                            "'Target':{'Who':'OTHER','Where':'CARDS_IN_HAND'}," + // FIXME: Missing ",'What':'RANDOM'" because not implemented - Currently not the same random card
                             "'Effect':{'Type':'POWER','Value':'~1~'}," +
                             "'Duration':'UNTIL_PLAYED'," +
                             "'Conditions':[{'Type':'ROUND_STATE','Value':'Loss'}]" +
@@ -310,7 +312,7 @@ public class NatLangPatternParser {
                             "'TriggerTime': '~TIME~'," +
                             "'Target':{'Who':'SELF'}," +
                             "'Effect':{'Type':'ENERGY','Value':'~1~'}," +
-                            "'Duration':{'Type':'TIMER','Value':'1'}," + // FIXME: Is this supposed to remove the energy after next turn?
+                            "'Duration':{'Type':'PERMANENT'}," +
                             "'Conditions':[{'Type':'TURN_STATE','Value':'Win'}]" +
                             "}]," +
                             "'Combos':'[]'}");
@@ -440,6 +442,74 @@ public class NatLangPatternParser {
                             "}]," +
                             "'Combos':'[~2~]'}");
 
+            // When drawn, for each Solar System card in your deck, give the Earth card +8 Power.
+            this.addPattern(new String[]{"~TIME~ for each ","~CAN~1~"," card in your deck, give the ","~CAN~2~"," card ","~NUM~3~"," Power."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~N~','CompareTo':'~2~'}," +
+                            "'Effect':{'Type':'POWER_FOR_EACH','Value':'~3~','CountEach':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'~1~'}}," +
+                            "'Duration':'PERMANENT'," +
+                            "}]," +
+                            "'Combos':'[~1~,~2~]'}");
+
+            // (Humorism) When drawn, give a random card in your hand +50 Power this turn.nWhen played, give this card +20 Power permanently.nWhen returned to your deck, reduce the Energy cost of your Opponent's remaining cards by 2 for 2 turns.nWhile in your hand, at the start of each turn, give your cards +5 Power this turn.
+            this.addPattern(new String[]{"When drawn, give a random card in your hand +50 Power this turn." +
+                            "nWhen played, give this card +20 Power permanently." +
+                            "nWhen returned to your deck, reduce the Energy cost of your Opponent's remaining cards by 2 for 2 turns." +
+                            "nWhile in your hand, at the start of each turn, give your cards +5 Power this turn."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'DRAW'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND'}," + // FIXME: Missing ",'What':'RANDOM'" because not implemented - Currently not the same random card
+                            "'Effect':{'Type':'POWER','Value':'50'}," +
+                            "'Duration':'END_TURN'," +
+                            "},{" +
+                            "'TriggerTime':'PLAY'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND', 'What':'THIS'}," +
+                            "'Effect':{'Type':'POWER','Value':'20'}," +
+                            "'Duration':'PERMANENT'," +
+                            "},{" +
+                            "'TriggerTime':'RETURN'," +
+                            "'Target':{'Who':'OTHER','Where':'CARDS_REMAINING'}," +
+                            "'Effect':{'Type':'ENERGY','Value':'-2'}," +
+                            "'Duration':{'Type':'TIMER','Value':'2'}," +
+                            "},{" +
+                            "'TriggerTime':'START'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND'}," +
+                            "'Effect':{'Type':'POWER','Value':'5'}," +
+                            "'Duration':'END_TURN'," +
+                            "}]," +
+                            "'Combos':'[]'}");
+
+            // (Strawberry Moon) When played, your Curious Cuisine cards gain +20 Power this turn and next.
+            this.addPattern(new String[]{"~TIME~ your ","~CAN~1~"," cards gain ","~NUM~2~"," Power this turn and next."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':{'Type':'TIMER','Value':'1'}," +
+                            "}]," +
+                            "'Combos':'[]'}");
+
+            // (Flower Moon) When played, give your Plant Life cards +20 Power this turn and next.
+            this.addPattern(new String[]{"~TIME~ give your ","~CAN~1~"," cards ","~NUM~2~"," Power this turn and next."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':{'Type':'TIMER','Value':'1'}," +
+                            "}]," +
+                            "'Combos':'[]'}");
+
+            // (Goodtimes Virus) When played, if it is the last turn of the round, give your History of the Internet cards, wherever they are, +14 Power until played.
+            this.addPattern(new String[]{"~TIME~ if it is the last turn of the round, give your ","~CAN~1~"," cards, wherever they are, ","~NUM~2~"," Power until played."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "'Conditions':[{'Type':'TURN_IN_ROUND','Value':'3'}]" +
+                            "}]," +
+                            "'Combos':'[~1~]'}");
 
         } catch (Exception e) {
             e.printStackTrace();
