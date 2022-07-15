@@ -1,0 +1,44 @@
+Hey :D
+
+I'm hosting a deck-building competition, that is going to be a little bit different.
+
+
+	How does it work?
+You build a deck, that will then compete against all other entered decks. The catch is, that the playing is completly automated by a bot in a simulated version of the game.
+The bot plays completly randomly, except that it tries to play as many cards as it can every turn. 
+To counter all of this randomness, every deck will play against every other deck a few thousand times (depending on how many join) per ruleset. The averare win percentage is the score.
+
+
+	What are the rulesets?
+Rulesets are featured arenas + energy & power rules. There will be at least five different rulesets.
+One or more will not be revealed, but the four, that will definitly be use are: 
+___ See Screenshots ____
+
+
+	What's the prize? (*)
+One mythic of your choice between Area 51, El Dorado and Loch Ness Monster + Any one duplicate card in my collection
+First place picks a mythic and dupe first, then second place and third place gets the last mythic (+ any one dupe)
+Bonus prize: Any one of my dupes for any deck I think is really creative, unusual or fun!
+
+
+	How to enter?
+To enter you simply compile a deck of any 18 cards (you do not have to own the cards yourself) and send me a private message with the exact names or their IDs. 
+Example: "Korean Turtle Ships, Emerald Tree Boa, Labrador Retriever, English Bulldog, ..., Blanet" OR "OWA022, LRE015, LDG002, LDG003, ..., SOD032"
+You can enter up to 3 decks, but you can only win one of the prizes. If you do enter more than one deck, please also tell me, which one is your favourite, 
+as I might have to go down to 1 deck per person, depending on how many people join.
+
+
+	When does it conclude?
+You have until the __th of July at 12pm CEST to enter. (timeanddate link ___)
+After that I will need a few days (hopefully only one or two) to run the simulations and announce the winners!
+
+
+	Why am I doing this?
+In case you are curious why I'm doing such a strange competition, the tl;dr is that I'm writing my bachelors thesis about automated deck-building using a genetic algorithm with changing rulesets.
+So far the results are meh and one of the problems is that I need a solid baseline to compare the generated decks against. 
+But usual decks often need a smart player to be effectiv, so I need special simple to play all-rounder decks and my deck-building skills are mediocre at best. 
+Also, this seems like a fun thing to do ^^
+
+
+(*) Also, I might be able to give anybody, whose deck I end up using, a shoutout in my thesis. But I'm not sure how this mention will look and of course only if you want. 
+    I'm planning to use the Top 5-10 best performing decks + around 5-10 good and interesting decks I pick, so there is a variaty of deck types.
