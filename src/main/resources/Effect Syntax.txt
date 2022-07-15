@@ -4,7 +4,7 @@ Categories always have exactly one info, except Condition can have any amount.
 Usable parameters in some cases are:
     Who       = SELF | OTHER | BOTH
     Where     = CARDS_IN_DECK | CARDS_IN_HAND | CARDS_REMAINING
-    What      = ALBUM | COLLECTION | NAME | NAME_CONTAINS | RANDOM | THIS
+    What      = ALBUM | COLLECTION | NAME | NAME_CONTAINS || BASE_ENERGY | BASE_POWER | RARITY || RANDOM | THIS
     CompareTo = string to search
     Value     = int value (or string if options are specified)
 
@@ -17,7 +17,7 @@ TriggerTime:
     RETURN
 
 Target:
-    Who, [ Where, [ What, [ CompareTo ] ] ]             // If rest is omitted, Who = Player, Where = All those cards, What = Special cases RANDOM and THIS
+    Who, [ Where, [ What, [ CompareTo ] ] ]             // If rest is omitted, Who = Player, Where = All those cards, What = Special cases
 
 Effect:
     ENERGY_PER_TURN (Value)
@@ -38,6 +38,8 @@ Duration:
 Conditions:
     AFTER_ROUND (Value)
     BEFORE_ROUND (Value)
+    AFTER_TURN (Value)
+    BEFORE_TURN (Value)
     PLAYED_WITH (Who, Where, What, CompareTo)
     PLAYED_BEFORE (Who, Where, What, CompareTo)
     ROUND_STATE (Value)                                 // Value = Win | EqWin | Equal | EqLoss | Loss

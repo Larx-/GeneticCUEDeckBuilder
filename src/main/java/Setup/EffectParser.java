@@ -174,6 +174,15 @@ public class EffectParser {
                             case NAME_INCLUDES:
                                 target = new Target(whoTarget, whereTarget, compareToTarget, false);
                                 break;
+                            case BASE_ENERGY:
+                                target = new Target(whoTarget, whereTarget, compareToTarget, false);
+                                break;
+                            case BASE_POWER:
+                                target = new Target(whoTarget, whereTarget, compareToTarget, false);
+                                break;
+                            case RARITY:
+                                target = new Target(whoTarget, whereTarget, compareToTarget, false);
+                                break;
                             default:
                                 throw new IllegalStateException("Unexpected value: " + whatTarget);
                         }
@@ -192,6 +201,10 @@ public class EffectParser {
                 return new C_AfterRound(jsonCondition.getInt("Value"));
             case "BEFORE_ROUND":
                 return new C_BeforeRound(jsonCondition.getInt("Value"));
+            case "AFTER_TURN":
+                return new C_AfterTurn(jsonCondition.getInt("Value"));
+            case "BEFORE_TURN":
+                return new C_BeforeTurn(jsonCondition.getInt("Value"));
             case "PLAYED_WITH":
                 return new C_PlayedWith(Who.fromString(jsonCondition.getString("Who")),
                         What.fromString(jsonCondition.getString("What")), jsonCondition.getString("CompareTo"));

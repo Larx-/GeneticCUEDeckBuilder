@@ -123,6 +123,62 @@ public class NatLangPatternParser {
         }
     }
 
+    private void addPattern(String[] pattern, String jsonString) throws Exception {
+        this.addPattern(this.patterns, pattern, jsonString);
+        this.numPatterns++;
+    }
+
+    private void addPattern(List<Pattern> patternList, String[] pattern, String jsonString) throws Exception {
+        for (Pattern p : patternList) {
+            if (Arrays.equals(p.getNatLangKey(), pattern)) {
+                throw new Exception("Pattern already exists!" + Arrays.toString(pattern));
+            }
+        }
+        patternList.add(new Pattern(pattern, jsonString));
+    }
+
+    private void expandPatterns() {
+        List<Pattern> mapExpanded = new ArrayList<>();
+
+        for (Pattern p : this.patterns) {
+            String[] key = p.getNatLangKey();
+            String value = p.getJsonOutput();
+
+            if (key[0].contains("~TIME~")) {
+                String[] keyDraw = key.clone();
+                keyDraw[0] = key[0].replace("~TIME~", "When drawn,");
+                String valueDraw = value.replace("~TIME~", "DRAW");
+
+                String[] keyPlay = key.clone();
+                keyPlay[0] = key[0].replace("~TIME~", "When played,");
+                String valuePlay = value.replace("~TIME~", "PLAY");
+
+                String[] keyReturn = key.clone();
+                keyReturn[0] = key[0].replace("~TIME~", "When returned to your deck,");
+                String valueReturn = value.replace("~TIME~", "RETURN");
+
+                try {
+                    addPattern(mapExpanded, keyDraw, valueDraw);
+                    addPattern(mapExpanded, keyPlay, valuePlay);
+                    addPattern(mapExpanded, keyReturn, valueReturn);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            } else {
+                try {
+                    addPattern(mapExpanded, key, value);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        this.patterns = mapExpanded;
+    }
+
     private void addPatterns() {
         try {
             this.addPattern(new String[]{"~TIME~ your Opponent's cards left in hand cost ","~NUM~1~"," more Energy next turn."},
@@ -412,7 +468,7 @@ public class NatLangPatternParser {
                             "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~N~','CompareTo':'~2~'}," +
                             "'Effect':{'Type':'POWER','Value':'~3~'}," +
                             "'Duration':'UNTIL_PLAYED'," +
-                            "'Conditions':[{'Type':'DECK_CONTAINS','Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'~1~','Value':'1'}]" +
+                            "'Conditions':[{'Type':'DECK_CONTAINS','Who':'SELF','Where':'CARDS_IN_DECK','What':'~N~','CompareTo':'~1~','Value':'1'}]" +
                             "}]," +
                             "'Combos':'[~1~,~2~]'}");
 
@@ -511,66 +567,99 @@ public class NatLangPatternParser {
                             "}]," +
                             "'Combos':'[~1~]'}");
 
+            // (Friar Tuck) When drawn, for each Curious Cuisine card in your deck, (up to a maximum of four) give the Merry Men, even if they're in your deck, +8 Power until played.
+            this.addPattern(new String[]{"~TIME~ for each Curious Cuisine card in your deck, (up to a maximum of four) give the Merry Men, even if they're in your deck, +8 Power until played."},
+                    "NULL"); // FIXME: What are Merry Men
+
+            // (Battle of Pelusium (525)) When played, if your deck contains Bastet, give your remaining cards in hand +15 Power permanently.
+            this.addPattern(new String[]{"~TIME~ if your deck contains ","~CAN~1~",", give your remaining cards in hand ","~NUM~~"," Power permanently."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_REMAINING'}," +
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':'PERMANENT'," +
+                            "'Conditions':[{'Type':'DECK_CONTAINS','Who':'SELF','Where':'CARDS_IN_DECK','What':'~N~','CompareTo':'~1~','Value':'1'}]" +
+                            "}]," +
+                            "'Combos':'[~1~]'}");
+
+            // (Great Emu War) When played, for every Birds card in your deck, give your opponent's cards -3 Power this turn.
+            this.addPattern(new String[]{"~TIME~ for every ","~CAN~1~"," card in your deck, give your opponent's cards ","~NUM~2~"," Power this turn."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'OTHER','Where':'CARDS_IN_HAND'}," +
+                            "'Effect':{'Type':'POWER_FOR_EACH','Value':'~2~','CountEach':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'~1~'}}," +
+                            "'Duration':'END_TURN'," +
+                            "}]," +
+                            "'Combos':'[~1~]'}");
+
+            // (Battle of Leipzig (1813)) If played after turn 6 give your opponents cards with 4 or less base energy wherever they are -18 power for 3 turns
+            this.addPattern(new String[]{"If played after turn ","~NUM~1~"," give your opponents cards with ","~NUM~2~"," or less base energy wherever they are ","~NUM~3~"," power for ","~NUM~4~"," turns"},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'PLAY'," +
+                            "'Target':{'Who':'OTHER','Where':'CARDS_IN_DECK','What':'BASE_ENERGY','CompareTo':'<=~2~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~3~'}," +
+                            "'Duration':{'Type':'TIMER','Value':'~4~'}," +
+                            "'Conditions':[{'Type':'AFTER_TURN','Value':'~1~'}]" +
+                            "}]," +
+                            "'Combos':'[]'}");
+
+            // (Battle of Waterloo (1815)) When returned to your deck, if you lost the turn, gain +120 Power/Turn next turn.
+            this.addPattern(new String[]{"~TIME~ if you lost the turn, gain ","~NUM~1~"," Power/Turn next turn."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF'}," +
+                            "'Effect':{'Type':'POWER_PER_TURN','Value':'~1~'}," +
+                            "'Duration':{'Type':'TIMER','Value':'1'}," +
+                            "'Conditions':[{'Type':'TURN_STATE','Value':'Loss'}]" +
+                            "}]," +
+                            "'Combos':'[]'}");
+
+            // (Siege of Baghdad (1258)) When drawn, your Opponent's Legendary cards, wherever they are, lose 25 Power for 3 turns.
+            this.addPattern(new String[]{"~TIME~ your Opponent's Legendary cards, wherever they are, lose ","~NUM~1~"," Power for ","~NUM~2~"," turns."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'OTHER','Where':'CARDS_IN_DECK','What':'RARITY','CompareTo':'Lgnd'}," +
+                            "'Effect':{'Type':'POWER','Value':'-~1~'}," +
+                            "'Duration':{'Type':'TIMER','Value':'~2~'}," +
+                            "}]," +
+                            "'Combos':'[]'}");
+
+            // (Mount Etna) While in your hand, this card Burns(10) until played. nWhen played, all other cards have -20 Power this turn.
+            this.addPattern(new String[]{"While in your hand, this card Burns(","~NUM~1~",") until played. nWhen played, all other cards have ","~NUM~2~"," Power this turn."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'DRAW'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'THIS'}," +
+                            "'Effect':{'Type':'BURN','Value':'~1~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "},{" +
+                            "'TriggerTime':'PLAY'," +
+                            "'Target':{'Who':'BOTH','Where':'CARDS_IN_HAND'}," +
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':''," +
+                            "}]," +
+                            "'Combos':'[]'}");
+
+            // (Piltdown Man) When played, if your deck contains The Brain, give your Primates and Human Evolution cards (even if they're in your deck) +12 Power until played.
+            this.addPattern(new String[]{"~TIME~ if your deck contains ","~CAN~1~",", give your ","~CAN~2~"," and ","~CAN~3~"," cards (even if they're in your deck) ","~NUM~4~"," Power until played."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'~2~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~4~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "'Conditions':[{'Type':'DECK_CONTAINS','Who':'SELF','Where':'CARDS_IN_DECK','What':'~N~','CompareTo':'~1~','Value':'1'}]" +
+                            "},{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'~3~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~4~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "'Conditions':[{'Type':'DECK_CONTAINS','Who':'SELF','Where':'CARDS_IN_DECK','What':'~N~','CompareTo':'~1~','Value':'1'}]" +
+                            "}]," +
+                            "'Combos':'[~1~,~2~,~3~]'}");
+
         } catch (Exception e) {
             e.printStackTrace();
             // ","~CAN~~","
             // ","~NUM~~","
         }
-    }
-
-    private void addPattern(String[] pattern, String jsonString) throws Exception {
-        this.addPattern(this.patterns, pattern, jsonString);
-        this.numPatterns++;
-    }
-
-    private void addPattern(List<Pattern> patternList, String[] pattern, String jsonString) throws Exception {
-        for (Pattern p : patternList) {
-            if (Arrays.equals(p.getNatLangKey(), pattern)) {
-                throw new Exception("Pattern already exists!" + Arrays.toString(pattern));
-            }
-        }
-        patternList.add(new Pattern(pattern, jsonString));
-    }
-
-    private void expandPatterns() {
-        List<Pattern> mapExpanded = new ArrayList<>();
-
-        for (Pattern p : this.patterns) {
-            String[] key = p.getNatLangKey();
-            String value = p.getJsonOutput();
-
-            if (key[0].contains("~TIME~")) {
-                String[] keyDraw = key.clone();
-                keyDraw[0] = key[0].replace("~TIME~", "When drawn,");
-                String valueDraw = value.replace("~TIME~", "DRAW");
-
-                String[] keyPlay = key.clone();
-                keyPlay[0] = key[0].replace("~TIME~", "When played,");
-                String valuePlay = value.replace("~TIME~", "PLAY");
-
-                String[] keyReturn = key.clone();
-                keyReturn[0] = key[0].replace("~TIME~", "When returned to your deck,");
-                String valueReturn = value.replace("~TIME~", "RETURN");
-
-                try {
-                    addPattern(mapExpanded, keyDraw, valueDraw);
-                    addPattern(mapExpanded, keyPlay, valuePlay);
-                    addPattern(mapExpanded, keyReturn, valueReturn);
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-            } else {
-                try {
-                    addPattern(mapExpanded, key, value);
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        this.patterns = mapExpanded;
     }
 }

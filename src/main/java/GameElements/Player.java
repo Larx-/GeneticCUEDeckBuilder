@@ -130,8 +130,36 @@ public class Player {
             case NAME_INCLUDES: return card.getName().contains(compareTo.getName());
             case COLLECTION:    return card.getCollection() == compareTo.getCollection();
             case ALBUM:         return card.getAlbum() == compareTo.getAlbum();
+            case BASE_ENERGY:   return this.compareBase(card.getBaseEnergy(), compareTo.getName());
+            case BASE_POWER:    return this.compareBase(card.getBasePower(), compareTo.getName());
+            case RARITY:        return card.getRarity().equals(compareTo.getName());
         }
 
         return false;
+    }
+
+    private boolean compareBase (int base, String compareTo) {
+        String sign = "==";
+        int number = 0;
+
+        if (compareTo.charAt(0) == '>' || compareTo.charAt(0) == '<') {
+            if (compareTo.charAt(1) == '=') {
+                sign = compareTo.substring(0,2);
+                number = Integer.parseInt(compareTo.substring(2));
+
+            } else {
+                sign = compareTo.substring(0,1);
+                number = Integer.parseInt(compareTo.substring(1));
+            }
+        }
+
+        switch (sign) {
+            case ">":  return base >  number;
+            case ">=": return base >= number;
+            case "<=": return base <= number;
+            case "<":  return base <  number;
+            case "==":
+            default:   return base == number;
+        }
     }
 }

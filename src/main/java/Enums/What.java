@@ -5,6 +5,9 @@ public enum What {
     NAME_INCLUDES,
     COLLECTION,
     ALBUM,
+    BASE_ENERGY,
+    BASE_POWER,
+    RARITY,
     RANDOM;
 
     public static What fromString(String search) {

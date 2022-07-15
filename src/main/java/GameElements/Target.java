@@ -49,6 +49,13 @@ public class Target {
         this.what = exactMatch ? What.NAME : What.NAME_INCLUDES;
     }
 
+    public Target(Who who, Where where, What what, String compareTo) {
+        this.who = who;
+        this.where = where;
+        this.what = what;
+        this.name = compareTo;
+    }
+
     public Target(List<Card> targetCards) {
         this.targetCards = targetCards;
     }

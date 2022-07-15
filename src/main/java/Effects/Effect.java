@@ -38,9 +38,13 @@ public class Effect {
     }
 
     public List<Player> selectPlayers(Game game, Who selfPlayer) {
+        return this.selectPlayers(this.target, game, selfPlayer);
+    }
+
+    public List<Player> selectPlayers(Target t, Game game, Who selfPlayer) {
         List<Player> targetPlayers = new ArrayList<>();
 
-        switch (this.target.getWho()) {
+        switch (t.getWho()) {
             case SELF:
                 if (selfPlayer == Who.RESIDENT) { targetPlayers.add(game.getResident()); }
                 else                            { targetPlayers.add(game.getOpponent()); }
@@ -67,7 +71,7 @@ public class Effect {
             return t.getTargetCards();
         }
 
-        List<Player> players = this.selectPlayers(game, selfPlayer);
+        List<Player> players = this.selectPlayers(t, game, selfPlayer);
         List<Card> targetCards = players.remove(0).findCards(t);
         if (!players.isEmpty()) {
             targetCards.addAll(players.remove(0).findCards(t));
