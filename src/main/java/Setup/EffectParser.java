@@ -125,8 +125,10 @@ public class EffectParser {
             case "POWER":
                 return new E_Power(triggerTime,target,effectObject.getInt("Value"),duration,timer,conditions);
             case "POWER_FOR_EACH":
-                Target countEachTarget = this.parseTarget(effectObject.getJSONObject("CountEach"));
-                return new E_PowerForEach(triggerTime,target,effectObject.getInt("Value"),duration,timer,conditions,countEachTarget);
+                JSONObject eachTarget = effectObject.getJSONObject("CountEach");
+                Target countEachTarget = this.parseTarget(eachTarget);
+                return new E_PowerForEach(triggerTime,target,effectObject.getInt("Value"),duration,timer,conditions,
+                        countEachTarget,eachTarget.getInt("UpTo"),eachTarget.getString("PlayHistory").equalsIgnoreCase("true"));
             case "BURN":
                 return new E_Burn(triggerTime,target,effectObject.getInt("Value"),duration,timer,conditions);
             case "LOCK":

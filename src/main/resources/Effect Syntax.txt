@@ -16,7 +16,7 @@ TriggerTime:
     PLAY
     RETURN
 
-Target:
+Target: // TODO: Add better description / examples
     Who, [ Where, [ What, [ CompareTo ] ] ]             // If rest is omitted, Who = Player, Where = All those cards, What = Special cases
 
 Effect:
@@ -26,7 +26,7 @@ Effect:
     POWER (Value)
     BURN (Value)
     LOCK                                                // May not have the duration UNTIL_PLAYED
-    POWER_FOR_EACH (Value, CountEach)                   // CountEach defines a full Target object
+    POWER_FOR_EACH (Value, CountEach)                   // CountEach defines a full Target object with Who, Where, What, CompareTo, UpTo (integer) and PlayHistory (boolean)
 
 Duration:
     END_TURN

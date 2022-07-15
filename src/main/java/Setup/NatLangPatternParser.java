@@ -503,7 +503,7 @@ public class NatLangPatternParser {
                     "{'Effects':[{" +
                             "'TriggerTime':'~TIME~'," +
                             "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~N~','CompareTo':'~2~'}," +
-                            "'Effect':{'Type':'POWER_FOR_EACH','Value':'~3~','CountEach':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'~1~'}}," +
+                            "'Effect':{'Type':'POWER_FOR_EACH','Value':'~3~','CountEach':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'~1~','UpTo':'18','PlayHistory':'FALSE'}}," +
                             "'Duration':'PERMANENT'," +
                             "}]," +
                             "'Combos':'[~1~,~2~]'}");
@@ -568,11 +568,52 @@ public class NatLangPatternParser {
                             "'Combos':'[~1~]'}");
 
             // (Friar Tuck) When drawn, for each Curious Cuisine card in your deck, (up to a maximum of four) give the Merry Men, even if they're in your deck, +8 Power until played.
-            this.addPattern(new String[]{"~TIME~ for each Curious Cuisine card in your deck, (up to a maximum of four) give the Merry Men, even if they're in your deck, +8 Power until played."},
-                    "NULL"); // FIXME: What are Merry Men
+            this.addPattern(new String[]{"When drawn, for each ","~CAN~1~"," card in your deck, (up to a maximum of four) give the Merry Men, even if they're in your deck, ","~NUM~2~"," Power until played."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'DRAW'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'NAME','CompareTo':'Friar Tuck'}," +
+                            "'Effect':{'Type':'POWER_FOR_EACH','Value':'~2~','CountEach':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'~1~','UpTo':'4','PlayHistory':'FALSE'}}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "},{" +
+                            "'TriggerTime':'DRAW'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'NAME','CompareTo':'Will Scarlet'}," +
+                            "'Effect':{'Type':'POWER_FOR_EACH','Value':'~2~','CountEach':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'~1~','UpTo':'4','PlayHistory':'FALSE'}}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "},{" +
+                            "'TriggerTime':'DRAW'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'NAME','CompareTo':'Little John'}," +
+                            "'Effect':{'Type':'POWER_FOR_EACH','Value':'~2~','CountEach':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'~1~','UpTo':'4','PlayHistory':'FALSE'}}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "}]," +
+                            "'Combos':'[~1~,Friar Tuck,Will Scarlet,Little John]'}");
+
+            // (Robin Hood) When  played, give your opponent's cards with 80 or more Base Power -20 Power this turn and give the Merry Men, even if they're in your deck, +20 Power permanently.
+            this.addPattern(new String[]{"When  played, give your opponent's cards with 80 or more Base Power -20 Power this turn and give the Merry Men, even if they're in your deck, +20 Power permanently."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'PLAY'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'NAME','CompareTo':'Friar Tuck'}," +
+                            "'Effect':{'Type':'POWER','Value':'20'}," +
+                            "'Duration':'PERMANENT'," +
+                            "},{" +
+                            "'TriggerTime':'PLAY'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'NAME','CompareTo':'Will Scarlet'}," +
+                            "'Effect':{'Type':'POWER','Value':'20'}," +
+                            "'Duration':'PERMANENT'," +
+                            "},{" +
+                            "'TriggerTime':'PLAY'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'NAME','CompareTo':'Little John'}," +
+                            "'Effect':{'Type':'POWER','Value':'20'}," +
+                            "'Duration':'PERMANENT'," +
+                            "},{" +
+                            "'TriggerTime':'PLAY'," +
+                            "'Target':{'Who':'OTHER','Where':'CARDS_IN_DECK','What':'BASE_POWER','CompareTo':'>=80'}," +
+                            "'Effect':{'Type':'POWER','Value':'-20'}," +
+                            "'Duration':'END_TURN'," +
+                            "}]," +
+                            "'Combos':'[Friar Tuck,Will Scarlet,Little John]'}");
 
             // (Battle of Pelusium (525)) When played, if your deck contains Bastet, give your remaining cards in hand +15 Power permanently.
-            this.addPattern(new String[]{"~TIME~ if your deck contains ","~CAN~1~",", give your remaining cards in hand ","~NUM~~"," Power permanently."},
+            this.addPattern(new String[]{"~TIME~ if your deck contains ","~CAN~1~",", give your remaining cards in hand ","~NUM~2~"," Power permanently."},
                     "{'Effects':[{" +
                             "'TriggerTime':'~TIME~'," +
                             "'Target':{'Who':'SELF','Where':'CARDS_REMAINING'}," +
@@ -587,7 +628,7 @@ public class NatLangPatternParser {
                     "{'Effects':[{" +
                             "'TriggerTime':'~TIME~'," +
                             "'Target':{'Who':'OTHER','Where':'CARDS_IN_HAND'}," +
-                            "'Effect':{'Type':'POWER_FOR_EACH','Value':'~2~','CountEach':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'~1~'}}," +
+                            "'Effect':{'Type':'POWER_FOR_EACH','Value':'~2~','CountEach':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'~1~','UpTo':'18','PlayHistory':'FALSE'}}," +
                             "'Duration':'END_TURN'," +
                             "}]," +
                             "'Combos':'[~1~]'}");
@@ -655,6 +696,85 @@ public class NatLangPatternParser {
                             "'Conditions':[{'Type':'DECK_CONTAINS','Who':'SELF','Where':'CARDS_IN_DECK','What':'~N~','CompareTo':'~1~','Value':'1'}]" +
                             "}]," +
                             "'Combos':'[~1~,~2~,~3~]'}");
+
+            // (Coffe) When returned to your deck, give this card -40 Power until played.
+            this.addPattern(new String[]{"~TIME~ give this card ","~NUM~1~"," Power until played."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'THIS'}," +
+                            "'Effect':{'Type':'POWER','Value':'~1~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "}]," +
+                            "'Combos':'[]'}");
+
+            // (Little John) When played, give all cards with a Base Energy of 3 or less -30 Power this turn. Repeat if played next to Robin Hood.
+            this.addPattern(new String[]{"~TIME~ give all cards with a Base Energy of ","~NUM~1~"," or less ","~NUM~2~"," Power this turn. Repeat if played next to ","~CAN~3~","."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'BASE_ENERGY','CompareTo':'<=~1~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':'END_TURN'," +
+                            "'Conditions':[{'Type':'PLAYED_WITH','Who':'SELF','Where':'CARDS_PLAYED','What':'~N~','CompareTo':'~3~'}]" +
+                            "},{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'BASE_ENERGY','CompareTo':'<=~1~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':'END_TURN'," +
+                            "}]," +
+                            "'Combos':'[]'}");
+
+            // (Coterel Gang) When drawn, every time this card has been played this game, give your The Legend of Robin Hood cards +9 Power until played.
+            this.addPattern(new String[]{"~TIME~ every time this card has been played this game, give your ","~CAN~1~"," cards ","~NUM~2~"," Power until played."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'~1~'}," +
+                            "'Effect':{'Type':'POWER_FOR_EACH','Value':'~2~','CountEach':" +
+                            "{'Who':'SELF','Where':'CARDS_IN_DECK','What':'THIS','UpTo':'18','PlayHistory':'TRUE'}}," + // FIXME: PlayHistory should really be a What
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "}]," +
+                            "'Combos':'[~1~]'}");
+
+            // (Prince John) At the start of each turn, while in your hand, give all The Legend of Robin Hood cards -3 Power.
+            this.addPattern(new String[]{"At the start of each turn, while in your hand, give all ","~CAN~1~"," cards ","~NUM~2~"," Power."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'START'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':'PERMANENT'," +
+                            "}]," +
+                            "'Combos':'[]'}"); // Never positive, so this would be an anti combo with ~1~
+
+            // (Will Scarlet) When played on the first turn of the round, give your Robin Hood card, wherever it is, +73 Power until played.
+            this.addPattern(new String[]{"When played on the first turn of the round, give your ","~CAN~1~"," card, wherever it is, ","~NUM~2~"," Power until played."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'PLAY'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "'Conditions':[{'Type':'TURN_IN_ROUND','Value':'1'}]" +
+                            "}]," +
+                            "'Combos':'[~1~]'}");
+
+            // (Battle of Bach Dang (938)) When played, for each History card you have already played (up to a maximum 15), give your History cards +1 Power until played.
+            this.addPattern(new String[]{"~TIME~ for each ","~CAN~1~"," card you have already played (up to a maximum ","~NUM~2~","), give your ","~CAN~3~"," cards ","~NUM~4~"," Power until played."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~3~'}," +
+                            "'Effect':{'Type':'POWER_FOR_EACH','Value':'~4~','CountEach':" +
+                            "{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~','UpTo':'~2~','PlayHistory':'TRUE'}}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "}]," +
+                            "'Combos':'[~1~]'}");
+
+            // (Neutrino) When returned to your deck, reduce the Energy cost of your remaining cards in hand by 3 until played.
+            this.addPattern(new String[]{"~TIME~ reduce the Energy cost of your remaining cards in hand by ","~NUM~1~"," until played."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_REMAINING'}," +
+                            "'Effect':{'Type':'ENERGY','Value':'-~1~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "}]," +
+                            "'Combos':'[]'}");
 
         } catch (Exception e) {
             e.printStackTrace();

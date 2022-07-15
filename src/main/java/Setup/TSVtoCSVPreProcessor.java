@@ -16,7 +16,7 @@ import java.util.*;
 @Log4j2
 public class TSVtoCSVPreProcessor {
 
-    public static void main(String[] args) {
+    public void processTSVtoCSV() {
         List<String[]> cardsFromTSV = new ArrayList<>();
         String defaultFilenameTSV = "src/main/resources/Cards/cards.tsv";
         String defaultFilenameCSV = "src/main/resources/Cards/cards.csv";

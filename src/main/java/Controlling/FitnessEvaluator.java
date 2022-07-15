@@ -74,9 +74,13 @@ public class FitnessEvaluator {
 
         // Debug log
         float calcTime = (float) (System.currentTimeMillis() - time) / 1000;
-        log.debug("Best fitness : " + canBest.fitness + " " + Arrays.toString(canBest.getDeckStrArray()));
+        String[] copyBest = canBest.getDeckStrArray().clone();
+        String[] copyWorst = canBest.getDeckStrArray().clone();
+        Arrays.sort(copyBest);
+        Arrays.sort(copyWorst);
+        log.debug("Best fitness : " + canBest.fitness + " " + Arrays.toString(copyBest));
         log.debug("Avg fitness  : " + avgFitness);
-        log.debug("Worst fitness: " + canWorst.fitness + " " + Arrays.toString(canWorst.getDeckStrArray()));
+        log.debug("Worst fitness: " + canWorst.fitness + " " + Arrays.toString(copyWorst));
         log.debug("Calculated in: " + calcTime + "s \n");
 
         GenAlg.resultWriter.appendCurrentFitness(gen, canWorst.getFitness()*100, avgFitness*100,
