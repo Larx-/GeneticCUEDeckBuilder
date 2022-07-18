@@ -908,6 +908,54 @@ public class NatLangPatternParser {
                             "}]," +
                             "'Combos':'[Oceans & Seas,Life on Land,Paleontology]'}");
 
+            // (Lepidodendron) When drawn, give your Common and Rare Reptiles and Tremendous Trees cards (wherever they are) +20 Power permanently.
+            this.addPattern(new String[]{"~TIME~ give your Common and Rare ","~CAN~1~"," and ","~CAN~2~"," cards (wherever they are) ","~NUM~3~"," Power permanently."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'~1~','Rarity':'Cmmn,Rare'}," +
+                            "'Effect':{'Type':'POWER','Value':'~3~'}," +
+                            "'Duration':'PERMANENT'," +
+                            "},{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'~2~','Rarity':'Cmmn,Rare'}," +
+                            "'Effect':{'Type':'POWER','Value':'~3~'}," +
+                            "'Duration':'PERMANENT'," +
+                            "}]," +
+                            "'Combos':'[~1~,~2~]'}");
+
+            // (Chicxulub Crater) When played, give all Paleontology cards -7 Power until played, and all Space cards +7 Power (wherever they are) until played.
+            this.addPattern(new String[]{"~TIME~ give all ","~CAN~1~"," cards ","~NUM~2~"," Power until played, and all ","~CAN~3~"," cards ","~NUM~4~"," Power (wherever they are) until played."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'BOTH','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "},{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'BOTH','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~3~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~4~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "}]," +
+                            "'Combos':'[~3~]'}");
+
+            // (Tlaloc) When drawn, if your deck contains Rain, give that card +22 Power until played.nWhen played, if your deck contains Rain, give your Oceans and Seas cards, wherever they are, +8 Power permanently.
+            this.addPattern(new String[]{"When drawn, if your deck contains Rain, give that card +22 Power until played.n" +
+                            "When played, if your deck contains Rain, give your Oceans and Seas cards, wherever they are, +8 Power permanently."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'DRAW'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'NAME','CompareTo':'Rain'}," +
+                            "'Effect':{'Type':'POWER','Value':'22'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "'Conditions':[{'Type':'DECK_CONTAINS','Who':'SELF','Where':'CARDS_IN_DECK','What':'NAME','CompareTo':'Rain','Value':'1'}]" +
+                            "},{" +
+                            "'TriggerTime':'PLAY'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'COLLECTION','CompareTo':'Oceans and Seas'}," +
+                            "'Effect':{'Type':'POWER','Value':'8'}," +
+                            "'Duration':'PERMANENT'," +
+                            "'Conditions':[{'Type':'DECK_CONTAINS','Who':'SELF','Where':'CARDS_IN_DECK','What':'NAME','CompareTo':'Rain','Value':'1'}]" +
+                            "}]," +
+                            "'Combos':'[Rain,Oceans and Seas]'}");
+
         } catch (Exception e) {
             e.printStackTrace();
             // ","~CAN~~","

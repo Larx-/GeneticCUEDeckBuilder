@@ -5,6 +5,7 @@ Usable parameters in some cases are:
     Who       = SELF | OTHER | BOTH
     Where     = CARDS_IN_DECK | CARDS_IN_HAND | CARDS_REMAINING
     What      = ALBUM | COLLECTION | NAME | NAME_CONTAINS || BASE_ENERGY | BASE_POWER | RARITY || RANDOM | THIS
+    Rarity    = Cmmn | Rare | Epic | Lgnd | Fusn | Ult-Fusn | Myth
     CompareTo = string to search
     Value     = int value (or string if options are specified)
 
@@ -18,6 +19,7 @@ TriggerTime:
 
 Target: // TODO: Add better description / examples
     Who, [ Where, [ What, [ CompareTo ] ] ]             // If rest is omitted, Who = Player, Where = All those cards, What = Special cases
+    // Also additionally Rarity
 
 Effect:
     ENERGY_PER_TURN (Value)

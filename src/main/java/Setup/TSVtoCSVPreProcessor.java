@@ -59,6 +59,8 @@ public class TSVtoCSVPreProcessor {
 
             String limited = rarity.contains("Ltd") ? "1" : "0";
             rarity = rarity.replace("Ltd ", "");
+            rarity = rarity.replace("Lvl ", "");
+            rarity = rarity.replace("Cft ", "");
 
             String jsonEffect = effectParser.translateEffects(effects.trim(), cardName);
             String combosWith = effectParser.getCombos(jsonEffect);

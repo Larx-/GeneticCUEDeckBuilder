@@ -194,21 +194,19 @@ public class EffectParser {
                                 target = new Target(whoTarget, whereTarget, compareToTarget, true);
                                 break;
                             case NAME_CONTAINS:
-                                target = new Target(whoTarget, whereTarget, compareToTarget, false);
-                                break;
                             case BASE_ENERGY:
-                                target = new Target(whoTarget, whereTarget, compareToTarget, false);
-                                break;
                             case BASE_POWER:
-                                target = new Target(whoTarget, whereTarget, compareToTarget, false);
-                                break;
-                            case RARITY:
+                            case RARITY: // Here if the only qualifier is rarity, otherwise set in addition
                                 target = new Target(whoTarget, whereTarget, compareToTarget, false);
                                 break;
                             default:
                                 throw new IllegalStateException("Unexpected value: " + whatTarget);
                         }
                     }
+                }
+                // Add rarity qualifier, if available
+                if (objectTarget.keySet().contains("Rarity")) {
+                    target.setRarity(Arrays.asList(objectTarget.getString("Rarity").split(",")));
                 }
             }
         }

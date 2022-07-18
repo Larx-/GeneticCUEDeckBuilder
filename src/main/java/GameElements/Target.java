@@ -14,6 +14,7 @@ public class Target {
     @Getter @Setter private String name;
     @Getter @Setter private Collection collection;
     @Getter @Setter private Album album;
+    @Getter @Setter private List<String> rarity;
     @Getter @Setter private List<Card> targetCards; // For expiry effects
 
     public Target(Who who) {

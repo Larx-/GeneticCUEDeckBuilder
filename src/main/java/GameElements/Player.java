@@ -121,8 +121,14 @@ public class Player {
     }
 
     private boolean checkCard(Card card, Target compareTo) {
+        // What not set means all cards
         if (compareTo.getWhat() == null) {
             return true;
+        }
+
+        // Make sure rarity fits first if at all defined
+        if (compareTo.getRarity() != null && !compareTo.getRarity().contains(card.getRarity())) {
+            return false;
         }
 
         switch (compareTo.getWhat()) {
@@ -132,7 +138,6 @@ public class Player {
             case ALBUM:         return card.getAlbum() == compareTo.getAlbum();
             case BASE_ENERGY:   return this.compareBase(card.getBaseEnergy(), compareTo.getName());
             case BASE_POWER:    return this.compareBase(card.getBasePower(), compareTo.getName());
-            case RARITY:        return card.getRarity().equals(compareTo.getName());
         }
 
         return false;
