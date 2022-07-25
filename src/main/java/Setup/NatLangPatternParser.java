@@ -23,6 +23,8 @@ public class NatLangPatternParser {
         this.expandPatterns();
     }
 
+    int countDoubles = 0;
+
     public String parseEffect(String naturalEffectString, String cardname) throws Exception {
         String returnString = null;
         boolean foundPattern = false;
@@ -74,6 +76,19 @@ public class NatLangPatternParser {
                                     returnString = returnString.replaceAll("~CAN~", "NAME");
 
                                 } else {
+                                    // Filter out groupings of CANs, if the pattern does not explicitly describe them
+                                    if (toReplace.contains(",") || toReplace.contains(" and ") || toReplace.contains(" or ")) {
+                                        System.out.println(toReplace);
+                                        System.out.println(++countDoubles);
+                                        // Fixme: Is it worth writing a special case for "dissolving" the groupings,
+                                        //  if in ~250 cards only ~18 would benefit from it
+                                        //  or is it easier to just write all variations of the description
+                                        //  (one or more collections as targets for example) as it's own pattern
+                                        //  UPDATE:
+                                        //  Out of 521 parsed effects, 64 run into this case and would need their own pattern
+                                        //  Meaning for the last ~20% or so I'd have to rewrite patterns multiple times...
+                                    }
+
                                     throw new Exception("Could not find Collection, Album or Card '"+toReplace+"' to replace!");
                                 }
                             }
@@ -238,7 +253,7 @@ public class NatLangPatternParser {
                             "}]," +
                             "'Combos':'[~1~,~2~,~3~]'}");
 
-            this.addPattern(new String[]{"~TIME~ Lock a random card in your opponent's hand for this turn. If you are losing the round, also give it ","~NUM~1~"," Power until it is played."},
+            this.addPattern(new String[]{"~TIME~ Lock a random card in your Opponent's hand for this turn. If you are losing the round, also give it ","~NUM~1~"," Power until it is played."},
                     "{'Effects': [{" +
                             "'TriggerTime': '~TIME~'," +
                             "'Target':{'Who':'OTHER','Where':'CARDS_IN_HAND'}," + // FIXME: Missing ",'What':'RANDOM'" because not implemented - Currently not the same random card
@@ -333,7 +348,7 @@ public class NatLangPatternParser {
                             "}]," +
                             "'Combos':'[]'}");
 
-            this.addPattern(new String[]{"When this card returns to your deck, steal ","~NUM~1~"," Energy from your opponent."},
+            this.addPattern(new String[]{"When this card returns to your deck, steal ","~NUM~1~"," Energy from your Opponent."},
                     "{'Effects': [{" +
                             "'TriggerTime': 'RETURN'," +
                             "'Target':{'Who':'SELF'}," +
@@ -591,8 +606,8 @@ public class NatLangPatternParser {
                             "}]," +
                             "'Combos':'[~1~,Friar Tuck,Will Scarlet,Little John]'}");
 
-            // (Robin Hood) When  played, give your opponent's cards with 80 or more Base Power -20 Power this turn and give the Merry Men, even if they're in your deck, +20 Power permanently.
-            this.addPattern(new String[]{"When  played, give your opponent's cards with 80 or more Base Power -20 Power this turn and give the Merry Men, even if they're in your deck, +20 Power permanently."},
+            // (Robin Hood) When  played, give your Opponent's cards with 80 or more Base Power -20 Power this turn and give the Merry Men, even if they're in your deck, +20 Power permanently.
+            this.addPattern(new String[]{"When  played, give your Opponent's cards with 80 or more Base Power -20 Power this turn and give the Merry Men, even if they're in your deck, +20 Power permanently."},
                     "{'Effects':[{" +
                             "'TriggerTime':'PLAY'," +
                             "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'NAME','CompareTo':'Friar Tuck'}," +
@@ -627,8 +642,8 @@ public class NatLangPatternParser {
                             "}]," +
                             "'Combos':'[~1~]'}");
 
-            // (Great Emu War) When played, for every Birds card in your deck, give your opponent's cards -3 Power this turn.
-            this.addPattern(new String[]{"~TIME~ for every ","~CAN~1~"," card in your deck, give your opponent's cards ","~NUM~2~"," Power this turn."},
+            // (Great Emu War) When played, for every Birds card in your deck, give your Opponent's cards -3 Power this turn.
+            this.addPattern(new String[]{"~TIME~ for every ","~CAN~1~"," card in your deck, give your Opponent's cards ","~NUM~2~"," Power this turn."},
                     "{'Effects':[{" +
                             "'TriggerTime':'~TIME~'," +
                             "'Target':{'Who':'OTHER','Where':'CARDS_IN_HAND'}," +
@@ -637,8 +652,8 @@ public class NatLangPatternParser {
                             "}]," +
                             "'Combos':'[~1~]'}");
 
-            // (Battle of Leipzig (1813)) If played after turn 6 give your opponents cards with 4 or less base energy wherever they are -18 power for 3 turns
-            this.addPattern(new String[]{"If played after turn ","~NUM~1~"," give your opponents cards with ","~NUM~2~"," or less base energy wherever they are ","~NUM~3~"," power for ","~NUM~4~"," turns"},
+            // (Battle of Leipzig (1813)) If played after turn 6 give your Opponents cards with 4 or less base energy wherever they are -18 power for 3 turns
+            this.addPattern(new String[]{"If played after turn ","~NUM~1~"," give your Opponents cards with ","~NUM~2~"," or less base energy wherever they are ","~NUM~3~"," power for ","~NUM~4~"," turns"},
                     "{'Effects':[{" +
                             "'TriggerTime':'PLAY'," +
                             "'Target':{'Who':'OTHER','Where':'CARDS_IN_DECK','What':'BASE_ENERGY','CompareTo':'<=~2~'}," +
@@ -856,8 +871,8 @@ public class NatLangPatternParser {
                             "}]," +
                             "'Combos':'[~1~]'}");
 
-            // (Mycoplasma) When played, reduce the power of your opponent's card opposite by 50, and reduce its energy cost by 2, for the rest of the game.
-            this.addPattern(new String[]{"~TIME~ reduce the power of your opponent's card opposite by 50, and reduce its energy cost by 2, for the rest of the game."},
+            // (Mycoplasma) When played, reduce the power of your Opponent's card opposite by 50, and reduce its energy cost by 2, for the rest of the game.
+            this.addPattern(new String[]{"~TIME~ reduce the power of your Opponent's card opposite by 50, and reduce its energy cost by 2, for the rest of the game."},
                     "NULL"); // TODO: Opposite Target
 
             // (Triassic-Jurassic Extinction Event) When drawn, Lock this card in hand for 3 turns and give your Paleontology cards, wherever they are, +10 Power until played.
@@ -955,6 +970,413 @@ public class NatLangPatternParser {
                             "'Conditions':[{'Type':'DECK_CONTAINS','Who':'SELF','Where':'CARDS_IN_DECK','What':'NAME','CompareTo':'Rain','Value':'1'}]" +
                             "}]," +
                             "'Combos':'[Rain,Oceans and Seas]'}");
+
+            // (Huehuecoyotl) When played, give your Coyote card (wherever it is) +25 Power until played. When played, if it is Round 5, give Coyote +70 Power this turn.
+            this.addPattern(new String[]{"When played, give your Coyote card (wherever it is) ","~NUM~1~"," Power until played. When played, if it is Round 5, give Coyote ","~NUM~2~"," Power this turn."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'PLAY'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'NAME','CompareTo':'Coyote'}," +
+                            "'Effect':{'Type':'POWER','Value':'~1~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "},{" +
+                            "'TriggerTime':'PLAY'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'NAME','CompareTo':'Coyote'}," +
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':'END_TURN'," +
+                            "'Conditions':[{'Type':'AFTER_ROUND','Value':'4'}]" +
+                            "}]," +
+                            "'Combos':'[Coyote]'}");
+
+            // (Xolotl) When returned to your deck, give a random card in your hand +28 Power until played. If your deck contains Axolotl, repeat that.
+            this.addPattern(new String[]{"When returned to your deck, give a random card in your hand ","~NUM~1~"," Power until played. If your deck contains Axolotl, repeat that."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'RETURN'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND'}," + // FIXME: Missing ",'What':'RANDOM'" because not implemented - Currently not the same random card
+                            "'Effect':{'Type':'POWER','Value':'~1~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "},{" +
+                            "'TriggerTime':'RETURN'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND'}," + // FIXME: Missing ",'What':'RANDOM'" because not implemented - Currently not the same random card
+                            "'Effect':{'Type':'POWER','Value':'~1~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "'Conditions':[{'Type':'DECK_CONTAINS','Who':'SELF','Where':'CARDS_IN_DECK','What':'NAME','CompareTo':'Axolotl'}]" +
+                            "}]," +
+                            "'Combos':'[Axolotl]'}");
+
+            // (Quetzalcoatl) When drawn, if you have played Huītzilōpōchtli this game, give Tetzcatlipoca +100 Power until played.
+            this.addPattern(new String[]{"~TIME~ if you have played ","~CAN~1~"," this game, give ","~CAN~2~"," ","~NUM~3~"," Power until played."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~N~','CompareTo':'~2~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~3~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "'Conditions':[{'Type':'PLAYED_BEFORE','Who':'SELF','Where':'CARDS_IN_DECK','What':'~N~','CompareTo':'~1~'}]" +
+                            "}]," +
+                            "'Combos':'[~1~,~2~]'}");
+
+            // (Mictlantecuhtli) When returned to your deck, if you lost this turn, give a random card remaining in your hand +20 Power, and give another +30 Power for 3 turns.
+            this.addPattern(new String[]{"When returned to your deck, if you lost this turn, give a random card remaining in your hand ","~NUM~1~"," Power, and give another ","~NUM~2~"," Power for ","~NUM~3~"," turns."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'RETURN'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_REMAINING'}," + // FIXME: Missing ",'What':'RANDOM'" because not implemented - Currently not the same random card
+                            "'Effect':{'Type':'POWER','Value':'~1~'}," +
+                            "'Duration':{'Type':'TIMER','Value':'~3~'}," +
+                            "'Conditions':[{'Type':'TURN_STATE','Value':'Loss'}]" +
+                            "},{" +
+                            "'TriggerTime':'RETURN'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_REMAINING'}," + // FIXME: Missing ",'What':'RANDOM'" because not implemented - Currently not the same random card
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':{'Type':'TIMER','Value':'~3~'}," +
+                            "'Conditions':[{'Type':'TURN_STATE','Value':'Loss'}]" +
+                            "}]," +
+                            "'Combos':'[]'}");
+
+            // (Bionic Contact Lens) On return, if you have played The Eye this game, gain +5 power per turn permanently.
+            this.addPattern(new String[]{"On return, if you have played ","~CAN~1~"," this game, gain ","~NUM~2~"," power per turn permanently."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'RETURN'," +
+                            "'Target':{'Who':'SELF'}," +
+                            "'Effect':{'Type':'POWER_PER_TURN','Value':'~2~'}," +
+                            "'Duration':'PERMANENT'," +
+                            "'Conditions':[{'Type':'PLAYED_BEFORE','Who':'SELF','Where':'CARDS_IN_DECK','What':'~N~','CompareTo':'~1~'}]" +
+                            "}]," +
+                            "'Combos':'[~1~]'}");
+
+            // (Smartdust) When drawn, two of your Opponent's cards have -10 Power this turn.
+            this.addPattern(new String[]{"~TIME~ two of your Opponent's cards have ","~NUM~1~"," Power this turn."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'OTHER','Where':'CARDS_IN_HAND'}," + // FIXME: Missing ",'What':'RANDOM'" because not implemented - Currently not two separate cards
+                            "'Effect':{'Type':'POWER','Value':'~1~'}," +
+                            "'Duration':'END_TURN'," +
+                            "}]," +
+                            "'Combos':'[]'}");
+
+            // (Laser Sword) When played, for every Forces of the Universe card played this game by either player, give this card +14 Power this turn.
+            this.addPattern(new String[]{"~TIME~ for every ","~CAN~1~"," card played this game by either player, give this card ","~NUM~2~"," Power this turn."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'THIS'}," +
+                            "'Effect':{'Type':'POWER_FOR_EACH','Value':'~2~','CountEach':{'Who':'BOTH','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'~1~','UpTo':'1000','PlayHistory':'TRUE'}}," +
+                            "'Duration':'END_TURN'," +
+                            "}]," +
+                            "'Combos':'[~1~]'}");
+
+            // (Cryogenic Freezing) When drawn, lock this card for the rest of this round. nWhile in your hand at the start of each turn, give this card -30 Power until played.
+            this.addPattern(new String[]{"~TIME~ lock this card for the rest of this round. nWhile in your hand at the start of each turn, give this card ","~NUM~1~"," Power until played."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'THIS'}," +
+                            "'Effect':{'Type':'LOCK'}," +
+                            "'Duration':'END_ROUND'," +
+                            "},{" +
+                            "'TriggerTime':'START'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'THIS'}," +
+                            "'Effect':{'Type':'POWER','Value':'~1~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "}]," +
+                            "'Combos':'[]'}");
+
+            // (Cloaking Device) When played, give 3 random cards in your hand +35 Power this turn. Reveal after scoring.
+            this.addPattern(new String[]{"~TIME~ give ","~NUM~1~"," random cards in your hand ","~NUM~2~"," Power this turn. Reveal after scoring."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND'}," + // FIXME: Missing ",'What':'RANDOM'" because not implemented
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':'END_TURN'," +
+                            "}]," +
+                            "'Combos':'[]'}");
+
+            // (Powered Exoskeleton) When drawn, give your Science cards +10 Power for 3 turns. Repeat if your deck contains Skeleton.
+            this.addPattern(new String[]{"~TIME~ give your ","~CAN~1~"," cards ","~NUM~2~"," Power for ","~NUM~3~"," turns. Repeat if your deck contains ","~CAN~4~","."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':{'Type':'TIMER','Value':'~3~'}," +
+                            "},{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':{'Type':'TIMER','Value':'~3~'}," +
+                            "'Conditions':[{'Type':'DECK_CONTAINS','Who':'SELF','Where':'CARDS_IN_DECK','What':'~N~','CompareTo':'~4~','Value':'1'}]" +
+                            "}]," +
+                            "'Combos':'[~1~,~4~]'}");
+
+            // (Cloning) When played, give all cards with a Base Power of 22 or less +22 Power until played.
+            this.addPattern(new String[]{"~TIME~ give all cards with a Base Power of ","~NUM~1~"," or less ","~NUM~2~"," Power until played."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'BOTH','Where':'CARDS_IN_DECK','What':'BASE_POWER','CompareTo':'<=~1~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "}]," +
+                            "'Combos':'[]'}");
+
+            // (Technological Singularity) When played, if your deck contains Artificial Intelligence, give your Space Technology cards (even if they're in your deck) +22 Power until played.
+            this.addPattern(new String[]{"~TIME~ if your deck contains ","~CAN~1~",", give your ","~CAN~2~"," cards (even if they're in your deck) ","~NUM~3~"," Power until played."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'~2~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~3~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "'Conditions':[{'Type':'DECK_CONTAINS','Who':'SELF','Where':'CARDS_IN_DECK','What':'~N~','CompareTo':'~1~','Value':'1'}]" +
+                            "}]," +
+                            "'Combos':'[~1~,~2~]'}");
+
+            // (Doomsday Clock) When played, if it is Turn 3 and you are losing the round, give this card +85 Power this turn.
+            this.addPattern(new String[]{"~TIME~ if it is Turn ","~NUM~1~"," and you are losing the round, give this card ","~NUM~2~"," Power this turn."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'THIS'}," +
+                            "'Effect':{'Type':'POWER','Value':'~1~'}," +
+                            "'Duration':'END_TURN'," +
+                            "'Conditions':[{'Type':'ROUND_STATE','Value':'Loss'}]" +
+                            "}]," +
+                            "'Combos':'[]'}");
+
+            // (Denny) When drawn, for every multiple of 2 Paleontology cards in both player's decks, give this card +6 Power until played.
+            this.addPattern(new String[]{"~TIME~ for every multiple of 2 Paleontology cards in both player's decks, give this card +6 Power until played."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'THIS'}," +
+                            "'Effect':{'Type':'POWER_FOR_EACH','Value':'3','CountEach':{'Who':'BOTH','Where':'CARDS_IN_DECK','What':'~A~','CompareTo':'Paleontology','UpTo':'36','PlayHistory':'FALSE'}}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "}]," +
+                            "'Combos':'[Paleontology]'}");
+
+            // (Neanderthal) When drawn, for every Human Evolution card you have played (Max of 4), give your Brilliant Human Body cards (wherever they are) +7 Power until played.nnWhen played, increase the Energy cost of your Brilliant Human Body (wherever they are) cards by 1 until played.
+            this.addPattern(new String[]{"When drawn, for every Human Evolution card you have played (Max of 4), give your Brilliant Human Body cards (wherever they are) +7 Power until played.nnWhen played, increase the Energy cost of your Brilliant Human Body (wherever they are) cards by 1 until played."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'PLAY'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'Brilliant Human Body'}," +
+                            "'Effect':{'Type':'ENERGY','Value':'+1'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "},{" +
+                            "'TriggerTime':'DRAW'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'Brilliant Human Body'}," +
+                            "'Effect':{'Type':'POWER_FOR_EACH','Value':'7','CountEach':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'Human Evolution','UpTo':'4','PlayHistory':'TRUE'}}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "}]," +
+                            "'Combos':'[Human Evolution,Brilliant Human Body]'}");
+
+            // (Australopithecus sediba) If played opposite a Paleontology card, give this card +45 Power this turn.
+            this.addPattern(new String[]{"If played opposite a Paleontology card, give this card +45 Power this turn."},
+                    "NULL"); // TODO: Opposite cards
+
+            // (The Blarney Stone) When played, give a random card in your Opponent's hand -14 power for the rest of the game.
+            this.addPattern(new String[]{"~TIME~ give a random card in your Opponent's hand ","~NUM~1~"," power for the rest of the game."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'OTHER','Where':'CARDS_IN_HAND'}," + // FIXME: Missing ",'What':'RANDOM'" because not implemented
+                            "'Effect':{'Type':'POWER','Value':'~1~'}," +
+                            "'Duration':'PERMANENT'," +
+                            "}]," +
+                            "'Combos':'[]'}");
+
+            // (Catherine Parr) When returned to your deck, give the other Wives of Henry VIII (even if they're in your deck) +20 Power and reduce their Energy costs by 1 until played.
+            this.addPattern(new String[]{"~TIME~ give the other Wives of Henry VIII (even if they're in your deck) +20 Power and reduce their Energy costs by 1 until played."},
+                    "NULL"); // TODO: How should subsets of collections be handled? Merry men was very verbose and some replacement thing might be nice
+
+            // (Peking Man) When drawn after Round 2, give a random card in your hand +28 Power for the rest of the game.nWhen returned to your deck, give a random card left in your Opponent's hand -28 Power for the rest of the game.
+            this.addPattern(new String[]{"When drawn after Round 2, give a random card in your hand +28 Power for the rest of the game.nWhen returned to your deck, give a random card left in your Opponent's hand -28 Power for the rest of the game."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'DRAW'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND'}," + // FIXME: Missing ",'What':'RANDOM'" because not implemented
+                            "'Effect':{'Type':'POWER','Value':'28'}," +
+                            "'Duration':'PERMANENT'," +
+                            "'Conditions':[{'Type':'AFTER_ROUND','Value':'2'}]" +
+                            "},{" +
+                            "'TriggerTime':'RETURN'," +
+                            "'Target':{'Who':'OTHER','Where':'CARDS_IN_HAND'}," + // FIXME: Missing ",'What':'RANDOM'" because not implemented
+                            "'Effect':{'Type':'POWER','Value':'-28'}," +
+                            "'Duration':'PERMANENT'," +
+                            "}]," +
+                            "'Combos':'[]'}");
+
+            // (Friday the 13th) When returned to your deck, if you lost the turn, your Opponent has -36 Power this turn.
+            this.addPattern(new String[]{"~TIME~ if you lost the turn, your Opponent has ","~NUM~1~"," Power this turn."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'OTHER'}," +
+                            "'Effect':{'Type':'POWER_PER_TURN','Value':'~1~'}," +
+                            "'Duration':{'Type':'TIMER','Value':'1'}," + // FIXME: Is this correct or off by one?
+                            "'Conditions':[{'Type':'TURN_STATE','Value':'Loss'}]" +
+                            "}]," +
+                            "'Combos':'[]'}");
+
+            // (April Fools) When drawn, if April Fools has been played before, give yourself -2 Energy/Turn for 4 turns.nWhen returned to your deck, give this card -80 Power permanently.
+            this.addPattern(new String[]{"~TIME~ if April Fools has been played before, give yourself -2 Energy/Turn for 4 turns.nWhen returned to your deck, give this card -80 Power permanently."},
+                    "NULL"); // TODO: Irrelevant card, but difficult & individual pattern -> LATER
+
+            // (Fortune Cookie) At the start of each turn, give a random card in either player's hand +10 Power this turn.
+            this.addPattern(new String[]{"At the start of each turn, give a random card in either player's hand ","~NUM~1~"," Power this turn."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'START'," +
+                            "'Target':{'Who':'BOTH','Where':'CARDS_IN_HAND'}," + // FIXME: Missing ",'What':'RANDOM'" because not implemented
+                            "'Effect':{'Type':'POWER','Value':'~1~'}," +
+                            "'Duration':'END_TURN'," +
+                            "}]," +
+                            "'Combos':'[]'}");
+
+            // (Witching Hour) When played on Rounds 3 or 4, and if your deck contains REM Sleep, give your Horrible Halloween cards (even if they're in your deck) +14 Power until played.
+            this.addPattern(new String[]{"When played on Rounds 3 or 4, and if your deck contains REM Sleep, give your Horrible Halloween cards (even if they're in your deck) +14 Power until played."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'PLAY'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'Horrible Halloween'}," +
+                            "'Effect':{'Type':'POWER','Value':'14'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "'Conditions':[{'Type':'AFTER_ROUND','Value':'2'}," +
+                                "{'Type':'BEFORE_ROUND','Value':'5'}," +
+                                "{'Type':'DECK_CONTAINS','Who':'SELF','Where':'CARDS_IN_DECK','What':'~N~','CompareTo':'REM Sleep','Value':'1'}]" +
+                            "}]," +
+                            "'Combos':'[REM Sleep,Horrible Halloween]'}");
+
+            // (Basan) When played next to Chicken, your Opponent's cards in hand Burn(20) until played.
+            this.addPattern(new String[]{"When played next to ","~CAN~1~",", your Opponent's cards in hand Burn(","~NUM~2~",") until played."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':''," +
+                            "'Target':{'Who':'OTHER','Where':'CARDS_IN_HAND'}," +
+                            "'Effect':{'Type':'BURN','Value':'~2~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "'Conditions':[{'Type':'PLAYED_WITH','Who':'SELF','Where':'CARDS_PLAYED','What':'~CAN~','CompareTo':'~1~'}]" +
+                            "}]," +
+                            "'Combos':'[~1~]'}");
+
+            // (Kintaro) When played on the first turn of the round give this card +70 Power this turn. If you have played Shuten-Doji, reduce this card's energy cost by 3 permanently.
+            this.addPattern(new String[]{"When played on the first turn of the round give this card +70 Power this turn. If you have played Shuten-Doji, reduce this card's energy cost by 3 permanently."},
+                    "NULL"); // TODO: Irrelevant card, but difficult & individual pattern -> LATER
+
+            // (Urashima Taro) When returned to your deck, give your Ocean Reptiles +25 Power this round.
+            this.addPattern(new String[]{"~TIME~ give your ","~CAN~1~"," ","~NUM~2~"," Power this round."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':'END_ROUND'," +
+                            "}]," +
+                            "'Combos':'[~1~]'}");
+
+            // (Burkhan Khaldun) When played, give a random Opponent's card -100 Power this turn.
+            this.addPattern(new String[]{"~TIME~ give a random Opponent's card ","~NUM~1~"," Power this turn."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'OTHER','Where':'CARDS_IN_HAND'}," + // FIXME: Missing ",'What':'RANDOM'" because not implemented
+                            "'Effect':{'Type':'POWER','Value':'~1~'}," +
+                            "'Duration':'END_TURN'," +
+                            "}]," +
+                            "'Combos':'[]'}");
+
+            // (Ragdoll) When played, give your Dogs cards +14 Power this turn.
+            this.addPattern(new String[]{"~TIME~ give your ","~CAN~1~"," cards ","~NUM~2~"," Power this turn."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':'END_TURN'," +
+                            "}]," +
+                            "'Combos':'[~1~]'}");
+
+            // (Lucrezia Borgia and Giovanni Sforza) When returned to your deck, give all cards (even if they're in either player's deck) -30 Power next turn.
+            this.addPattern(new String[]{"~TIME~ give all cards (even if they're in either player's deck) ","~NUM~1~"," Power next turn."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'BOTH','Where':'CARDS_IN_DECK'}," +
+                            "'Effect':{'Type':'POWER','Value':'~1~'}," +
+                            "'Duration':{'Type':'TIMER','Value':'1'}," + // FIXME: Is this correct or off by one?
+                            "}]," +
+                            "'Combos':'[]'}");
+
+            // (Andrew Jackson and Rachel Donelson) When returned to your deck, give your Opponent -20 Power/Turn next turn.
+            this.addPattern(new String[]{"~TIME~ give your Opponent ","~NUM~1~"," Power/Turn next turn."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'OTHER'}," +
+                            "'Effect':{'Type':'POWER_PER_TURN','Value':'~1~'}," +
+                            "'Duration':{'Type':'TIMER','Value':'1'}," + // FIXME: Is this correct or off by one?
+                            "}]," +
+                            "'Combos':'[]'}");
+
+            // (Rocket Lab Electron) When played on the first turn of a round, give this card +18 power this turn.
+            this.addPattern(new String[]{"When played on the first turn of a round, give this card ","~NUM~1~"," power this turn."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'PLAY'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'THIS'}," +
+                            "'Effect':{'Type':'POWER','Value':'~1~'}," +
+                            "'Duration':'END_TURN'," +
+                            "'Conditions':[{'Type':'TURN_IN_ROUND','Value':'1'}]" +
+                            "}]," +
+                            "'Combos':'[]'}");
+
+            // (Nopperabo) When played on the first turn of a round, give the card opposite this -20 Power permanently.
+            this.addPattern(new String[]{"When played on the first turn of a round, give the card opposite this ","~NUM~1~"," Power permanently."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'PLAY'," +
+                            "'Target':{'Who':'OTHER','Where':'CARDS_IN_HAND'}," + // TODO: Opposite Target
+                            "'Effect':{'Type':'POWER','Value':'~1~'}," +
+                            "'Duration':'PERMANENT'," +
+                            "'Conditions':[{'Type':'TURN_IN_ROUND','Value':'1'}]" +
+                            "}]," +
+                            "'Combos':'[]'}");
+
+            // (Large Hadron Collider) When played on the first turn of a Round, this card has +128 Power.
+            this.addPattern(new String[]{"When played on the first turn of a Round, this card has ","~NUM~1~"," Power."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'PLAY'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'THIS'}," +
+                            "'Effect':{'Type':'POWER','Value':'~1~'}," +
+                            "'Duration':'END_TURN'," +
+                            "'Conditions':[{'Type':'TURN_IN_ROUND','Value':'1'}]" +
+                            "}]," +
+                            "'Combos':'[]'}");
+
+            // (Time Crystals) When played on the first turn of a Round, gain +35 Power/Turn for the rest of the Round.
+            this.addPattern(new String[]{"When played on the first turn of a Round, gain ","~NUM~1~"," Power/Turn for the rest of the Round."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'PLAY'," +
+                            "'Target':{'Who':'SELF'}," +
+                            "'Effect':{'Type':'POWER_PER_TURN','Value':'~1~'}," +
+                            "'Duration':'END_ROUND'," +
+                            "'Conditions':[{'Type':'TURN_IN_ROUND','Value':'1'}]" +
+                            "}]," +
+                            "'Combos':'[]'}");
+
+            // (Phanes) When played, if it is the first turn of a round, give this card +26 Power this turn. If it is Round 1, give this card an extra +26 Power this turn.
+            this.addPattern(new String[]{"~TIME~ if it is the first turn of a round, give this card ","~NUM~1~"," Power this turn. If it is Round 1, give this card an extra ","~NUM~3~"," Power this turn."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'THIS'}," +
+                            "'Effect':{'Type':'POWER','Value':'~1~'}," +
+                            "'Duration':'END_TURN'," +
+                            "'Conditions':[{'Type':'TURN_IN_ROUND','Value':'1'}]" +
+                            "},{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'THIS'}," +
+                            "'Effect':{'Type':'POWER','Value':'~3~'}," +
+                            "'Duration':'END_TURN'," +
+                            "'Conditions':[{'Type':'BEFORE_ROUND','Value':'2'}]" +
+                            "}]," +
+                            "'Combos':'[]'}");
+
+            // (Tiger"s Eye) When played, give your Cool Cats cards (even if they're in your deck) +13 Power until played.
+            this.addPattern(new String[]{"~TIME~ give your ","~CAN~1~"," cards (even if they're in your deck) ","~NUM~2~"," Power until played."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "}]," +
+                            "'Combos':'[~1~]'}");
+
+            // (Genetic Inheritance) When played, your Pioneers of Science cards have +14 Power this turn.
+            this.addPattern(new String[]{"~TIME~ your ","~CAN~1~"," cards have ","~NUM~2~"," Power this turn."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'~CAN~','CompareTo':'~1~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':'END_TURN'," +
+                            "}]," +
+                            "'Combos':'[~1~]'}");
 
         } catch (Exception e) {
             e.printStackTrace();

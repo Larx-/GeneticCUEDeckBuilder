@@ -50,3 +50,16 @@ Conditions:
     ROUNDS_LOST (Value)                                 // Value can be precise number or number with > | >= | <= | <
     ROUNDS_WON (Value)                                  // Value can be precise number or number with > | >= | <= | <
     DECK_CONTAINS (Who, Where, What, CompareTo, Value)  // Value can be precise number or number with > | >= | <= | <
+
+OFTEN USED SHORTCUTS:
+    THIS:
+        "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'THIS'}," +
+   POWER:
+        "'Effect':{'Type':'POWER','Value':'~1~'}," +
+   TIMER:
+        "'Duration':{'Type':'TIMER','Value':'~1~'}," +
+   SKIP:
+        "NULL"); // TODO: Irrelevant card, but difficult & individual pattern -> LATER
+
+
+// TODO: The patterns are case-sensitive !?!

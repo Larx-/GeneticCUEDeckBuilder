@@ -42,7 +42,7 @@ public class FitnessEvaluator {
         // Wait for threads to finish
         for (int i = 0; i < GenAlg.numThreads; i++) {
             try {
-                threads[i].join();
+                threads[i].join(); // FIXME: !!! FIRST !!!   Stuck waiting here for some reason... maybe just remove the whole multi threaded thing?
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
