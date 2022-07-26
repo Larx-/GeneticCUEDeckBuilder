@@ -27,18 +27,16 @@ public class GenAlg {
     public static final int numResidents = 6;
     public static final int numCandidates = 50;
 
-    public static final int repetitions = 1000;
+    public static final int repetitions = 10;
     public static final int tournamentSize = 5;
     public static final int generations = 1000;
     public static final int comboMutationChance = 50;
-
-    public static final int numThreads = 1; // FIXME: Figure out why there is a ConcurrentModificationException
 
     public static ResultWriter resultWriter;
     private List<String[]> resDecks;
     private List<String[]> canDecks;
 
-    private final List<List<AgentInterface>> residentList;
+    private final List<AgentInterface> residentList;
     private List<Candidate> candidateList;
 
     public GenAlg (String cardsFile, String rulesFile, String residentsFile, String candidatesFile) {
@@ -129,17 +127,14 @@ public class GenAlg {
         return mutatedPopulation;
     }
 
-    private List<List<AgentInterface>> initResidents (String fileName) {
+    private List<AgentInterface> initResidents (String fileName) {
         // Initialization of residents
-        List<List<AgentInterface>> resList = new ArrayList<>();
-        for (int i = 0; i < numThreads; i++) {
-            resList.add(new ArrayList<>());
-        }
+        List<AgentInterface> resList = new ArrayList<>();
 
         this.resDecks = this.initDecks(fileName, numResidents);
         for (int i = 0; i < numResidents; i++) {
             Deck deck = deckInitializer.createDeckFromCardList(this.resDecks.get(i));
-            resList.get(i % numThreads).add(new AgentRandom(deck));
+            resList.add(new AgentRandom(deck));
         }
 
         return resList;

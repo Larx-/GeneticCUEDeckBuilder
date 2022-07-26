@@ -17,6 +17,8 @@ public class Target {
     @Getter @Setter private List<String> rarity;
     @Getter @Setter private List<Card> targetCards; // For expiry effects
 
+    @Getter @Setter private int numRandCards;
+
     public Target(Who who) {
         this.who = who;
     }
@@ -48,6 +50,14 @@ public class Target {
 
         this.name = name;
         this.what = exactMatch ? What.NAME : What.NAME_CONTAINS;
+    }
+
+    public Target(Who who, Where where, int numRandCards) {
+        this.who = who;
+        this.where = where;
+
+        this.numRandCards = numRandCards;
+        this.what = What.RANDOM;
     }
 
     public Target(Who who, Where where, What what, String compareTo) {

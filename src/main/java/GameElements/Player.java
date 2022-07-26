@@ -2,6 +2,7 @@ package GameElements;
 
 import Agents.AgentInterface;
 import Enums.TriggerTime;
+import Enums.What;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -122,7 +123,7 @@ public class Player {
 
     private boolean checkCard(Card card, Target compareTo) {
         // What not set means all cards
-        if (compareTo.getWhat() == null) {
+        if (compareTo.getWhat() == null || compareTo.getWhat() == What.RANDOM) {
             return true;
         }
 

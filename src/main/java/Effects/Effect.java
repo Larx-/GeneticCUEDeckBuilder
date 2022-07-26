@@ -1,5 +1,6 @@
 package Effects;
 
+import Controlling.Main;
 import EffectConditions.Condition;
 import Enums.*;
 import GameElements.Card;
@@ -76,7 +77,20 @@ public class Effect {
         if (!players.isEmpty()) {
             targetCards.addAll(players.remove(0).findCards(t));
         }
-        return targetCards;
+
+        if (t.getWhat() != What.RANDOM) {
+            return targetCards;
+        }
+
+        List<Card> randCards = new ArrayList<>();
+
+        int i = t.getNumRandCards();
+        while (i > 0 && !targetCards.isEmpty()) {
+            randCards.add(targetCards.get(Main.random.nextInt(targetCards.size())));
+            i--;
+        }
+
+        return randCards;
     }
 
     public Effect applyEffect (Game game, Who selfPlayer) {

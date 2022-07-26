@@ -2,11 +2,10 @@ package Controlling;
 
 import Agents.AgentInterface;
 import Agents.AgentRandom;
+import Enums.Who;
+import GameElements.Game;
 import GameElements.Rules;
-import Setup.DeckInitializer;
-import com.sun.javafx.css.Rule;
 import lombok.extern.log4j.Log4j2;
-import sun.nio.ch.ThreadPool;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,9 +14,9 @@ import java.util.List;
 @Log4j2
 public class FitnessEvaluator {
 
-    private final List<List<AgentInterface>> residentList;
+    private final List<AgentInterface> residentList;
 
-    public FitnessEvaluator(List<List<AgentInterface>> residentList) {
+    public FitnessEvaluator(List<AgentInterface> residentList) {
         this.residentList = residentList;
     }
 
@@ -26,26 +25,14 @@ public class FitnessEvaluator {
         long time = System.currentTimeMillis();
 
         FitnessCollector collector = new FitnessCollector(GenAlg.numResidents, GenAlg.numCandidates);
-        Thread[] threads = new Thread[GenAlg.numThreads];
 
-        // Split workload to Threads
-        for (int i = 0; i < GenAlg.numThreads; i++) {
-            List<AgentInterface> candidateAgents = new ArrayList<>();
-            for (int j = 0; j < GenAlg.numCandidates; j++) {
-                candidateAgents.add(new AgentRandom(GenAlg.deckInitializer.createDeckFromCardList(candidateList.get(j).getDeckStrArray())));
-            }
-            FitnessEvalWorker evaluator = new FitnessEvalWorker(GenAlg.rules, GenAlg.repetitions, collector, this.residentList.get(i), candidateAgents);
-            threads[i] = new Thread(evaluator);
-            threads[i].start();
+        List<AgentInterface> candidateAgents = new ArrayList<>();
+        for (int j = 0; j < GenAlg.numCandidates; j++) {
+            candidateAgents.add(new AgentRandom(GenAlg.deckInitializer.createDeckFromCardList(candidateList.get(j).getDeckStrArray())));
         }
 
-        // Wait for threads to finish
-        for (int i = 0; i < GenAlg.numThreads; i++) {
-            try {
-                threads[i].join(); // FIXME: !!! FIRST !!!   Stuck waiting here for some reason... maybe just remove the whole multi threaded thing?
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        for (int i = 0; i < GenAlg.numResidents; i++) {
+            collector.addFitness(this.evalSingleResident(GenAlg.rules, this.residentList.get(i), candidateAgents));
         }
 
         // Calc avg and find best and worst
@@ -87,5 +74,24 @@ public class FitnessEvaluator {
                 canBest.getFitness()*100, collector.getWinPercentDistribution(canBestNum), canBest.getDeckStrArray());
 
         return canBest;
+    }
+
+    private Float[] evalSingleResident (Rules rules, AgentInterface res, List<AgentInterface> opponents) {
+        Float[] winPercentages = new Float[GenAlg.numCandidates];
+
+        for (int i = 0; i < GenAlg.numCandidates; i++) {
+            Game game = new Game(rules, res, opponents.get(i));
+
+            int opponentWins = 0;
+            for (int rep = 0; rep < GenAlg.repetitions; rep++) {
+                if (game.playGame() == Who.OPPONENT) {
+                    opponentWins++;
+                }
+            }
+
+            winPercentages[i] = (float) opponentWins / GenAlg.repetitions;
+
+        }
+        return winPercentages;
     }
 }

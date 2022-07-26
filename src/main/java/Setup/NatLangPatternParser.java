@@ -256,12 +256,12 @@ public class NatLangPatternParser {
             this.addPattern(new String[]{"~TIME~ Lock a random card in your Opponent's hand for this turn. If you are losing the round, also give it ","~NUM~1~"," Power until it is played."},
                     "{'Effects': [{" +
                             "'TriggerTime': '~TIME~'," +
-                            "'Target':{'Who':'OTHER','Where':'CARDS_IN_HAND'}," + // FIXME: Missing ",'What':'RANDOM'" because not implemented - Currently not the same random card
+                            "'Target':{'Who':'OTHER','Where':'CARDS_IN_HAND','What':'RANDOM','Value':'1'}," +
                             "'Effect':{'Type':'LOCK'}," +
                             "'Duration':'END_TURN'," +
                             "},{" +
                             "'TriggerTime': '~TIME~'," +
-                            "'Target':{'Who':'OTHER','Where':'CARDS_IN_HAND'}," + // FIXME: Missing ",'What':'RANDOM'" because not implemented - Currently not the same random card
+                            "'Target':{'Who':'OTHER','Where':'CARDS_IN_HAND','What':'RANDOM','Value':'1'}," +
                             "'Effect':{'Type':'POWER','Value':'~1~'}," +
                             "'Duration':'UNTIL_PLAYED'," +
                             "'Conditions':[{'Type':'ROUND_STATE','Value':'Loss'}]" +
@@ -534,7 +534,7 @@ public class NatLangPatternParser {
                             "nWhile in your hand, at the start of each turn, give your cards +5 Power this turn."},
                     "{'Effects':[{" +
                             "'TriggerTime':'DRAW'," +
-                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND'}," + // FIXME: Missing ",'What':'RANDOM'" because not implemented - Currently not the same random card
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'RANDOM','Value':'1'}," +
                             "'Effect':{'Type':'POWER','Value':'50'}," +
                             "'Duration':'END_TURN'," +
                             "},{" +
@@ -991,12 +991,12 @@ public class NatLangPatternParser {
             this.addPattern(new String[]{"When returned to your deck, give a random card in your hand ","~NUM~1~"," Power until played. If your deck contains Axolotl, repeat that."},
                     "{'Effects':[{" +
                             "'TriggerTime':'RETURN'," +
-                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND'}," + // FIXME: Missing ",'What':'RANDOM'" because not implemented - Currently not the same random card
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'RANDOM','Value':'1'}," +
                             "'Effect':{'Type':'POWER','Value':'~1~'}," +
                             "'Duration':'UNTIL_PLAYED'," +
                             "},{" +
                             "'TriggerTime':'RETURN'," +
-                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND'}," + // FIXME: Missing ",'What':'RANDOM'" because not implemented - Currently not the same random card
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'RANDOM','Value':'1'}," +
                             "'Effect':{'Type':'POWER','Value':'~1~'}," +
                             "'Duration':'UNTIL_PLAYED'," +
                             "'Conditions':[{'Type':'DECK_CONTAINS','Who':'SELF','Where':'CARDS_IN_DECK','What':'NAME','CompareTo':'Axolotl'}]" +
@@ -1018,13 +1018,13 @@ public class NatLangPatternParser {
             this.addPattern(new String[]{"When returned to your deck, if you lost this turn, give a random card remaining in your hand ","~NUM~1~"," Power, and give another ","~NUM~2~"," Power for ","~NUM~3~"," turns."},
                     "{'Effects':[{" +
                             "'TriggerTime':'RETURN'," +
-                            "'Target':{'Who':'SELF','Where':'CARDS_REMAINING'}," + // FIXME: Missing ",'What':'RANDOM'" because not implemented - Currently not the same random card
+                            "'Target':{'Who':'SELF','Where':'CARDS_REMAINING','What':'RANDOM','Value':'1'}," +
                             "'Effect':{'Type':'POWER','Value':'~1~'}," +
                             "'Duration':{'Type':'TIMER','Value':'~3~'}," +
                             "'Conditions':[{'Type':'TURN_STATE','Value':'Loss'}]" +
                             "},{" +
                             "'TriggerTime':'RETURN'," +
-                            "'Target':{'Who':'SELF','Where':'CARDS_REMAINING'}," + // FIXME: Missing ",'What':'RANDOM'" because not implemented - Currently not the same random card
+                            "'Target':{'Who':'SELF','Where':'CARDS_REMAINING','What':'RANDOM','Value':'1'}," +
                             "'Effect':{'Type':'POWER','Value':'~2~'}," +
                             "'Duration':{'Type':'TIMER','Value':'~3~'}," +
                             "'Conditions':[{'Type':'TURN_STATE','Value':'Loss'}]" +
@@ -1046,7 +1046,7 @@ public class NatLangPatternParser {
             this.addPattern(new String[]{"~TIME~ two of your Opponent's cards have ","~NUM~1~"," Power this turn."},
                     "{'Effects':[{" +
                             "'TriggerTime':'~TIME~'," +
-                            "'Target':{'Who':'OTHER','Where':'CARDS_IN_HAND'}," + // FIXME: Missing ",'What':'RANDOM'" because not implemented - Currently not two separate cards
+                            "'Target':{'Who':'OTHER','Where':'CARDS_IN_HAND','What':'RANDOM','Value':'2'}," +
                             "'Effect':{'Type':'POWER','Value':'~1~'}," +
                             "'Duration':'END_TURN'," +
                             "}]," +
@@ -1081,7 +1081,7 @@ public class NatLangPatternParser {
             this.addPattern(new String[]{"~TIME~ give ","~NUM~1~"," random cards in your hand ","~NUM~2~"," Power this turn. Reveal after scoring."},
                     "{'Effects':[{" +
                             "'TriggerTime':'~TIME~'," +
-                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND'}," + // FIXME: Missing ",'What':'RANDOM'" because not implemented
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'RANDOM','Value':'3'}," +
                             "'Effect':{'Type':'POWER','Value':'~2~'}," +
                             "'Duration':'END_TURN'," +
                             "}]," +
@@ -1168,7 +1168,7 @@ public class NatLangPatternParser {
             this.addPattern(new String[]{"~TIME~ give a random card in your Opponent's hand ","~NUM~1~"," power for the rest of the game."},
                     "{'Effects':[{" +
                             "'TriggerTime':'~TIME~'," +
-                            "'Target':{'Who':'OTHER','Where':'CARDS_IN_HAND'}," + // FIXME: Missing ",'What':'RANDOM'" because not implemented
+                            "'Target':{'Who':'OTHER','Where':'CARDS_IN_HAND','What':'RANDOM','Value':'1'}," +
                             "'Effect':{'Type':'POWER','Value':'~1~'}," +
                             "'Duration':'PERMANENT'," +
                             "}]," +
@@ -1182,13 +1182,13 @@ public class NatLangPatternParser {
             this.addPattern(new String[]{"When drawn after Round 2, give a random card in your hand +28 Power for the rest of the game.nWhen returned to your deck, give a random card left in your Opponent's hand -28 Power for the rest of the game."},
                     "{'Effects':[{" +
                             "'TriggerTime':'DRAW'," +
-                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND'}," + // FIXME: Missing ",'What':'RANDOM'" because not implemented
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'RANDOM','Value':'1'}," +
                             "'Effect':{'Type':'POWER','Value':'28'}," +
                             "'Duration':'PERMANENT'," +
                             "'Conditions':[{'Type':'AFTER_ROUND','Value':'2'}]" +
                             "},{" +
                             "'TriggerTime':'RETURN'," +
-                            "'Target':{'Who':'OTHER','Where':'CARDS_IN_HAND'}," + // FIXME: Missing ",'What':'RANDOM'" because not implemented
+                            "'Target':{'Who':'OTHER','Where':'CARDS_REMAINING','What':'RANDOM','Value':'1'}," +
                             "'Effect':{'Type':'POWER','Value':'-28'}," +
                             "'Duration':'PERMANENT'," +
                             "}]," +
@@ -1213,7 +1213,12 @@ public class NatLangPatternParser {
             this.addPattern(new String[]{"At the start of each turn, give a random card in either player's hand ","~NUM~1~"," Power this turn."},
                     "{'Effects':[{" +
                             "'TriggerTime':'START'," +
-                            "'Target':{'Who':'BOTH','Where':'CARDS_IN_HAND'}," + // FIXME: Missing ",'What':'RANDOM'" because not implemented
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'RANDOM','Value':'1'}," +
+                            "'Effect':{'Type':'POWER','Value':'~1~'}," +
+                            "'Duration':'END_TURN'," +
+                            "},{" +
+                            "'TriggerTime':'START'," +
+                            "'Target':{'Who':'OTHER','Where':'CARDS_IN_HAND','What':'RANDOM','Value':'1'}," +
                             "'Effect':{'Type':'POWER','Value':'~1~'}," +
                             "'Duration':'END_TURN'," +
                             "}]," +
@@ -1261,7 +1266,7 @@ public class NatLangPatternParser {
             this.addPattern(new String[]{"~TIME~ give a random Opponent's card ","~NUM~1~"," Power this turn."},
                     "{'Effects':[{" +
                             "'TriggerTime':'~TIME~'," +
-                            "'Target':{'Who':'OTHER','Where':'CARDS_IN_HAND'}," + // FIXME: Missing ",'What':'RANDOM'" because not implemented
+                            "'Target':{'Who':'OTHER','Where':'CARDS_IN_HAND','What':'RANDOM','Value':'1'}," +
                             "'Effect':{'Type':'POWER','Value':'~1~'}," +
                             "'Duration':'END_TURN'," +
                             "}]," +

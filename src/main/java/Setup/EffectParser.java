@@ -177,8 +177,9 @@ public class EffectParser {
                 } else {
                     What whatTarget = What.fromString(objectTarget.getString("What"));
 
-                    if (whatTarget == What.RANDOM) { // TODO
-                        log.error("Not yet implemented target what: " + whatTarget);
+                    if (whatTarget == What.RANDOM) {
+                        int numRandCards = objectTarget.getInt("Value");
+                        target = new Target(whoTarget, whereTarget, numRandCards);
 
                     } else {
                         String compareToTarget = objectTarget.getString("CompareTo");
