@@ -49,7 +49,7 @@ public enum Collection {
     SNB ("Nebulae",Album.SPACE),
     OPL ("Our Planet",Album.SPACE),
     EAM ("The American Revolution",Album.HISTORY),
-    ERO ("The Roman Empire",Album.HISTORY),
+    ERO ("Roman Empire",Album.HISTORY),
     EAF ("American Folklore",Album.HISTORY),
     PAN ("Ancient Creatures",Album.PALEONTOLOGY),
     SEN ("Energy",Album.SCIENCE),

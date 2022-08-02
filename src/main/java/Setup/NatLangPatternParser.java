@@ -1,5 +1,6 @@
 package Setup;
 
+import Controlling.Main;
 import Enums.Album;
 import Enums.Collection;
 import lombok.Getter;
@@ -77,7 +78,8 @@ public class NatLangPatternParser {
                                     returnString = returnString.replaceAll("~CAN~", "NAME");
 
                                 } else {
-                                    throw new Exception("Could not find Collection, Album or Card '"+toReplace+"' to replace!"); // TODO: Fix cases
+                                    Main.numErr++;
+                                    throw new Exception("Could not find Collection, Album or Card '"+toReplace+"' to replace! NUMBER OF THIS KIND OF EXCEPTION: " + Main.numErr); // TODO: Fix cases
                                 }
                             }
                             returnString = returnString.replaceAll("~" + replace[2] + "~", toReplace);
@@ -529,8 +531,8 @@ public class NatLangPatternParser {
                             "}]," +
                             "'Combos':'[~1~]'}");
 
-            // (The Flying Dutchman) When played, if you are losing the round, give your cards +48 Power this turn. If you are winning, give your Plundering Pirates cards +36 Power this turn and next
-            this.addPattern(new String[]{"When played, if you are losing the round, give your cards +48 Power this turn. If you are winning, give your Plundering Pirates cards +36 Power this turn and next"},
+            // (The Flying Dutchman) When played, if you are losing the round, give your cards +48 Power this turn. If you are winning, give your Plundering Pirates cards +36 Power this turn & next
+            this.addPattern(new String[]{"When played, if you are losing the round, give your cards +48 Power this turn. If you are winning, give your Plundering Pirates cards +36 Power this turn & next"},
                     "{'Effects':[{" +
                             "'TriggerTime':'PLAY'," +
                             "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND'}," +
@@ -565,6 +567,33 @@ public class NatLangPatternParser {
                             "'Effect':{'Type':'POWER','Value':'~3~'}," +
                             "'Duration':'UNTIL_PLAYED'," +
                             "'Conditions':[{'Type':'DECK_CONTAINS','Who':'SELF','Where':'CARDS_IN_DECK','What':'~N~','CompareTo':'~1~','Value':'1'}]" +
+                            "}]," +
+                            "'Combos':'[~1~,~2~]'}");
+
+            // (Vlad the Impaler) When played, if your deck contains 4 or more Horrible Halloween cards, if the card opposite this has a Base Power of 25 or more, give it -80 Power this turn. When returned to your deck, give your Horrible Halloween cards +13 Power until played.
+            this.addPattern(new String[]{"When played, if your deck contains 4 or more Horrible Halloween cards, if the card opposite this has a Base Power of 25 or more, give it -80 Power this turn. When returned to your deck, give your Horrible Halloween cards +13 Power until played."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'PLAY'," +
+                            "'Target':{'Who':'OTHER','Where':'CARDS_PLAYED','What':'RANDOM','Value':'1'}," +
+                            "'Effect':{'Type':'POWER','Value':'-80'}," +
+                            "'Duration':'END_TURN'," +
+                            "'Conditions':[{'Type':'DECK_CONTAINS','Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'Horrible Halloween','Value':'>=4'}]" + // FIXME: Condition opposite base power
+                            "},{" +
+                            "'TriggerTime':'RETURN'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'Horrible Halloween'}," +
+                            "'Effect':{'Type':'POWER','Value':'13'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "}]," +
+                            "'Combos':'[Horrible Halloween]'}");
+
+            // (Agapornis) When drawn, if your deck contains 3 or more Arts & Culture cards, give your Life on Land cards +20 Power until played.
+            this.addPattern(new String[]{"~TIME~ if your deck contains ","~NUM~4~"," or more ","~CAN~1~"," cards, give your ","~CAN~2~"," cards ","~NUM~3~"," Power until played."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~2~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~3~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "'Conditions':[{'Type':'DECK_CONTAINS','Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~','Value':'>=~4~'}]" +
                             "}]," +
                             "'Combos':'[~1~,~2~]'}");
 
@@ -661,8 +690,8 @@ public class NatLangPatternParser {
                             "}]," +
                             "'Combos':'[]'}");
 
-            // (Strawberry Moon) When played, your Curious Cuisine cards gain +20 Power this turn and next.
-            this.addPattern(new String[]{"~TIME~ your ","~CAN~1~"," cards gain ","~NUM~2~"," Power this turn and next."},
+            // (Strawberry Moon) When played, your Curious Cuisine cards gain +20 Power this turn & next.
+            this.addPattern(new String[]{"~TIME~ your ","~CAN~1~"," cards gain ","~NUM~2~"," Power this turn & next."},
                     "{'Effects':[{" +
                             "'TriggerTime':'~TIME~'," +
                             "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," +
@@ -671,18 +700,8 @@ public class NatLangPatternParser {
                             "}]," +
                             "'Combos':'[~1~]'}");
 
-            // (Flower Moon) When played, give your Plant Life cards +20 Power this turn and next.
-            this.addPattern(new String[]{"~TIME~ give your ","~CAN~1~"," cards ","~NUM~2~"," Power this turn and next."},
-                    "{'Effects':[{" +
-                            "'TriggerTime':'~TIME~'," +
-                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," +
-                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
-                            "'Duration':{'Type':'TIMER','Value':'1'}," +
-                            "}]," +
-                            "'Combos':'[~1~]'}");
-
-            // (Miniature Donkey) When played, give your Little Critters cards +14 Power this turn and next.
-            this.addPattern(new String[]{"~TIME~ give your Little Critters cards ","~NUM~1~"," Power this turn and next."},
+            // (Miniature Donkey) When played, give your Little Critters cards +14 Power this turn & next.
+            this.addPattern(new String[]{"~TIME~ give your Little Critters cards ","~NUM~1~"," Power this turn & next."},
                     "{'Effects':[{" +
                             "'TriggerTime':'~TIME~'," +
                             "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'Little Critters'}," +
@@ -691,8 +710,8 @@ public class NatLangPatternParser {
                             "}]," +
                             "'Combos':'[Little Critters]'}");
 
-            // (Irritator) When played, give your Raging Rivers and Ocean Reptiles cards +18 Power this turn and next.
-            this.addPattern(new String[]{"~TIME~ give your ","~CAN~1~"," and ","~CAN~3~"," cards ","~NUM~2~"," Power this turn and next."},
+            // (Irritator) When played, give your Raging Rivers and Ocean Reptiles cards +18 Power this turn & next.
+            this.addPattern(new String[]{"~TIME~ give your ","~CAN~1~"," and ","~CAN~3~"," cards ","~NUM~2~"," Power this turn & next."},
                     "{'Effects':[{" +
                             "'TriggerTime':'~TIME~'," +
                             "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," +
@@ -705,6 +724,66 @@ public class NatLangPatternParser {
                             "'Duration':{'Type':'TIMER','Value':'1'}," +
                             "}]," +
                             "'Combos':'[~1~,~3~]'}");
+
+            // (Ground Cuscus) When played, give your Opponent's Tremendous Trees and Plant Life cards -60 Power this turn & next.
+            this.addPattern(new String[]{"~TIME~ give your Opponent's ","~CAN~1~"," and ","~CAN~3~"," cards ","~NUM~2~"," Power this turn & next."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'OTHER','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':{'Type':'TIMER','Value':'1'}," +
+                            "},{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'OTHER','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~3~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':{'Type':'TIMER','Value':'1'}," +
+                            "}]," +
+                            "'Combos':'[]'}");
+
+            // (Luhman 16) When drawn, give your Space cards in hand +14 Power this turn & next.
+            this.addPattern(new String[]{"~TIME~ give your ","~CAN~1~"," cards in hand ","~NUM~2~"," Power this turn & next."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'~CAN~','CompareTo':'~1~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':{'Type':'TIMER','Value':'1'}," +
+                            "}]," +
+                            "'Combos':'[~1~]'}");
+
+            // (Waimanu) When played, give your Birds and Sea Birds cards in hand +12 Power this turn & next. When returned to your deck, reduce their Energy cost by 1 for the rest of the game.
+            this.addPattern(new String[]{"~TIME~ give your ","~CAN~1~"," and ","~CAN~2~"," cards in hand ","~NUM~3~"," Power this turn & next. When returned to your deck, reduce their Energy cost by ","~NUM~4~"," for the rest of the game."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'~CAN~','CompareTo':'~1~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~3~'}," +
+                            "'Duration':{'Type':'TIMER','Value':'1'}," +
+                            "},{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'~CAN~','CompareTo':'~2~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~3~'}," +
+                            "'Duration':{'Type':'TIMER','Value':'1'}," +
+                            "},{" +
+                            "'TriggerTime':'RETURN'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'~CAN~','CompareTo':'~1~'}," +
+                            "'Effect':{'Type':'ENERGY','Value':'-~4~'}," +
+                            "'Duration':'PERMANENT'," +
+                            "},{" +
+                            "'TriggerTime':'RETURN'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'~CAN~','CompareTo':'~2~'}," +
+                            "'Effect':{'Type':'ENERGY','Value':'-~4~'}," +
+                            "'Duration':'PERMANENT'," +
+                            "}]," +
+                            "'Combos':'[~1~,~2~]'}");
+
+            // (Flower Moon) When played, give your Plant Life cards +20 Power this turn & next.
+            this.addPattern(new String[]{"~TIME~ give your ","~CAN~1~"," cards ","~NUM~2~"," Power this turn & next."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':{'Type':'TIMER','Value':'1'}," +
+                            "}]," +
+                            "'Combos':'[~1~]'}");
 
             // (Goodtimes Virus) When played, if it is the last turn of the round, give your History of the Internet cards, wherever they are, +14 Power until played.
             this.addPattern(new String[]{"~TIME~ if it is the last turn of the round, give your ","~CAN~1~"," cards, wherever they are, ","~NUM~2~"," Power until played."},
@@ -922,6 +1001,23 @@ public class NatLangPatternParser {
                             "}]," +
                             "'Combos':'[~1~,~2~,~3~,~5~,~6~]'}");
 
+            // (Alexander Hamilton) When drawn, if your deck contains at least 1 Stage and Screen or Musically Minded card, give your History cards +17 Power until played.
+            this.addPattern(new String[]{"When drawn, if your deck contains at least 1 Stage and Screen or Musically Minded card, give your History cards +17 Power until played."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'DRAW'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~A~','CompareTo':'~History~'}," +
+                            "'Effect':{'Type':'POWER','Value':'10'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "'Conditions':[{'Type':'DECK_CONTAINS','Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'Stage and Screen','Value':'>=1'}]" + // FIXME: Condition is either and not or
+                            "},{" +
+                            "'TriggerTime':'DRAW'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~A~','CompareTo':'~History~'}," +
+                            "'Effect':{'Type':'POWER','Value':'10'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "'Conditions':[{'Type':'DECK_CONTAINS','Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'Musically Minded','Value':'>=1'}]" +
+                            "}]," +
+                            "'Combos':'[Stage and Screen,Musically Minded]'}");
+
             // (Coffe) When returned to your deck, give this card -40 Power until played.
             this.addPattern(new String[]{"~TIME~ give this card ","~NUM~1~"," Power until played."},
                     "{'Effects':[{" +
@@ -1039,7 +1135,17 @@ public class NatLangPatternParser {
                     "{'Effects':[{" +
                             "'TriggerTime':'~TIME~'," +
                             "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," + // FIXME: RARITY
-                            "'Effect':{'Type':'ENERGY','Value':'-1'}," +
+                            "'Effect':{'Type':'ENERGY','Value':'-~2~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "}]," +
+                            "'Combos':'[~1~]'}");
+
+            // (Griffith Observatory) When drawn, reduce the Energy cost of your Common and Rare Space cards by 2 until played.
+            this.addPattern(new String[]{"~TIME~ reduce the Energy cost of your Common and Rare ","~CAN~1~"," cards by ","~NUM~2~"," until played."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," + // FIXME: RARITY
+                            "'Effect':{'Type':'ENERGY','Value':'-~2~'}," +
                             "'Duration':'UNTIL_PLAYED'," +
                             "}]," +
                             "'Combos':'[~1~]'}");
@@ -1059,10 +1165,21 @@ public class NatLangPatternParser {
             this.addPattern(new String[]{"~TIME~ if you have played a ","~CAN~1~"," card this game, give your ","~CAN~2~"," cards in hand ","~NUM~3~"," Power until played."},
                     "{'Effects':[{" +
                             "'TriggerTime':'~TIME~'," +
-                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~A~','CompareTo':'~2~'}," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'~A~','CompareTo':'~2~'}," +
                             "'Effect':{'Type':'POWER','Value':'~3~'}," +
                             "'Duration':'UNTIL_PLAYED'," +
                             "'Conditions':[{'Type':'PLAYED_BEFORE','Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'~1~'}]" +
+                            "}]," +
+                            "'Combos':'[~1~,~2~]'}");
+
+            // (Blue Crayfish) When played, if you have played Sapphire this game, give your Crustaceans cards +26 Power until played.
+            this.addPattern(new String[]{"~TIME~ if you have played ","~CAN~1~"," this game, give your ","~CAN~2~"," cards ","~NUM~3~"," Power until played."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'~C~','CompareTo':'~2~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~3~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "'Conditions':[{'Type':'PLAYED_BEFORE','Who':'SELF','Where':'CARDS_IN_DECK','What':'~N~','CompareTo':'~1~'}]" +
                             "}]," +
                             "'Combos':'[~1~,~2~]'}");
 
@@ -1248,6 +1365,34 @@ public class NatLangPatternParser {
                             "'Effect':{'Type':'POWER','Value':'~3~'}," +
                             "'Duration':'UNTIL_PLAYED'," +
                             "'Conditions':[{'Type':'PLAYED_BEFORE','Who':'SELF','Where':'CARDS_IN_DECK','What':'~N~','CompareTo':'~1~'}]" +
+                            "}]," +
+                            "'Combos':'[~1~,~2~]'}");
+
+            // (Warty Crab) When played, if you have played Oliver Cromwell this game, give it and Warthog +32 Power until played.
+            this.addPattern(new String[]{"~TIME~ if you have played ","~CAN~1~"," this game, give it and ","~CAN~2~"," ","~NUM~3~"," Power until played."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~N~','CompareTo':'~1~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~3~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "'Conditions':[{'Type':'PLAYED_BEFORE','Who':'SELF','Where':'CARDS_IN_DECK','What':'~N~','CompareTo':'~1~'}]" +
+                            "},{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~N~','CompareTo':'~2~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~3~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "'Conditions':[{'Type':'PLAYED_BEFORE','Who':'SELF','Where':'CARDS_IN_DECK','What':'~N~','CompareTo':'~1~'}]" +
+                            "}]," +
+                            "'Combos':'[~1~,~2~]'}");
+
+            // (Common Tailorbird) When played, if you have played a Fancy Fashions card this game, give your Birds cards +18 Power until played.
+            this.addPattern(new String[]{"~TIME~ if you have played a ","~CAN~1~"," card this game, give your ","~CAN~2~"," cards ","~NUM~3~"," Power until played."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'~2~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~3~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "'Conditions':[{'Type':'PLAYED_BEFORE','Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'~1~'}]" +
                             "}]," +
                             "'Combos':'[~1~,~2~]'}");
 
@@ -1527,6 +1672,36 @@ public class NatLangPatternParser {
                             "}]," +
                             "'Combos':'[~1~]'}");
 
+            // (Ship of Theseus) When drawn, give your Riding the Waves cards +20 Power this round.
+            this.addPattern(new String[]{"~TIME~ give your ","~CAN~1~"," cards +","~NUM~2~"," Power this round."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," +
+                            "'Effect':{'Type':'POWER','Value':'+~2~'}," +
+                            "'Duration':'END_ROUND'," +
+                            "}]," +
+                            "'Combos':'[~1~]'}");
+
+            // (Urashima Taro) When returned to your deck, give your Ocean Reptiles +25 Power this round.
+            this.addPattern(new String[]{"When returned to your deck, give your Birds and Sea Birds cards and Swans +12 Power this round."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'RETURN'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'Birds'}," +
+                            "'Effect':{'Type':'POWER','Value':'+12'}," +
+                            "'Duration':'END_ROUND'," +
+                            "},{" +
+                            "'TriggerTime':'RETURN'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'Sea Birds'}," +
+                            "'Effect':{'Type':'POWER','Value':'+12'}," +
+                            "'Duration':'END_ROUND'," +
+                            "},{" +
+                            "'TriggerTime':'RETURN'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~N~','CompareTo':'Swans'}," +
+                            "'Effect':{'Type':'POWER','Value':'+12'}," +
+                            "'Duration':'END_ROUND'," +
+                            "}]," +
+                            "'Combos':'[Birds,Sea Birds,Swans]'}");
+
             // (Olive Python) When played, give your Reptiles and Ocean Reptiles cards +14 Power this round.
             this.addPattern(new String[]{"~TIME~ give your ","~CAN~1~"," and ","~CAN~3~"," cards +","~NUM~2~"," Power this round."},
                     "{'Effects':[{" +
@@ -1582,6 +1757,81 @@ public class NatLangPatternParser {
                             "}]," +
                             "'Combos':'[~1~]'}");
 
+            // (Virtual Reality) When played, give your cards +15 Power this turn. When returned to your deck, reduce the Energy cost of cards left in your hand by 2 next turn.
+            this.addPattern(new String[]{"~TIME~ give your cards ","~NUM~1~"," Power this turn. When returned to your deck, reduce the Energy cost of cards left in your hand by ","~NUM~2~"," next turn."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND'}," +
+                            "'Effect':{'Type':'POWER','Value':'~1~'}," +
+                            "'Duration':'END_TURN'," +
+                            "},{" +
+                            "'TriggerTime':'RETURN'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_REMAINING'}," +
+                            "'Effect':{'Type':'ENERGY','Value':'-~2~'}," +
+                            "'Duration':{'Type':'TIMER','Value':'1'}," +
+                            "}]," +
+                            "'Combos':'[]'}");
+
+            // (La Chupaleche) When played, give your Common cards +18 Power this turn.
+            this.addPattern(new String[]{"~TIME~ give your Common cards ","~NUM~2~"," Power this turn."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'RARITY','CompareTo':'Cmmn'}," +
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':'END_TURN'," +
+                            "}]," +
+                            "'Combos':'[]'}");
+
+            // () When played, give your Rare cards +18 Power this turn.
+            this.addPattern(new String[]{"~TIME~ give your Rare cards ","~NUM~2~"," Power this turn."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'RARITY','CompareTo':'Rare'}," +
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':'END_TURN'," +
+                            "}]," +
+                            "'Combos':'[]'}");
+
+            // () When played, give your Epic cards +18 Power this turn.
+            this.addPattern(new String[]{"~TIME~ give your Epic cards ","~NUM~2~"," Power this turn."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'RARITY','CompareTo':'Epic'}," +
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':'END_TURN'," +
+                            "}]," +
+                            "'Combos':'[]'}");
+
+            // (Sistine Chapel) When played, give your Legendary cards +26 Power this turn.
+            this.addPattern(new String[]{"~TIME~ give your Legendary cards ","~NUM~2~"," Power this turn."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'RARITY','CompareTo':'Lgnd'}," +
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':'END_TURN'," +
+                            "}]," +
+                            "'Combos':'[]'}");
+
+            // (Mechanical Clock) When played, give your Opponent's cards -12 Power this turn.
+            this.addPattern(new String[]{"~TIME~ give your Opponent's cards ","~NUM~2~"," Power this turn."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'OTHER','Where':'CARDS_IN_HAND'}," +
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':'END_TURN'," +
+                            "}]," +
+                            "'Combos':'[]'}");
+
+            // (Monkey Orchid) When played, give your Epic Primates cards +30 Power this turn.
+            this.addPattern(new String[]{"~TIME~ give your Epic ","~CAN~1~"," cards ","~NUM~2~"," Power this turn."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," + // FIXME: Rarity
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':'END_TURN'," +
+                            "}]," +
+                            "'Combos':'[~1~]'}");
+
             // (Hatshepsut) When played, give your Female Unruly Rulers +30 Power until played and give your Ancient Egypt and Egyptian Mythology cards +18 Power this turn.
             this.addPattern(new String[]{"When played, give your Female Unruly Rulers +30 Power until played and give your Ancient Egypt and Egyptian Mythology cards +18 Power this turn."},
                     "{'Effects':[{" +
@@ -1621,7 +1871,7 @@ public class NatLangPatternParser {
                             "'Duration':'END_TURN'," +
                             "},{" +
                             "'TriggerTime':'~TIME~'," +
-                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~2~'}," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~4~'}," +
                             "'Effect':{'Type':'POWER','Value':'~2~'}," +
                             "'Duration':'END_TURN'," +
                             "},{" +
@@ -1630,7 +1880,34 @@ public class NatLangPatternParser {
                             "'Effect':{'Type':'POWER','Value':'~2~'}," +
                             "'Duration':'END_TURN'," +
                             "}]," +
-                            "'Combos':'[~1~,~2~,~3~]'}");
+                            "'Combos':'[~1~,~4~,~3~]'}");
+
+            // (Resplendent Quetzal) When played, give your Plant Life and Tremendous Trees cards +25 Power this turn. If you win the turn, they keep 10 until played.
+            this.addPattern(new String[]{"~TIME~ give your ","~CAN~1~"," and ","~CAN~3~"," cards ","~NUM~2~"," Power this turn. If you win the turn, they keep ","~NUM~5~"," until played."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':'END_TURN'," +
+                            "},{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~3~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':'END_TURN'," +
+                            "},{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~5~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "'Conditions':[{'Type':'TURN_STATE','Value':'Win'}]" +
+                            "},{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~3~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~5~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "'Conditions':[{'Type':'TURN_STATE','Value':'Win'}]" +
+                            "}]," +
+                            "'Combos':'[~1~,~3~]'}");
 
             // (Greenhouse Gases) When played, give your Opponent's Our Planet cards -14 Power this turn.
             this.addPattern(new String[]{"~TIME~ give your Opponent's ","~CAN~1~"," cards ","~NUM~2~"," Power this turn."},
@@ -1760,6 +2037,40 @@ public class NatLangPatternParser {
                             "}]," +
                             "'Combos':'[~1~]'}");
 
+            // (Kronos) When played, give your cards in hand with a Base Energy cost of 5 or more +25 Power this round. When returned to your deck give your cards with a Base Energy cost of 4 or less -20 Power until played.
+            this.addPattern(new String[]{"~TIME~ give your cards in hand with a Base Energy cost of 5 or more +25 Power this round. When returned to your deck give your cards with a Base Energy cost of 4 or less -20 Power until played."},
+                    "NULL"); // TODO: Continue here!
+
+            // (Handwashing) When played, give your Common Science cards +12 Power until played.
+            this.addPattern(new String[]{"~TIME~ give your Common ","~CAN~1~"," cards ","~NUM~2~"," Power until played."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," + // FIXME: Rarity
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "}]," +
+                            "'Combos':'[~1~]'}");
+
+            // (Subrahmanyan Chandrasekhar) When drawn, give your Common and Rare Watching the Skies cards +19 Power until played.
+            this.addPattern(new String[]{"~TIME~ give your Common and Rare ","~CAN~1~"," cards ","~NUM~2~"," Power until played."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," + // FIXME: Rarity
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "}]," +
+                            "'Combos':'[~1~]'}");
+
+            // (Confucius) When drawn, give your 7 Sages of Ancient Greece cards +21 Power until played.
+            this.addPattern(new String[]{"~TIME~ give your 7 Sages of Ancient Greece cards ","~NUM~2~"," Power until played."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'Ancient Greece'}," + // FIXME: Seven Sages Set
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "}]," +
+                            "'Combos':'[Ancient Greece]'}");
+
             // (Lyle"s Flying Fox) When played, give your Mammals and Birds cards +8 Power until played.
             this.addPattern(new String[]{"~TIME~ give your ","~CAN~1~"," and ","~CAN~3~"," cards ","~NUM~2~"," Power until played."},
                     "{'Effects':[{" +
@@ -1774,6 +2085,41 @@ public class NatLangPatternParser {
                             "'Duration':'UNTIL_PLAYED'," +
                             "}]," +
                             "'Combos':'[~1~,~3~]'}");
+
+            // (Osiris Blue) When played, give your Egyptian Mythology cards in hand +2 Energy and +36 Power until played.
+            this.addPattern(new String[]{"~TIME~ give your ","~CAN~1~"," cards in hand ","~NUM~2~"," Energy and ","~NUM~3~"," Power until played."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'~CAN~','CompareTo':'~1~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~3~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "},{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'~CAN~','CompareTo':'~1~'}," +
+                            "'Effect':{'Type':'ENERGY','Value':'~2~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "}]," +
+                            "'Combos':'[~1~]'}");
+
+            // (Domitian) When drawn, give your Legendary cards -25 Power until played and give your Rare and Common Cards +15 Power until played.
+            this.addPattern(new String[]{"~TIME~ give your Legendary cards ","~NUM~1~"," Power until played and give your Rare and Common Cards ","~NUM~2~"," Power until played."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'RARITY','CompareTo':'Lgnd'}," +
+                            "'Effect':{'Type':'POWER','Value':'~1~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "},{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'RARITY','CompareTo':'Rare'}," +
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "},{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'RARITY','CompareTo':'Cmmn'}," +
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "}]," +
+                            "'Combos':'[]'}");
 
             // (Galileo Satellite System) When played, give your Awesome Aviation and Riding the Waves cards +25 Power until played. If you lose the turn, gain +15 Power/Turn next turn.
             this.addPattern(new String[]{"~TIME~ give your ","~CAN~1~"," and ","~CAN~3~"," cards ","~NUM~2~"," Power until played. If you lose the turn, gain ","~NUM~4~"," Power/Turn next turn."},
@@ -1815,6 +2161,73 @@ public class NatLangPatternParser {
                             "'Duration':'UNTIL_PLAYED'," +
                             "}]," +
                             "'Combos':'[~1~,~3~,~4~]'}");
+
+            // (Library of Alexandria) When played, give your History and Science cards +38 Power this turn. When returned to your deck, give this card -40 Power until played.
+            this.addPattern(new String[]{"~TIME~ give your ","~CAN~1~"," and ","~CAN~3~"," cards ","~NUM~2~"," Power this turn. When returned to your deck, give this card ","~NUM~4~"," Power until played."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'~CAN~','CompareTo':'~1~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':'END_TURN'," +
+                            "},{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'~CAN~','CompareTo':'~3~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':'END_TURN'," +
+                            "},{" +
+                            "'TriggerTime':'RETURN'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'THIS'}," +
+                            "'Effect':{'Type':'POWER','Value':'~4~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "}]," +
+                            "'Combos':'[~1~,~3~]'}");
+
+            // (William Thomson; 1st Baron Kelvin) When returned to your deck, give your Dizzying Discoveries and Forces of the Universe cards +12 Power until played. If you have played Absolute Zero this game, do it again.
+            this.addPattern(new String[]{"When returned to your deck, give your Dizzying Discoveries and Forces of the Universe cards +12 Power until played. If you have played Absolute Zero this game, do it again."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'RETURN'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'Dizzying Discoveries'}," +
+                            "'Effect':{'Type':'POWER','Value':'12'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "},{" +
+                            "'TriggerTime':'RETURN'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'Forces of the Universe'}," +
+                            "'Effect':{'Type':'POWER','Value':'12'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "},{" +
+                            "'TriggerTime':'RETURN'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'Dizzying Discoveries'}," +
+                            "'Effect':{'Type':'POWER','Value':'12'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "'Conditions':[{'Type':'PLAYED_BEFORE','Who':'SELF','Where':'CARDS_IN_DECK','What':'~N~','CompareTo':'Absolute Zero'}]" +
+                            "},{" +
+                            "'TriggerTime':'RETURN'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'Forces of the Universe'}," +
+                            "'Effect':{'Type':'POWER','Value':'12'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "'Conditions':[{'Type':'PLAYED_BEFORE','Who':'SELF','Where':'CARDS_IN_DECK','What':'~N~','CompareTo':'Absolute Zero'}]" +
+                            "}]," +
+                            "'Combos':'[Dizzying Discoveries,Forces of the Universe,Absolute Zero]'}");
+
+            // (Butcherbird) When played, give your Bugs and Reptiles cards +10 Power until played. When returned to your deck, give your Horrible Halloween cards +9 Power until played.
+            this.addPattern(new String[]{"When played, give your Bugs and Reptiles cards +10 Power until played. When returned to your deck, give your Horrible Halloween cards +9 Power until played."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'Bugs'}," +
+                            "'Effect':{'Type':'POWER','Value':'10'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "},{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'Reptiles'}," +
+                            "'Effect':{'Type':'POWER','Value':'10'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "},{" +
+                            "'TriggerTime':'RETURN'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'Horrible Halloween'}," +
+                            "'Effect':{'Type':'POWER','Value':'9'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "}]," +
+                            "'Combos':'[Bugs,Reptiles,Horrible Halloween]'}");
 
             // (Genetic Inheritance) When played, your Pioneers of Science cards have +14 Power this turn.
             this.addPattern(new String[]{"~TIME~ your ","~CAN~1~"," cards have ","~NUM~2~"," Power this turn."},

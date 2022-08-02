@@ -16,6 +16,8 @@ import java.security.SecureRandom;
 @Log4j2
 public class Main {
 
+    public static int numErr = 0;
+
     public static SecureRandom random;
     public static final String cardsFile = "src/main/resources/Cards/cards.csv";
     public static final String rulesFile = "src/main/resources/Rules/rules_1.json";
