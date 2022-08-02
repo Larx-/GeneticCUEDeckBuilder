@@ -78,19 +78,19 @@ public class Effect {
             targetCards.addAll(players.remove(0).findCards(t));
         }
 
-        if (t.getWhat() != What.RANDOM) {
-            return targetCards;
+        if (t.getWhat() == What.RANDOM) {
+            List<Card> randCards = new ArrayList<>();
+
+            int i = t.getNumRandCards();
+            while (i > 0 && !targetCards.isEmpty()) {
+                randCards.add(targetCards.get(Main.random.nextInt(targetCards.size())));
+                i--;
+            }
+
+            return randCards;
         }
 
-        List<Card> randCards = new ArrayList<>();
-
-        int i = t.getNumRandCards();
-        while (i > 0 && !targetCards.isEmpty()) {
-            randCards.add(targetCards.get(Main.random.nextInt(targetCards.size())));
-            i--;
-        }
-
-        return randCards;
+        return targetCards;
     }
 
     public Effect applyEffect (Game game, Who selfPlayer) {

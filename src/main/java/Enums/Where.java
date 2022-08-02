@@ -3,7 +3,8 @@ package Enums;
 public enum Where {
     CARDS_IN_DECK,
     CARDS_IN_HAND,
-    CARDS_REMAINING;
+    CARDS_REMAINING,
+    CARDS_PLAYED;
 
     public static Where fromString(String search) {
         for (Where nextElem : Where.values()) {

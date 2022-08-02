@@ -3,7 +3,7 @@ Categories always have exactly one info, except Condition can have any amount.
 
 Usable parameters in some cases are:
     Who       = SELF | OTHER | BOTH
-    Where     = CARDS_IN_DECK | CARDS_IN_HAND | CARDS_REMAINING
+    Where     = CARDS_IN_DECK | CARDS_IN_HAND | CARDS_REMAINING | CARDS_PLAYED
     What      = ALBUM | COLLECTION | NAME | NAME_CONTAINS || BASE_ENERGY | BASE_POWER | RARITY || RANDOM | THIS
     Rarity    = Cmmn | Rare | Epic | Lgnd | Fusn | Ult-Fusn | Myth
     CompareTo = string to search
@@ -58,6 +58,10 @@ OFTEN USED SHORTCUTS:
         "'Effect':{'Type':'POWER','Value':'~1~'}," +
    TIMER:
         "'Duration':{'Type':'TIMER','Value':'~1~'}," +
+   OPPOSITE (Workaround):
+        "'Target':{'Who':'OTHER','Where':'CARDS_PLAYED','What':'RANDOM','Value':'1'}," +
+   ADJACENT (Workaround):
+        "'Target':{'Who':'SELF','Where':'CARDS_PLAYED','What':'RANDOM','Value':'2'}," +
 
 
 // TODO: The patterns are case-sensitive !?!

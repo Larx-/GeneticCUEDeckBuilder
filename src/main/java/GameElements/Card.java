@@ -61,7 +61,7 @@ public class Card {
     public void applyExpiryEffects(Game game, Who selfPlayer) {
         for (Effect effect : this.expiryEffectsAfterPlayed) {
             List<Card> thisCard = new ArrayList<>();
-            thisCard.add(this);
+            thisCard.add(this); // TODO: IS THIS THE THING THAT MESSES UP THE TIMER ???
             effect.setTarget(new Target(thisCard));
             effect.applyEffect(game, selfPlayer);
         }

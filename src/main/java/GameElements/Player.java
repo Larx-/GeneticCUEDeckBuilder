@@ -110,6 +110,7 @@ public class Player {
             case CARDS_IN_DECK:     toCheckCards.addAll(this.getCardsInDeck());     break;
             case CARDS_IN_HAND:     toCheckCards.addAll(this.getCardsInHand());     break;
             case CARDS_REMAINING:   toCheckCards.addAll(this.getCardsRemaining());  break;
+            case CARDS_PLAYED:      toCheckCards.addAll(this.getCardsPlayed());     break;
         }
 
         for (Card card : toCheckCards) {

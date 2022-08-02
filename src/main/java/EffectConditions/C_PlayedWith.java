@@ -45,6 +45,8 @@ public class C_PlayedWith extends Condition {
                 } else {
                     cardList.addAll(game.getResident().getCardsPlayed());
                 }
+                break;
+
             default:
                 log.error("Error in condition!");
         }

@@ -77,7 +77,7 @@ public class NatLangPatternParser {
                                     returnString = returnString.replaceAll("~CAN~", "NAME");
 
                                 } else {
-                                    throw new Exception("Could not find Collection, Album or Card '"+toReplace+"' to replace!");
+                                    throw new Exception("Could not find Collection, Album or Card '"+toReplace+"' to replace!"); // TODO: Fix cases
                                 }
                             }
                             returnString = returnString.replaceAll("~" + replace[2] + "~", toReplace);
@@ -939,8 +939,19 @@ public class NatLangPatternParser {
                             "'Combos':'[~1~]'}");
 
             // (Mycoplasma) When played, reduce the power of your Opponent's card opposite by 50, and reduce its energy cost by 2, for the rest of the game.
-            this.addPattern(new String[]{"~TIME~ reduce the power of your Opponent's card opposite by 50, and reduce its energy cost by 2, for the rest of the game."},
-                    "NULL"); // TODO: Opposite Target
+            this.addPattern(new String[]{"~TIME~ reduce the power of your Opponent's card opposite by ","~NUM~1~",", and reduce its energy cost by ","~NUM~2~",", for the rest of the game."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'OTHER','Where':'CARDS_PLAYED','What':'RANDOM','Value':'1'}," +
+                            "'Effect':{'Type':'POWER','Value':'-~1~'}," +
+                            "'Duration':'PERMANENT'," +
+                            "},{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'OTHER','Where':'CARDS_PLAYED','What':'RANDOM','Value':'1'}," +
+                            "'Effect':{'Type':'ENERGY','Value':'-~2~'}," +
+                            "'Duration':'PERMANENT'," +
+                            "}]," +
+                            "'Combos':'[]'}");
 
             // (Triassic-Jurassic Extinction Event) When drawn, Lock this card in hand for 3 turns and give your Paleontology cards, wherever they are, +10 Power until played.
             this.addPattern(new String[]{"~TIME~ Lock this card in hand for ","~NUM~1~"," turns and give your ","~CAN~2~"," cards, wherever they are, ","~NUM~3~"," Power until played."},
@@ -1238,8 +1249,15 @@ public class NatLangPatternParser {
                             "'Combos':'[Human Evolution,Brilliant Human Body]'}");
 
             // (Australopithecus sediba) If played opposite a Paleontology card, give this card +45 Power this turn.
-            this.addPattern(new String[]{"If played opposite a Paleontology card, give this card +45 Power this turn."},
-                    "NULL"); // TODO: Opposite cards
+            this.addPattern(new String[]{"If played opposite a ","~CAN~1~"," card, give this card ","~NUM~2~"," Power this turn."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'PLAY'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'THIS'}," +
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':'END_TURN'," +
+                            "'Conditions':[{'Type':'PLAYED_WITH','Who':'OTHER','Where':'CARDS_PLAYED','What':'~CAN~','CompareTo':'~1~'}]" +
+                            "}]," +
+                            "'Combos':'[]'}");
 
             // (The Blarney Stone) When played, give a random card in your Opponent's hand -14 power for the rest of the game.
             this.addPattern(new String[]{"~TIME~ give a random card in your Opponent's hand ","~NUM~1~"," power for the rest of the game."},
@@ -1352,14 +1370,49 @@ public class NatLangPatternParser {
                             "'Combos':'[Shuten-Doji]'}");
 
             // (Urashima Taro) When returned to your deck, give your Ocean Reptiles +25 Power this round.
-            this.addPattern(new String[]{"~TIME~ give your ","~CAN~1~"," ","~NUM~2~"," Power this round."},
+            this.addPattern(new String[]{"~TIME~ give your ","~CAN~1~"," +","~NUM~2~"," Power this round."},
                     "{'Effects':[{" +
                             "'TriggerTime':'~TIME~'," +
                             "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," +
-                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Effect':{'Type':'POWER','Value':'+~2~'}," +
                             "'Duration':'END_ROUND'," +
                             "}]," +
                             "'Combos':'[~1~]'}");
+
+            // (Olive Python) When played, give your Reptiles and Ocean Reptiles cards (even if they're in your deck) +14 Power this round.
+            this.addPattern(new String[]{"~TIME~ give your ","~CAN~1~"," and ","~CAN~3~"," cards (even if they're in your deck) +","~NUM~2~"," Power this round."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," +
+                            "'Effect':{'Type':'POWER','Value':'+~2~'}," +
+                            "'Duration':'END_ROUND'," +
+                            "},{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~3~'}," +
+                            "'Effect':{'Type':'POWER','Value':'+~2~'}," +
+                            "'Duration':'END_ROUND'," +
+                            "}]," +
+                            "'Combos':'[~1~,~3~]'}");
+
+            // (Red Panda) When returned to your deck, give your Plant Life, Curious Cuisine and Carnivores cards (even if they're in your deck) +22 Power this round.
+            this.addPattern(new String[]{"~TIME~ give your ","~CAN~1~",", ","~CAN~4~"," and ","~CAN~3~"," cards (even if they're in your deck) +","~NUM~2~"," Power this round."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," +
+                            "'Effect':{'Type':'POWER','Value':'+~2~'}," +
+                            "'Duration':'END_ROUND'," +
+                            "},{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~3~'}," +
+                            "'Effect':{'Type':'POWER','Value':'+~2~'}," +
+                            "'Duration':'END_ROUND'," +
+                            "},{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~4~'}," +
+                            "'Effect':{'Type':'POWER','Value':'+~2~'}," +
+                            "'Duration':'END_ROUND'," +
+                            "}]," +
+                            "'Combos':'[~1~,~3~,~4~]'}");
 
             // (Burkhan Khaldun) When played, give a random Opponent's card -100 Power this turn.
             this.addPattern(new String[]{"~TIME~ give a random Opponent's card ","~NUM~1~"," Power this turn."},
@@ -1433,7 +1486,7 @@ public class NatLangPatternParser {
             this.addPattern(new String[]{"When played on the first turn of a round, give the card opposite this ","~NUM~1~"," Power permanently."},
                     "{'Effects':[{" +
                             "'TriggerTime':'PLAY'," +
-                            "'Target':{'Who':'OTHER','Where':'CARDS_IN_HAND'}," + // TODO: Opposite Target
+                            "'Target':{'Who':'OTHER','Where':'CARDS_PLAYED','What':'RANDOM','Value':'1'}," +
                             "'Effect':{'Type':'POWER','Value':'~1~'}," +
                             "'Duration':'PERMANENT'," +
                             "'Conditions':[{'Type':'TURN_IN_ROUND','Value':'1'}]" +
