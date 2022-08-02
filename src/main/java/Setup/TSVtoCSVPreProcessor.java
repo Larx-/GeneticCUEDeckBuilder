@@ -2,7 +2,6 @@ package Setup;
 
 import Effects.Effect;
 import Enums.Album;
-import Enums.Collection;
 import Enums.TriggerTime;
 import com.opencsv.*;
 import com.opencsv.exceptions.CsvException;
@@ -102,7 +101,7 @@ public class TSVtoCSVPreProcessor {
                 Album album = Album.fromString(tsvCard[3]);
                 switch (Objects.requireNonNull(album)) {
                     case ARTS_AND_CULTURE:  albumString += "ARTS_AND_CULTURE";  break;
-                    case OCEANS:            albumString += "OCEANS";            break;
+                    case OCEANS_AND_SEAS:            albumString += "OCEANS";            break;
                     case SPACE:             albumString += "SPACE";             break;
                     case LIFE_ON_LAND:      albumString += "LIFE_ON_LAND";      break;
                     case HISTORY:           albumString += "HISTORY";           break;
