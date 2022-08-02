@@ -21,6 +21,7 @@ public class NatLangPatternParser {
         Collections.sort(this.patterns);
 
         this.expandPatterns();
+        this.replaceSets();
     }
 
     int countDoubles = 0;
@@ -76,19 +77,6 @@ public class NatLangPatternParser {
                                     returnString = returnString.replaceAll("~CAN~", "NAME");
 
                                 } else {
-                                    // Filter out groupings of CANs, if the pattern does not explicitly describe them
-                                    if (toReplace.contains(",") || toReplace.contains(" and ") || toReplace.contains(" or ")) {
-                                        System.out.println(toReplace);
-                                        System.out.println(++countDoubles);
-                                        // Fixme: Is it worth writing a special case for "dissolving" the groupings,
-                                        //  if in ~250 cards only ~18 would benefit from it
-                                        //  or is it easier to just write all variations of the description
-                                        //  (one or more collections as targets for example) as it's own pattern
-                                        //  UPDATE:
-                                        //  Out of 521 parsed effects, 64 run into this case and would need their own pattern
-                                        //  Meaning for the last ~20% or so I'd have to rewrite patterns multiple times...
-                                    }
-
                                     throw new Exception("Could not find Collection, Album or Card '"+toReplace+"' to replace!");
                                 }
                             }
@@ -196,6 +184,34 @@ public class NatLangPatternParser {
         }
 
         this.patterns = mapExpanded;
+    }
+
+    private void replaceSets() {
+        Map<String,String[]> replaceSets = new HashMap<>();
+        replaceSets.put("",new String[]{});
+
+        for (Pattern p : this.patterns) {
+            String value = p.getJsonOutput();
+
+            if (value.contains("~SET_START~")) {
+                int startSetIndex = value.indexOf("~SET_START~") + 11;
+                int nameSetIndex = value.indexOf("~",startSetIndex);
+                int endSetIndex = value.indexOf("~SET_END~");
+
+                String setName = value.substring(startSetIndex,nameSetIndex);
+                String setCopyPaste = value.substring(nameSetIndex+1,endSetIndex);
+
+                String newValue = value.replace("~SET_START~"+setName+"~"+setCopyPaste+"~SET_END~","~SET_CP~");
+
+                // Loop through set and replace accordingly
+                // TODO... if I even need the set feature
+
+                // Remove last comma and placeholder
+                newValue.replace(",~SET_CP~","");
+
+                System.out.println(setName);
+            }
+        }
     }
 
     private void addPatterns() {
@@ -716,6 +732,58 @@ public class NatLangPatternParser {
                             "}]," +
                             "'Combos':'[~1~,~2~,~3~]'}");
 
+            // () When drawn, if your deck contains Giant Panda, give your Crustaceans, Cephalopods, Feisty Fish and Fabulous Fish cards (even if they're in your deck) +13 Power until played.
+            this.addPattern(new String[]{"~TIME~ if your deck contains ","~CAN~1~",", give your ","~CAN~2~",", ","~CAN~5~"," and ","~CAN~3~"," cards (even if they're in your deck) ","~NUM~4~"," Power until played."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'~2~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~4~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "'Conditions':[{'Type':'DECK_CONTAINS','Who':'SELF','Where':'CARDS_IN_DECK','What':'~N~','CompareTo':'~1~','Value':'1'}]" +
+                            "},{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'~3~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~4~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "'Conditions':[{'Type':'DECK_CONTAINS','Who':'SELF','Where':'CARDS_IN_DECK','What':'~N~','CompareTo':'~1~','Value':'1'}]" +
+                            "},{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'~5~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~4~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "'Conditions':[{'Type':'DECK_CONTAINS','Who':'SELF','Where':'CARDS_IN_DECK','What':'~N~','CompareTo':'~1~','Value':'1'}]" +
+                            "}]," +
+                            "'Combos':'[~1~,~2~,~3~,~5~]'}");
+
+            // (Commerson"s Dolphin) When drawn, if your deck contains Giant Panda, give your Crustaceans, Cephalopods, Feisty Fish and Fabulous Fish cards (even if they're in your deck) +13 Power until played.
+            this.addPattern(new String[]{"~TIME~ if your deck contains ","~CAN~1~",", give your ","~CAN~2~",", ","~CAN~5~",", ","~CAN~6~"," and ","~CAN~3~"," cards (even if they're in your deck) ","~NUM~4~"," Power until played."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'~2~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~4~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "'Conditions':[{'Type':'DECK_CONTAINS','Who':'SELF','Where':'CARDS_IN_DECK','What':'~N~','CompareTo':'~1~','Value':'1'}]" +
+                            "},{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'~3~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~4~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "'Conditions':[{'Type':'DECK_CONTAINS','Who':'SELF','Where':'CARDS_IN_DECK','What':'~N~','CompareTo':'~1~','Value':'1'}]" +
+                            "},{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'~5~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~4~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "'Conditions':[{'Type':'DECK_CONTAINS','Who':'SELF','Where':'CARDS_IN_DECK','What':'~N~','CompareTo':'~1~','Value':'1'}]" +
+                            "},{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'~6~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~4~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "'Conditions':[{'Type':'DECK_CONTAINS','Who':'SELF','Where':'CARDS_IN_DECK','What':'~N~','CompareTo':'~1~','Value':'1'}]" +
+                            "}]," +
+                            "'Combos':'[~1~,~2~,~3~,~5~,~6~]'}");
+
             // (Coffe) When returned to your deck, give this card -40 Power until played.
             this.addPattern(new String[]{"~TIME~ give this card ","~NUM~1~"," Power until played."},
                     "{'Effects':[{" +
@@ -748,7 +816,7 @@ public class NatLangPatternParser {
                             "'TriggerTime':'~TIME~'," +
                             "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~C~','CompareTo':'~1~'}," +
                             "'Effect':{'Type':'POWER_FOR_EACH','Value':'~2~','CountEach':" +
-                            "{'Who':'SELF','Where':'CARDS_IN_DECK','What':'THIS','UpTo':'18','PlayHistory':'TRUE'}}," + // FIXME: PlayHistory should really be a What
+                            "{'Who':'SELF','Where':'CARDS_IN_DECK','What':'THIS','UpTo':'18','PlayHistory':'TRUE'}}," +
                             "'Duration':'UNTIL_PLAYED'," +
                             "}]," +
                             "'Combos':'[~1~]'}");
@@ -795,7 +863,6 @@ public class NatLangPatternParser {
                             "}]," +
                             "'Combos':'[]'}");
 
-            // TODO: Can I somehow split combined effects like this on ".n" -> Probably not worth the time and trouble for ~40 such cards...
             // (D.B. Cooper) When drawn, lock this card in your hand for the rest of the round.nWhen played, for every Awesome Aviation card played this game by either player (up to a maximum of 18), give this card +10 Power this turn.nWhen returned to your deck, give your Money, Money, Money cards, wherever they are, +20 Power until played.
             this.addPattern(new String[]{"When drawn, lock this card in your hand for the rest of the round.n" +
                             "When played, for every ","~CAN~1~"," card played this game by either player (up to a maximum of 18), give this card +10 Power this turn.n" +
@@ -862,7 +929,7 @@ public class NatLangPatternParser {
                             "'Combos':'[]'}");
 
             // (E. Coli) When played in either the left or right slot, give your Science cards +8 Power permanently.
-            this.addPattern(new String[]{"When played in either the left or right slot, give your ","~CAN~1~"," cards ","~NUM~2~"," Power permanently."}, // FIXME: Should I add a condition for this or is it unfair for the bot?
+            this.addPattern(new String[]{"When played in either the left or right slot, give your ","~CAN~1~"," cards ","~NUM~2~"," Power permanently."},
                     "{'Effects':[{" +
                             "'TriggerTime':'PLAY'," +
                             "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," +
@@ -1052,6 +1119,16 @@ public class NatLangPatternParser {
                             "}]," +
                             "'Combos':'[]'}");
 
+            // (Okapi) When played, your Opponent's cards have -10 Power this turn.
+            this.addPattern(new String[]{"~TIME~ your Opponent's cards have ","~NUM~1~"," Power this turn."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'OTHER','Where':'CARDS_IN_HAND'}," +
+                            "'Effect':{'Type':'POWER','Value':'~1~'}," +
+                            "'Duration':'END_TURN'," +
+                            "}]," +
+                            "'Combos':'[]'}");
+
             // (Laser Sword) When played, for every Forces of the Universe card played this game by either player, give this card +14 Power this turn.
             this.addPattern(new String[]{"~TIME~ for every ","~CAN~1~"," card played this game by either player, give this card ","~NUM~2~"," Power this turn."},
                     "{'Effects':[{" +
@@ -1174,10 +1251,6 @@ public class NatLangPatternParser {
                             "}]," +
                             "'Combos':'[]'}");
 
-            // (Catherine Parr) When returned to your deck, give the other Wives of Henry VIII (even if they're in your deck) +20 Power and reduce their Energy costs by 1 until played.
-            this.addPattern(new String[]{"~TIME~ give the other Wives of Henry VIII (even if they're in your deck) +20 Power and reduce their Energy costs by 1 until played."},
-                    "NULL"); // TODO: How should subsets of collections be handled? Merry men was very verbose and some replacement thing might be nice
-
             // (Peking Man) When drawn after Round 2, give a random card in your hand +28 Power for the rest of the game.nWhen returned to your deck, give a random card left in your Opponent's hand -28 Power for the rest of the game.
             this.addPattern(new String[]{"When drawn after Round 2, give a random card in your hand +28 Power for the rest of the game.nWhen returned to your deck, give a random card left in your Opponent's hand -28 Power for the rest of the game."},
                     "{'Effects':[{" +
@@ -1200,14 +1273,27 @@ public class NatLangPatternParser {
                             "'TriggerTime':'~TIME~'," +
                             "'Target':{'Who':'OTHER'}," +
                             "'Effect':{'Type':'POWER_PER_TURN','Value':'~1~'}," +
-                            "'Duration':{'Type':'TIMER','Value':'1'}," + // FIXME: Is this correct or off by one?
+                            "'Duration':{'Type':'TIMER','Value':'1'}," + // TODO: It NEVER returns to normal... WHY?!?
                             "'Conditions':[{'Type':'TURN_STATE','Value':'Loss'}]" +
                             "}]," +
                             "'Combos':'[]'}");
 
             // (April Fools) When drawn, if April Fools has been played before, give yourself -2 Energy/Turn for 4 turns.nWhen returned to your deck, give this card -80 Power permanently.
-            this.addPattern(new String[]{"~TIME~ if April Fools has been played before, give yourself -2 Energy/Turn for 4 turns.nWhen returned to your deck, give this card -80 Power permanently."},
-                    "NULL"); // TODO: Irrelevant card, but difficult & individual pattern -> LATER
+            this.addPattern(new String[]{"When drawn, if April Fools has been played before, give yourself ","~NUM~1~"," Energy/Turn for ","~NUM~2~"," turns.n" +
+                            "When returned to your deck, give this card ","~NUM~3~"," Power permanently."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'DRAW'," +
+                            "'Target':{'Who':'SELF'}," +
+                            "'Effect':{'Type':'ENERGY_PER_TURN','Value':'~1~'}," +
+                            "'Duration':{'Type':'TIMER','Value':'~2~'}," +
+                            "'Conditions':[{'Type':'PLAYED_BEFORE','Who':'SELF','Where':'CARDS_IN_DECK','What':'~N~','CompareTo':'April Fools'}]" +
+                            "},{" +
+                            "'TriggerTime':'RETURN'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'THIS'}," +
+                            "'Effect':{'Type':'POWER','Value':'~3~'}," +
+                            "'Duration':'PERMANENT'," +
+                            "}]," +
+                            "'Combos':'[]'}");
 
             // (Fortune Cookie) At the start of each turn, give a random card in either player's hand +10 Power this turn.
             this.addPattern(new String[]{"At the start of each turn, give a random card in either player's hand ","~NUM~1~"," Power this turn."},
@@ -1250,7 +1336,20 @@ public class NatLangPatternParser {
 
             // (Kintaro) When played on the first turn of the round give this card +70 Power this turn. If you have played Shuten-Doji, reduce this card's energy cost by 3 permanently.
             this.addPattern(new String[]{"When played on the first turn of the round give this card +70 Power this turn. If you have played Shuten-Doji, reduce this card's energy cost by 3 permanently."},
-                    "NULL"); // TODO: Irrelevant card, but difficult & individual pattern -> LATER
+                    "{'Effects':[{" +
+                            "'TriggerTime':'PLAY'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'THIS'}," +
+                            "'Effect':{'Type':'POWER','Value':'70'}," +
+                            "'Duration':'END_TURN'," +
+                            "'Conditions':[{'Type':'TURN_IN_ROUND','Value':'1'}]" +
+                            "},{" +
+                            "'TriggerTime':'PLAY'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'THIS'}," +
+                            "'Effect':{'Type':'ENERGY','Value':'-3'}," +
+                            "'Duration':'PERMANENT'," +
+                            "'Conditions':[{'Type':'PLAYED_BEFORE','Who':'SELF','Where':'CARDS_IN_DECK','What':'~N~','CompareTo':'Shuten-Doji'}]" +
+                            "}]," +
+                            "'Combos':'[Shuten-Doji]'}");
 
             // (Urashima Taro) When returned to your deck, give your Ocean Reptiles +25 Power this round.
             this.addPattern(new String[]{"~TIME~ give your ","~CAN~1~"," ","~NUM~2~"," Power this round."},
@@ -1282,15 +1381,32 @@ public class NatLangPatternParser {
                             "}]," +
                             "'Combos':'[~1~]'}");
 
-            // (Lucrezia Borgia and Giovanni Sforza) When returned to your deck, give all cards (even if they're in either player's deck) -30 Power next turn.
-            this.addPattern(new String[]{"~TIME~ give all cards (even if they're in either player's deck) ","~NUM~1~"," Power next turn."},
-                    "{'Effects':[{" +
-                            "'TriggerTime':'~TIME~'," +
-                            "'Target':{'Who':'BOTH','Where':'CARDS_IN_DECK'}," +
-                            "'Effect':{'Type':'POWER','Value':'~1~'}," +
-                            "'Duration':{'Type':'TIMER','Value':'1'}," + // FIXME: Is this correct or off by one?
-                            "}]," +
-                            "'Combos':'[]'}");
+// TODO: Why in the world does THIS lead to an infinite loop, but only when it's BOTH or SELF & OTHER in separate effects?!
+//
+//            // (Lucrezia Borgia and Giovanni Sforza) When returned to your deck, give all cards (even if they're in either player's deck) -30 Power next turn.
+//            this.addPattern(new String[]{"~TIME~ give all cards (even if they're in either player's deck) ","~NUM~1~"," Power next turn."},
+//                    "{'Effects':[{" +
+//                            "'TriggerTime':'~TIME~'," +
+//                            "'Target':{'Who':'BOTH','Where':'CARDS_IN_DECK'}," +
+//                            "'Effect':{'Type':'POWER','Value':'~1~'}," +
+//                            "'Duration':{'Type':'TIMER','Value':'1'}," +
+//                            "}]," +
+//                            "'Combos':'[]'}");
+//
+//            // (Lucrezia Borgia and Giovanni Sforza) When returned to your deck, give all cards (even if they're in either player's deck) -30 Power next turn.
+//            this.addPattern(new String[]{"~TIME~ give all cards (even if they're in either player's deck) ","~NUM~1~"," Power next turn."},
+//                    "{'Effects':[{" +
+//                            "'TriggerTime':'~TIME~'," +
+//                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK'}," +
+//                            "'Effect':{'Type':'POWER','Value':'~1~'}," +
+//                            "'Duration':{'Type':'TIMER','Value':'1'}," +
+//                            "},{" +
+//                            "'TriggerTime':'~TIME~'," +
+//                            "'Target':{'Who':'OTHER','Where':'CARDS_IN_DECK'}," +
+//                            "'Effect':{'Type':'POWER','Value':'~1~'}," +
+//                            "'Duration':{'Type':'TIMER','Value':'1'}," +
+//                            "}]," +
+//                            "'Combos':'[]'}");
 
             // (Andrew Jackson and Rachel Donelson) When returned to your deck, give your Opponent -20 Power/Turn next turn.
             this.addPattern(new String[]{"~TIME~ give your Opponent ","~NUM~1~"," Power/Turn next turn."},
@@ -1298,7 +1414,7 @@ public class NatLangPatternParser {
                             "'TriggerTime':'~TIME~'," +
                             "'Target':{'Who':'OTHER'}," +
                             "'Effect':{'Type':'POWER_PER_TURN','Value':'~1~'}," +
-                            "'Duration':{'Type':'TIMER','Value':'1'}," + // FIXME: Is this correct or off by one?
+                            "'Duration':{'Type':'TIMER','Value':'1'}," +
                             "}]," +
                             "'Combos':'[]'}");
 
@@ -1380,6 +1496,31 @@ public class NatLangPatternParser {
                             "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'~CAN~','CompareTo':'~1~'}," +
                             "'Effect':{'Type':'POWER','Value':'~2~'}," +
                             "'Duration':'END_TURN'," +
+                            "}]," +
+                            "'Combos':'[~1~]'}");
+
+            // (Matthew Henson) When drawn, give your The North Pole card, even if it's in your deck, +25 Power for the rest of the game.
+            this.addPattern(new String[]{"~TIME~ give your ","~CAN~1~"," card, even if it's in your deck, ","~NUM~2~"," Power for the rest of the game."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':'PERMANENT'," +
+                            "}]," +
+                            "'Combos':'[~1~]'}");
+
+            // (Catherine Parr) When returned to your deck, give your Turbulent Tudors cards (even if they're in your deck) +20 Power and reduce their Energy costs by 1 until played.
+            this.addPattern(new String[]{"When returned to your deck, give your ","~CAN~1~"," cards (even if they're in your deck) ","~NUM~2~"," Power and reduce their Energy costs by ","~NUM~3~"," until played."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'RETURN'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "},{" +
+                            "'TriggerTime':'RETURN'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'~CAN~','CompareTo':'~1~'}," +
+                            "'Effect':{'Type':'ENERGY','Value':'-~3~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
                             "}]," +
                             "'Combos':'[~1~]'}");
 

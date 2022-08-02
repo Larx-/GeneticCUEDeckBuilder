@@ -50,8 +50,37 @@ public class DeckInitializer {
     public Deck createDeckFromCardList (String[] cardIds) {
         LinkedList<Card> deckCards = new LinkedList<>();
         for (String cardId : cardIds) {
-            deckCards.add(this.cardReader.getCardByStringIndex(cardId));
+            deckCards.add(this.cardReader.getCardByStringIndex(cardId).copyFresh());
         }
+        return new Deck(deckCards);
+    }
+
+    public Deck createRandomDeckWithCardList (String[] cardIds) {
+        LinkedList<Card> deckCards = new LinkedList<>();
+        Set<Integer> addedCardsId = new HashSet<>();
+
+        for (String cardId : cardIds) {
+            Card nextCard = this.cardReader.getCardByStringIndex(cardId);
+            addedCardsId.add(nextCard.getId());
+            deckCards.add(nextCard.copyFresh());
+        }
+
+        for (int i = 0; i < GenAlg.defaultNumCards; i++) {
+            Card nextCard;
+            do {
+                int cardIndex = Main.random.nextInt(this.cardReader.getNumberOfCards()) + 1;
+                nextCard = this.cardReader.getCard(cardIndex);
+
+                if (addedCardsId.contains(nextCard.getId())) {
+                    nextCard = null;
+                }
+
+            } while (nextCard == null);
+
+            addedCardsId.add(nextCard.getId());
+            deckCards.add(nextCard.copyFresh());
+        }
+
         return new Deck(deckCards);
     }
 

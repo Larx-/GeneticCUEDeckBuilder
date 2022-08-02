@@ -5,12 +5,15 @@ import Effects.*;
 import Enums.*;
 import Enums.Collection;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.*;
 
 @Log4j2
 public class Game {
+
+    @Getter @Setter boolean doOutput;
 
     @Getter Rules rules;
     @Getter Player resident;
@@ -39,6 +42,7 @@ public class Game {
 
         this.resident = new Player(resident, this.rules.getEnergyStarting(), this.rules.getEnergyPerTurn(), 0);
         this.opponent = new Player(opponent, this.rules.getEnergyStarting(), this.rules.getEnergyPerTurn(), 0);
+        this.doOutput = false;
     }
 
     public Who playGame(){
@@ -50,20 +54,27 @@ public class Game {
             if (resWon) { this.resWins++; }
             else        { this.oppWins++; }
 
-//            log.debug("Resident  "+this.rWin+" - "+this.oWin+"  Opponent");
+            if (this.doOutput) {
+                log.debug("Resident  "+this.resWins+" - "+this.oppWins+"  Opponent");
+            }
+
             this.roundNumber++;
         }
 
         if (this.resWins > this.oppWins) {
-//            log.debug("--> Resident won game <--");
-//            log.debug("");
-//            log.debug("");
+            if (this.doOutput) {
+                log.debug("--> Resident won game <--");
+                log.debug("");
+                log.debug("");
+            }
             return Who.RESIDENT;
 
         } else {
-//            log.debug("--> Opponent won game <--");
-//            log.debug("");
-//            log.debug("");
+            if (this.doOutput) {
+                log.debug("--> Opponent won game <--");
+                log.debug("");
+                log.debug("");
+            }
             return Who.OPPONENT;
         }
     }
@@ -146,11 +157,15 @@ public class Game {
         this.effectStackResident.get(TriggerTime.END_ROUND).add(albumExpiry);
 
         if (roundBonus.getCollection() == null) {
-//            log.debug(String.format("ROUND %d  (+%d %s)", this.roundNumber,
-//                    roundBonus.getAlbumBonus(), bonusAlbum));
+            if (this.doOutput) {
+                log.debug(String.format("ROUND %d  (+%d %s)", this.roundNumber,
+                    roundBonus.getAlbumBonus(), bonusAlbum));
+            }
         } else {
-//            log.debug(String.format("ROUND %d  (+%d %s / +%d %s)", this.roundNumber,
-//                    (roundBonus.getCollectionBonus() + roundBonus.getAlbumBonus()), bonusCollection, roundBonus.getAlbumBonus(), bonusAlbum));
+            if (this.doOutput) {
+                log.debug(String.format("ROUND %d  (+%d %s / +%d %s)", this.roundNumber,
+                    (roundBonus.getCollectionBonus() + roundBonus.getAlbumBonus()), bonusCollection, roundBonus.getAlbumBonus(), bonusAlbum));
+            }
         }
 
     }
@@ -179,7 +194,9 @@ public class Game {
         this.applyCardEffects(cardsInHandOpponent,TriggerTime.START,Who.OPPONENT);
         this.applyEffectStack(TriggerTime.START,Who.BOTH);
 
-//        this.logHand();
+        if (this.doOutput) {
+            this.logHand();
+        }
 
         this.resident.decideNextTurn();
         this.opponent.decideNextTurn();
@@ -199,7 +216,9 @@ public class Game {
         this.lastPowerDiff = resPower - oppPower;
         this.powerBalance = this.powerBalance + this.lastPowerDiff;
 
-//        this.logPlay();
+        if (this.doOutput) {
+            this.logPlay();
+        }
 
         // RETURN effects
         this.applyCardEffects(cardsPlayedResident,TriggerTime.RETURN,Who.RESIDENT);

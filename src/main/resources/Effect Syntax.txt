@@ -58,8 +58,6 @@ OFTEN USED SHORTCUTS:
         "'Effect':{'Type':'POWER','Value':'~1~'}," +
    TIMER:
         "'Duration':{'Type':'TIMER','Value':'~1~'}," +
-   SKIP:
-        "NULL"); // TODO: Irrelevant card, but difficult & individual pattern -> LATER
 
 
 // TODO: The patterns are case-sensitive !?!
