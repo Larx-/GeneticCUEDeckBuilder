@@ -62,7 +62,7 @@ public class FitnessEvaluator {
         // Debug log
         float calcTime = (float) (System.currentTimeMillis() - time) / 1000;
         String[] copyBest = canBest.getDeckStrArray().clone();
-        String[] copyWorst = canBest.getDeckStrArray().clone();
+        String[] copyWorst = canWorst.getDeckStrArray().clone();
         Arrays.sort(copyBest);
         Arrays.sort(copyWorst);
         log.debug("Best fitness : " + canBest.fitness + " " + Arrays.toString(copyBest));

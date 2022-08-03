@@ -28,7 +28,7 @@ Effect:
     POWER (Value)
     BURN (Value)
     LOCK                                                // May not have the duration UNTIL_PLAYED
-    POWER_FOR_EACH (Value, CountEach)                   // CountEach defines a full Target object with Who, Where, What, CompareTo, UpTo (integer) and PlayHistory (boolean)
+    POWER_FOR_EACH (Value, CountEach)                   // CountEach defines a full Target object with Who, Where, What, CompareTo, UpTo (integer) and PlayHistory (false for in deck, true for played this game)
 
 Duration:
     END_TURN
@@ -54,14 +54,23 @@ Conditions:
 OFTEN USED SHORTCUTS:
     THIS:
         "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'THIS'}," +
-   POWER:
-        "'Effect':{'Type':'POWER','Value':'~1~'}," +
-   TIMER:
-        "'Duration':{'Type':'TIMER','Value':'~1~'}," +
-   OPPOSITE (Workaround):
+
+    OPPOSITE (Workaround):
         "'Target':{'Who':'OTHER','Where':'CARDS_PLAYED','What':'RANDOM','Value':'1'}," +
-   ADJACENT (Workaround):
+
+    ADJACENT (Workaround):
         "'Target':{'Who':'SELF','Where':'CARDS_PLAYED','What':'RANDOM','Value':'2'}," +
 
+    RARITY:
+        "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'RARITY','CompareTo':'Cmmn/Rare/Epic/Lgnd/Mthc/Fusn'}," +
+
+    POWER:
+        "'Effect':{'Type':'POWER','Value':'~1~'}," +
+
+    TIMER:
+        "'Duration':{'Type':'TIMER','Value':'~1~'}," +
+
+    TURN STATE:
+        "'Conditions':[{'Type':'TURN_STATE','Value':'Win'}]" +
 
 // TODO: The patterns are case-sensitive !?!
