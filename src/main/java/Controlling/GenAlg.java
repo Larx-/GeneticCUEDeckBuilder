@@ -25,7 +25,7 @@ public class GenAlg {
     public static RulesInitializer rulesInitializer;
 
     public static final int numResidents = 6;
-    public static final int numCandidates = 500;
+    public static final int numCandidates = 5000;
 
     public static final int repetitions = 20;
     public static final int tournamentSize = 5;

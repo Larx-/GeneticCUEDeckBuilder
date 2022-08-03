@@ -194,9 +194,11 @@ public class EffectParser {
                             case NAME:
                                 target = new Target(whoTarget, whereTarget, compareToTarget, true);
                                 break;
-                            case NAME_CONTAINS:
                             case BASE_ENERGY:
                             case BASE_POWER:
+                                target = new Target(whoTarget, whereTarget, whatTarget, compareToTarget);
+                                break;
+                            case NAME_CONTAINS:
                             case RARITY: // Here if the only qualifier is rarity, otherwise set in addition
                                 target = new Target(whoTarget, whereTarget, compareToTarget, false);
                                 break;

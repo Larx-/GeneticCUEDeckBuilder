@@ -130,12 +130,13 @@ public class Card {
 
     @Override
     public String toString(){
-        return String.format("%s]  %s  E:%d (%d)   P:%d (%d)  %s  %s  %s",
+        return String.format("%s]  %s  E:%d (%d)   P:%d (%d)   %s (%s)  %s  %s  %s",
                 StringUtils.leftPad(this.idString,5),
                 StringUtils.rightPad(StringUtils.abbreviate(this.name,30),30),
                 this.getModifiedEnergy(), this.baseEnergy, this.getModifiedPower(), this.basePower,
+                this.getCollection(), this.getAlbum(),
                 (this.isLocked() ? " \uD83D\uDD12 " : "   "),
-                (this.burnAmount > 0 ? " \uD83D\uDD25 " : "   "),
+                (this.burnAmount > 0 ? " \uD83D\uDD25 ("+this.getBurnAmount()+") " : "   "),
                 (this.effects == null ? "" : this.getEffectString()));
     }
 }
