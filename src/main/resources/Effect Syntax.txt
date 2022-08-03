@@ -74,3 +74,6 @@ OFTEN USED SHORTCUTS:
         "'Conditions':[{'Type':'TURN_STATE','Value':'Win'}]" +
 
 // TODO: The patterns are case-sensitive !?!
+
+REGEX for finding all card names containing " and "
+.*\d\d\d\t.* and .*\t.*\t.*\t.*\t.*\t.*\t.*

@@ -42,7 +42,7 @@ public class E_PPT extends Effect {
 
             // 4. If required return expiryEffect using inverse
             if (super.duration != null) {
-                return new E_PPT(super.duration, super.target, (-this.changeBy), null, super.timer, super.conditions);
+                return new E_PPT(super.duration, super.target, (-this.changeBy), null, super.timer, null);
             }
         }
         return null;

@@ -65,7 +65,9 @@ public class DeckInitializer {
             deckCards.add(nextCard.copyFresh());
         }
 
-        for (int i = 0; i < GenAlg.defaultNumCards; i++) {
+        int numberOfCardsToFillRandomly = GenAlg.defaultNumCards - deckCards.size();
+
+        for (int i = 0; i < numberOfCardsToFillRandomly; i++) {
             Card nextCard;
             do {
                 int cardIndex = Main.random.nextInt(this.cardReader.getNumberOfCards()) + 1;

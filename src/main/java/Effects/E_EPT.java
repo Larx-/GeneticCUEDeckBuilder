@@ -42,7 +42,7 @@ public class E_EPT extends Effect {
 
             // 4. If required return expiryEffect using inverse
             if (super.duration != null) {
-                return new E_EPT(super.duration, super.target, (-this.changeBy), null, super.timer, super.conditions);
+                return new E_EPT(super.duration, super.target, (-this.changeBy), null, super.timer, null);
             }
         }
         return null;
