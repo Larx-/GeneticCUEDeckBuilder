@@ -4,9 +4,11 @@ import Controlling.Main;
 import Enums.Album;
 import Enums.Collection;
 import lombok.Getter;
+import lombok.extern.log4j.Log4j2;
 
 import java.util.*;
 
+@Log4j2
 public class NatLangPatternParser {
 
     List<Pattern> patterns = new ArrayList<>();
@@ -24,8 +26,6 @@ public class NatLangPatternParser {
         this.expandPatterns();
         // this.replaceSets();
     }
-
-    int countDoubles = 0;
 
     public String parseEffect(String naturalEffectString, String cardname) throws Exception {
         String returnString = null;
@@ -58,7 +58,7 @@ public class NatLangPatternParser {
 
                         } else {
                             String toReplace = choppedNatEffString.substring(endBeforeReplacement, startAfterReplacement);
-                            choppedNatEffString = choppedNatEffString.substring(endBeforeReplacement);
+                            choppedNatEffString = choppedNatEffString.substring(endBeforeReplacement + toReplace.length());
 
                             // Sanity check
                             if (replace[1].equals("NUM")) {
@@ -84,6 +84,14 @@ public class NatLangPatternParser {
                             }
                             returnString = returnString.replaceAll("~" + replace[2] + "~", toReplace);
                         }
+                    }
+
+                    // Make sure it has read the entire natural effect string
+                    if (choppedNatEffString.length() != patternKey[patternKey.length-1].length()) {
+                        // TODO: Suggest pattern based on found incomplete pattern
+                        log.error("PATTERN NOT COMPLETE for '" + cardname + "': " + Arrays.toString(pattern.natLangKey));
+                        foundPattern = false;
+                        break;
                     }
 
                     // Manually telling it what it is

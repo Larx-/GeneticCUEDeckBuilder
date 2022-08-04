@@ -454,7 +454,7 @@ SFN001	Tornado	Forces of Nature	Science	Cmmn	4	34	When drawn, your Sharks! cards
 SFN002	Clouds	Forces of Nature	Science	Cmmn	1	10	NULL
 SFN003	Dust Storm	Forces of Nature	Science	Cmmn	3	24	When played, your Opponent takes -3 Power/Turn for the rest of this round. 
 SFN004	Rain	Forces of Nature	Science	Cmmn	2	18	When played with Mogwai, give it +35 Power this turn.
-SFN006	Avalanche	Forces of Nature	Science	Rare	6	58	When played with Weight, give that card +50 Power. When played, give Alpine Skiing (even if it's in either player's deck) -20 Power for the rest of the game.
+SFN006	Avalanche	Forces of Nature	Science	Rare	6	58	When played with Weight, give that card +50 Power. When played, give Alpine Skiing -20 Power for the rest of the game.
 SFN007	Rainbow	Forces of Nature	Science	Cmmn	4	38	When played with Harvey Milk, give it +20 Power.
 SFN005	Thunderstorms	Forces of Nature	Science	Lgnd	5	30	When played, receive +1 Energy/Turn for the remainder of the Game.
 SFN008	Blizzard	Forces of Nature	Science	Rare	1	1	When played, your Opponent has -1 Energy/Turn for the rest of this round.
@@ -735,7 +735,7 @@ SCO008	Perseus	Constellations	Space	Rare	5	43	When played with Asteroids, give t
 SCO010	Lepus	Constellations	Space	Rare	4	35	When played with Canis Major, give that card +20 Power.
 SCO014	Phoenix Constellation	Constellations	Space	Cmmn	7	61	NULL
 SCO015	Ursa Major	Constellations	Space	Fusn	3	35	When played with Ursa Minor, give that card +60 Power.
-SCO017	Orion	Constellations	Space	Lgnd	3	29	When returned to your deck, increase the Energy cost of your Opponent's Life on Land cards (even if they are in their deck) by 1 until played.
+SCO017	Orion	Constellations	Space	Lgnd	3	29	When returned to your deck, increase the Energy cost of your Opponent's Life on Land cards by 1 until played.
 SCO018	Auriga	Constellations	Space	Rare	3	32	When played, give The Gävle Goat +25 Power for the rest of the game
 SCO020	Lyra	Constellations	Space	Rare	4	41	When played with Orpheus, give that card +40 Power.
 SCO022	Hulk	Constellations	Space	Epic	9	45	When drawn, give a random card from your Opponent -70 Power until played.
@@ -804,7 +804,7 @@ EMM027	Elizabeth I	Unruly Rulers	History	Ltd Epic	8	76	When returned to your dec
 EMM028	Vlad the Impaler	Unruly Rulers	History	Ltd Epic	4	41	When played, if your deck contains 4 or more Horrible Halloween cards, if the card opposite this has a Base Power of 25 or more, give it -80 Power this turn. When returned to your deck, give your Horrible Halloween cards +13 Power until played.
 EMM029	Mansa Musa	Unruly Rulers	History	Ltd Epic	3	22	When played, if your deck contains 3 or more Hidden Gems cards, give your cards +20 Power this turn. Repeat if you play this next to Gold.
 EMM030	James VI & I	Unruly Rulers	History	Ltd Lgnd	8	76	When played, if your deck contains 9 or more History cards, give your Life on Land cards +12 Power until played (and vice versa).
-EMM031	Attila the Hun	Unruly Rulers	History	Ltd Lgnd	8	79	When returned to your deck, increase the Energy cost of all Roman Empire cards (even if they're in either player's deck) by 4 and give yourself +15 Power/Turn, for 3 turns.
+EMM031	Attila the Hun	Unruly Rulers	History	Ltd Lgnd	8	79	When returned to your deck, increase the Energy cost of all Roman Empire cards by 4 and give yourself +15 Power/Turn, for 3 turns.
 EMM032	Andronikos II Palaiologos	Unruly Rulers	History	Ltd Epic	7	50	When played, give your cards in hand +26 Power for 9 turns. When drawn after Round 3, give your cards -10 Power for the rest of the game.
 EMM034	Frederick the Great	Unruly Rulers	History	Ltd Lgnd	7	60	When drawn, if your deck contains at least 8 Arts & Culture cards and at least 8 Science cards, gain +30 Power per turn for 9 turns.
 EMM035	Uzziah	Unruly Rulers	History	Ltd Epic	7	42	When played, if your deck contains exactly 9 other Unruly Rules cards, give them, wherever they are, +16 Power until played
@@ -1300,7 +1300,7 @@ SNV024	Combine Harvester	Ingenious Inventions	Science	Ltd Rare	5	47	When played,
 SNV026	Jigsaw Puzzle	Ingenious Inventions	Science	Ltd Epic	6	42	When played, if you are losing the round, give your cards in hand +20 Power for this and the next two turns.
 SNV027	Traffic Lights	Ingenious Inventions	Science	Ltd Rare	5	24	While in your hand, at the start of each turn, give this card +12 power until played.
 SNV028	QR Code	Ingenious Inventions	Science	Ltd Epic	4	40	When played, give your Opponent's cards -10 Power this turn. If it is the first turn of a round, give them an extra -10 Power this turn. If it is Round 1, give them an extra -15 Power this turn.
-SNV029	Glasses	Ingenious Inventions	Science	Ltd Cmmn	5	48	When played, give your Thunderstorms card (even if it's your deck) +20 power for the rest of the game.
+SNV029	Glasses	Ingenious Inventions	Science	Ltd Cmmn	5	48	When played, give your Thunderstorms card +20 power for the rest of the game.
 SNV030	Joystick	Ingenious Inventions	Science	Ltd Cmmn	5	46	When played, give adjacent cards +10 Power this turn.
 SNV032	Artificial Intelligence	Ingenious Inventions	Science	Ltd Lgnd	4	42	When drawn, give your Common and Rare Ingenious Inventions cards +18 Power for the rest of the game.
 SNV031	Light Emitting Diode	Ingenious Inventions	Science	Ltd Epic	6	57	When played, if your deck contains 5 cards from Arts & Culture, gain +5 Power/Turn for the rest of the game. Repeat for Life on Land and Oceans & Seas.
@@ -1619,7 +1619,7 @@ EOW013	Mary Fields	Legends of the Old West	History	Epic	6	50	When returned to yo
 EOW008	Joaquin Murrieta	Legends of the Old West	History	Cmmn	8	79	When returned to your deck, if you are losing the round, steal 2 Energy from your Opponent.
 EOW016	Allan Pinkerton	Legends of the Old West	History	Rare	6	58	When returned to your deck, reduce the Energy cost of your Espionage cards by 2 until they are played.
 EOW017	Buffalo Bill	Legends of the Old West	History	Ltd Lgnd	3	19	When drawn, give your Legends of the Old West +12 Power this turn. If you are losing the round, give them an extra +25 Power.
-EOW019	1849 Gold Rush	Legends of the Old West	History	Lgnd	4	49	When played, give Gold +30 Power until played and when returned to deck give all of your Raging Rivers cards (even if they're in deck) +7 Power for the rest of the game.
+EOW019	1849 Gold Rush	Legends of the Old West	History	Lgnd	4	49	When played, give Gold +30 Power until played and when returned to deck give all of your Raging Rivers cards +7 Power for the rest of the game.
 EOW018	Winchester Rifle	Legends of the Old West	History	Epic	5	20	When returned to your deck, gain +10 Power per Turn for the rest of the game
 EOW020	The Alamo	Legends of the Old West	History	Ltd Epic	5	34	When drawn, reduce the Energy cost of your Legends of the Old West cards by 1 until played.
 EOW001	Sacagawea	Legends of the Old West	History	Rare	4	31	When returned to your deck, if you are losing the round, give your Shake Up the System cards +25 Power until played.
@@ -1752,7 +1752,7 @@ FSC001	Red Diamond	Science Special Fusions	Science	Fusn	5	35	When returned to yo
 FSC002	Large Hadron Collider	Science Special Fusions	Science	Fusn	8	0	When played on the first turn of a Round, this card has +128 Power.
 FSC003	String Theory	Science Special Fusions	Science	Fusn	5	64	When returned to your deck, if you lost this turn, reduce the cost of this card by 2 Energy for the rest of the game. If you win the turn, you have +30 Power next turn instead.
 FSC004	Time Crystals	Science Special Fusions	Science	Fusn	6	35	When played on the first turn of a Round, gain +35 Power/Turn for the rest of the Round.
-FSC005	Infinity	Science Special Fusions	Science	Ult-Fusn	1	23	When returned to your deck, give all cards (even if they're in either player's deck) -50 Power next turn.
+FSC005	Infinity	Science Special Fusions	Science	Ult-Fusn	1	23	When returned to your deck, give all cards -50 Power next turn.
 FSC006	Eureka!	Science Special Fusions	Science	Ult-Fusn	6	57	When returned to your deck, give all your Science cards +16 Power for the rest of the round. If you won this turn, give all cards in your hand +10 Power until played.
 FSC007	Virtual Reality	Science Special Fusions	Science	Fusn	4	45	When played, give your cards +15 Power this turn. When returned to your deck, reduce the Energy cost of cards left in your hand by 2 next turn.
 OCP012	Mimic Octopus	Cephalopods	Oceans & Seas	Ltd Lgnd	8	88	When played, if you lose the turn, steal 4 Energy from your Opponent.
@@ -1797,7 +1797,7 @@ FSP005	Kraken Merger	Space Special Fusions	Space	Fusn	5	40	When returned to the 
 FSP006	Hypernova	Space Special Fusions	Space	Ult-Fusn	6	50	When drawn, give this card +100 Power this turn.
 FSP007	The Great Nothing	Space Special Fusions	Space	Fusn	0	0	When drawn, give all cards -50 Power this turn.
 FSP008	Giant GRB Ring	Space Special Fusions	Space	Fusn	4	60	When drawn, BURN (15 P/T) all cards - yours until next turn, your Opponent's until played.
-FSP009	Braneworld	Space Special Fusions	Space	Ult-Fusn	7	40	While in your hand, at the start of each turn, give all Space cards (even if they're in either player's deck) +2 Power until the end of the game.
+FSP009	Braneworld	Space Special Fusions	Space	Ult-Fusn	7	40	While in your hand, at the start of each turn, give all Space cards +2 Power until the end of the game.
 ACGM001	Hades	Greek Mythology	Arts & Culture	Ltd Epic	2	19	When played, your Ancient Greece cards have +28 Power this turn.
 ACGM002	Aphrodite	Greek Mythology	Arts & Culture	Ltd Cmmn	4	40	When played with Heart Nebula, give that card +30 Power.
 ACGM003	Poseidon	Greek Mythology	Arts & Culture	Ltd Cmmn	4	36	When played, all Oceans & Seas cards in play have -20 Power this turn.
@@ -1834,7 +1834,7 @@ ACGM034	Phanes	Greek Mythology	Arts & Culture	Ltd Rare	3	22	When played, if it i
 ACGM038	The World Tree	Greek Mythology	Arts & Culture	Ltd Epic	12	60	When played, give your cards from collections with 'Mythology' in the name +30 Power this turn & next.
 ACGM039	Hypnos	Greek Mythology	Arts & Culture	Ltd Epic	5	39	When returned to your deck, if you are winning the round by 80 or more Power, gain +24 Power/Turn for two turns.
 ACGM040	Cerberus	Greek Mythology	Arts & Culture	Ltd Lgnd	3	28	When played, if your deck contains 3 or more Dogs cards, give your Ancient Greece cards +18 Power until the end of the game.
-ACGM041	Eirene	Greek Mythology	Arts & Culture	Ltd Lgnd	8	50	When returned to your deck, give all cards (even if in either player’s decks) -50 Power next turn, and reduce their Energy cost by 5 next turn.
+ACGM041	Eirene	Greek Mythology	Arts & Culture	Ltd Lgnd	8	50	When returned to your deck, give all cards -50 Power next turn, and reduce their Energy cost by 5 next turn.
 ACGM042	Orthrus	Greek Mythology	Arts & Culture	Ltd Rare	1	8	When played in the middle slot, increase the power of adjacent cards by +8 this turn.
 ACGM043	Agamemnon	Greek Mythology	Arts & Culture	Ltd Epic	4	38	When played, give this card +90 Power this turn, and give your Greek Mythology cards -40 Power this turn.
 ACGM045	Ajax the Great	Greek Mythology	Arts & Culture	Ltd Lgnd	6	80	When drawn, if your deck contains 6 or more Greek Mythology cards, give your cards +4 Power permanently.
@@ -1947,7 +1947,7 @@ ACHA017	Invisible Man	Horrible Halloween	Arts & Culture	Ltd Rare	0	0	While in yo
 ACHA014	Scarecrow	Horrible Halloween	Arts & Culture	Ltd Rare	3	27	When drawn, reduce the Energy cost of your Birds cards by 1 until played. When played, give adjacent cards +10 Power this turn.
 ACHA016	Cthulhu	Horrible Halloween	Arts & Culture	Ltd Lgnd	6	60	When played, give your Oceans & Seas cards +30 Power until played. When returned to your deck, give them -20 Power until played and give your Opponent -10 Power/Turn for 2 turns.
 ACHA015	Poltergeist	Horrible Halloween	Arts & Culture	Ltd Epic	4	55	When drawn, give four random cards in either player's hand +22 Power until played and four random cards in either player's hand -22 Power until played.
-ACHA012	Abraham Van Helsing	Horrible Halloween	Arts & Culture	Ltd Epic	5	49	When played, give your Opponent's Horrible Halloween cards -20 Power this turn. When returned to your deck, increase the Energy cost your Opponent's Count Dracula card (even if it's in their deck) by 1 until played
+ACHA012	Abraham Van Helsing	Horrible Halloween	Arts & Culture	Ltd Epic	5	49	When played, give your Opponent's Horrible Halloween cards -20 Power this turn. When returned to your deck, increase the Energy cost your Opponent's Count Dracula card by 1 until played
 ACHA018	Demon	Horrible Halloween	Arts & Culture	Ltd Lgnd	6	65	When played, if your deck contains Hel, give your Norse Mythology cards +30 Power until played. Repeat for Hades and Greek Mythology, and Osiris and Egyptian Mythology.
 ACHA011	Dr. Jekyll	Horrible Halloween	Arts & Culture	Ltd Rare	3	30	When drawn, if you have played Mr Hyde this game, give it and this card +35 Power until played.
 ACHA010	Mr Hyde	Horrible Halloween	Arts & Culture	Ltd Rare	2	20	When drawn, if you have played Dr. Jekyll this game, give it and this card +35 Power until played.
@@ -1966,7 +1966,7 @@ LUN006	Pink Fairy Armadillo	Going Underground	Life on Land	Ltd Lgnd	5	45	When pl
 LUN005	Kangaroo Rat	Going Underground	Life on Land	Ltd Cmmn	2	15	When returned to your deck, reduce the energy cost of your Marsupials cards by 2 for the rest of this round.
 LUN008	Mexican Mole Lizard	Going Underground	Life on Land	Ltd Cmmn	1	16	When played with Burrito, give it +40 Power this turn.
 LUN010	Bilby	Going Underground	Life on Land	Ltd Rare	4	42	When played, if you're losing the round, give your Life on Land cards +12 Power until played.
-LUN011	Dwarf Mongoose	Going Underground	Life on Land	Ltd Lgnd	4	42	When played, give all cards with 10 or less Base Power +20 Power for the rest of the round. When returned to your deck, increase the cost of King Cobra (even if in a deck) by 4 until played.
+LUN011	Dwarf Mongoose	Going Underground	Life on Land	Ltd Lgnd	4	42	When played, give all cards with 10 or less Base Power +20 Power for the rest of the round. When returned to your deck, increase the cost of King Cobra by 4 until played.
 LUN015	Botta's Pocket Gopher	Going Underground	Life on Land	Ltd Cmmn	7	120	When returned to your deck, if you won this turn, give yourself -5 Energy next turn.
 LUN019	Cape Ground Squirrel	Going Underground	Life on Land	Ltd Epic	5	45	When drawn, give a random card in your Opponent's hand -20 Power and give all of your cards in hand +12 Power this turn.
 LUN018	Slow Worm	Going Underground	Life on Land	Ltd Cmmn	2	26	When played, give a random card in either player's hand +20 Power this turn.
@@ -2030,7 +2030,7 @@ ACCU035	Ka'ak El Eid	Curious Cuisine	Arts & Culture	Ltd Rare	1	12	When returned 
 ACCU036	Deep-Fried Mars Bar	Curious Cuisine	Arts & Culture	Ltd Lgnd	9	90	When returned to your deck, if your deck contains 14 or more Curious Cuisine cards, give them, wherever they are, +7 Power permanently.
 ACCU037	Eton Mess	Curious Cuisine	Arts & Culture	Ltd Rare	4	29	Your Strawberry Moon card, wherever it is, gains +29 Power permanently.
 ACPP003	Rembrandt	Prominent Painters	Arts & Culture	Cmmn	3	25	When drawn, if you are winning the round, reduce the Energy cost of this card by 3 until played. If you are losing the round, reduce the Power of this card by -10. 
-ACPP001	Raphael	Prominent Painters	Arts & Culture	Epic	5	52	When drawn BURN (14 P/T) your Opponent's cards until played. If they have Michelangelo (even if it's in their deck), give it -30 Power until played. 
+ACPP001	Raphael	Prominent Painters	Arts & Culture	Epic	5	52	When drawn BURN (14 P/T) your Opponent's cards until played. If they have Michelangelo , give it -30 Power until played. 
 ACPP007	Michelangelo	Prominent Painters	Arts & Culture	Ltd Lgnd	3	34	When returned to your deck, give all your Legendary cards +10 Power until played. When played with Sistine Chapel, give it 50 Power this turn. 
 ACPP004	Caravaggio	Prominent Painters	Arts & Culture	Cmmn	3	28	When returned to your deck, if you lost the turn, BURN (9 P/T) cards left in your Opponent's hand until played.
 ACPP010	Da Vinci; Master Artist	Prominent Painters	Arts & Culture	Fusn	7	70	When drawn Lock one of your Opponent's Science cards in hand until the end of the Round. When returned to your deck, give your Science cards +15 Power until played, and increase the Energy cost of your Opponent's cards by +2 next turn.
@@ -2153,7 +2153,7 @@ ECF024	Diyu	Chinese Folklore	History	Epic	7	70	On draw, while in hand your cards
 ECF025	Fuxi	Chinese Folklore	History	Ltd Epic	3	29	When played, gain +8 Power/Turn this round and give Nüwa +40 Power this turn.
 EDO006	95 Theses	Documented	History	Ltd Cmmn	5	53	When drawn, BURN (20 P/T) a random card in your Opponent's hand until played, and Lock a random card in your hand until the end of the round.
 EDO001	Confucian Analects	Documented	History	Ltd Cmmn	4	70	When returned to your deck, give your Opponent's cards in hand +10 Power for the rest of the round.
-EDO009	Zimmermann Telegram	Documented	History	Ltd Cmmn	5	48	When played, reduce the Power of your Opponent's Common cards (even if they're in the deck) by 10 until played.
+EDO009	Zimmermann Telegram	Documented	History	Ltd Cmmn	5	48	When played, reduce the Power of your Opponent's Common cards by 10 until played.
 EDO007	Internet Protocol	Documented	History	Ltd Epic	4	40	When played, give the Internet +80 Power until the end of this Round. 
 EDO003	Treaty of Versailles	Documented	History	Ltd Epic	3	20	When drawn, give your cards +10 Power until the end of the Round. When returned to your deck, Lock your Opponent's Machines of War cards until the end of the Round.
 EDO002	Magna Carta	Documented	History	Ltd Lgnd	2	15	When drawn, reduce the Energy cost of your Epic and Rare cards by 2 until played. When played with Declaration of Independence or Universal Declaration of Human Rights , give them +20 Power this turn.
@@ -2204,7 +2204,7 @@ ESS002	Eye of Providence	Secret Societies	History	Ltd Lgnd	3	30	When played, giv
 ESS003	Carbonari	Secret Societies	History	Cmmn	6	38	When drawn, give all Secret Societies cards +15 Power until played.
 ESS008	The Grand Architect	Secret Societies	History	Cmmn	1	1	When played, give your Arts & Culture and History cards +10 Power this turn.
 ESS009	The Knights Templar	Secret Societies	History	Ltd Lgnd	3	40	When returned to the deck, give your Common cards +22 Power and increase their Energy cost by 1 for the rest of the game.
-ESS010	Pre-Raphaelite Brotherhood	Secret Societies	History	Cmmn	4	37	When drawn, give a random card in your hand +5 Power until played. When played, give Raphael (even if it's in either player's deck) -52 Power until played.
+ESS010	Pre-Raphaelite Brotherhood	Secret Societies	History	Cmmn	4	37	When drawn, give a random card in your hand +5 Power until played. When played, give Raphael -52 Power until played.
 ESS012	The Calves' Head Club	Secret Societies	History	Cmmn	2	22	When played, give all Legendary and Fusion cards -40 Power this turn.
 ESS011	Nicolas Bourbaki	Secret Societies	History	Epic	3	24	When played, give your Secret Societies cards +14 Power until played.
 ESS013	The Hermetic Order of the Golden Dawn	Secret Societies	History	Ltd Rare	6	59	When played, give your Horrible Halloween cards +20 Power until played.
@@ -2342,7 +2342,7 @@ LTT023	Burseraceae	Tremendous Trees	Life on Land	Ltd Epic	2	18	When played, if y
 LTT026	Money Tree	Tremendous Trees	Life on Land	Ltd Rare	3	31	When played, if your deck contains 2 or more Money Money Money cards, give your Tremendous Trees cards, wherever they are, +18 Power for 5 turns.
 LTT027	Pando	Tremendous Trees	Life on Land	Ltd Lgnd	5	85	When returned to your deck, give this card -85 Power permanently, and give all of your other cards +5 Power permanently.
 OMW002	Christmas Tree Worm	Molluscs; Worms & Water Bugs	Oceans & Seas	Ltd Epic	6	65	When returned to your deck, reduce the Energy cost of this card by 2 and give it -15 Power until played.
-OMW001	Bobbit Worm	Molluscs; Worms & Water Bugs	Oceans & Seas	Ltd Lgnd	5	49	When returned to your deck, give all cards with 50 or more Base Power (even if they're in either player's deck) -30 Power until played.
+OMW001	Bobbit Worm	Molluscs; Worms & Water Bugs	Oceans & Seas	Ltd Lgnd	5	49	When returned to your deck, give all cards with 50 or more Base Power -30 Power until played.
 OMW003	Giant Water Bug	Molluscs; Worms & Water Bugs	Oceans & Seas	Cmmn	2	16	When played, if you are losing the Round, give this card +16 Power this turn.
 OMW004	Water Strider	Molluscs; Worms & Water Bugs	Oceans & Seas	Cmmn	3	20	When played, give all your Oceans & Seas cards +10 Power this turn and give your Opponent's -10.
 OMW005	Blue Dragon	Molluscs; Worms & Water Bugs	Oceans & Seas	Ltd Lgnd	9	91	When returned to your deck, LOCK a random card in your Opponent's hand next turn. When returned to your deck, give all your Opponent's cards -4 Power until played.
@@ -2508,12 +2508,12 @@ SRR021	Titan IV	Radical Rockets	Space	Ltd Rare	5	39	When drawn, if your deck con
 SRR020	H-IIA	Radical Rockets	Space	Ltd Epic	4	30	For every Feudal Japan card in your deck, up to a maximum of 5, give your Radical Rockets cards +5 Power until played.
 SRR022	Geosynchronous Satellite Launch Vehicle	Radical Rockets	Space	Ltd Cmmn	2	14	When returned to your deck, if it is the first turn of a round, give your Radical Rockets cards in hand +15 Power this round.
 EHH003	Prince Rudolf & Baroness Vetsera	History of Heartbreak	History	Ltd Cmmn	2	18	When played with the Treaty of Versailles, give that card +40 Power this turn.
-EHH006	Antony & Cleopatra	History of Heartbreak	History	Ltd Lgnd	2	12	When returned to your deck, your History and Palaeontology cards (even those in your deck) cost -2 Energy for the rest of this Round.
+EHH006	Antony & Cleopatra	History of Heartbreak	History	Ltd Lgnd	2	12	When returned to your deck, your History and Palaeontology cards cost -2 Energy for the rest of this Round.
 EHH005	Queen Victoria & Prince Albert	History of Heartbreak	History	Ltd Epic	5	40	When drawn, increase the Energy cost of 4 random cards in your Opponent's hand by 1 until played.
 EHH002	Andrew Jackson & Rachel Donelson	History of Heartbreak	History	Ltd Cmmn	5	42	When returned to your deck, give your Opponent -20 Power/Turn next turn.
 EHH001	Ines de Castro & King Pedro	History of Heartbreak	History	Ltd Cmmn	1	12	When returned to your deck, if you lost the turn, give your Opponent's cards -20 Power next turn.
 EHH004	Mary Godwin & Percy Shelley	History of Heartbreak	History	Ltd Rare	6	59	When played, if you have 8 or more Arts & Culture cards in your deck, give this card +30 Power this turn.
-EHH007	Napoleon & Josephine	History of Heartbreak	History	Ltd Lgnd	6	54	When played give your Prominent Painters cards +12 Power until played. When returned to your deck, give your Machines of War cards (even if they're in deck)+16 Power until played.
+EHH007	Napoleon & Josephine	History of Heartbreak	History	Ltd Lgnd	6	54	When played give your Prominent Painters cards +12 Power until played. When returned to your deck, give your Machines of War cards +16 Power until played.
 EHH008	Pocahontas & John Smith	History of Heartbreak	History	Ltd Epic	4	25	When played, give your History and Arts & Culture cards +15 Power this turn. If you win this turn, gain +2 Energy/Turn for the rest of the round
 EHH011	Heloise & Abelard	History of Heartbreak	History	Ltd Cmmn	4	40	When returned to your deck, reduce the Energy cost of this card by 4 and give it -20 Power until played.
 EHH010	Hadrian & Antinous	History of Heartbreak	History	Ltd Rare	6	65	When returned to your deck, if you lost the turn, give this card +25 Power for the rest of the game.
@@ -2525,7 +2525,7 @@ EHH015	Alexander I of Serbia & Draga Mašin	History of Heartbreak	History	Ltd Ep
 EHH019	Catherine the Great & Peter III	History of Heartbreak	History	Ltd Lgnd	8	68	When returned to your deck, gain 40 Power/Turn next turn and decrease it by 10 Power/Turn each turn.
 EHH017	Caroline & George Norton	History of Heartbreak	History	Ltd Rare	6	55	When played, if you are losing the round, give this card +27 Power this turn (and, if you are losing by 50 Power or more, give this card an additional 24 Power this turn).
 EHH018	Emperor Nero & Poppaea Sabina	History of Heartbreak	History	Ltd Rare	6	40	When played, give your History of Heartbreak cards +20 Power this turn.
-EHH016	Lucrezia Borgia & Giovanni Sforza	History of Heartbreak	History	Ltd Epic	7	80	When returned to your deck, give all cards (even if they're in either player's deck) -30 Power next turn.
+EHH016	Lucrezia Borgia & Giovanni Sforza	History of Heartbreak	History	Ltd Epic	7	80	When returned to your deck, give all cards -30 Power next turn.
 LCC002	Ragdoll	Cute Cats	Life on Land	Cmmn	3	28	When played, give your Dogs cards +14 Power this turn.
 LCC007	American Curl	Cute Cats	Life on Land	Cmmn	5	47	When drawn, give a random card in your Opponent's hand -5 Power and give this card +10 Power for this round.
 LCC004	Siamese	Cute Cats	Life on Land	Ltd Lgnd	4	42	When drawn, gain +12 Power/Turn this round. When returned to your deck, gain +6 Power/Turn for the rest of the game.
@@ -2805,7 +2805,7 @@ ACPY002	Tinikling	Playtime	Arts & Culture	Epic	4	39	When played, give your Oppon
 ACPY006	Rubik's Cube	Playtime	Arts & Culture	Ltd Epic	3	27	When played in-between two Arts & Culture cards, gain +27 Power/Turn for 3 Turns
 ACTA001	The Magician (I)	Tarot	Arts & Culture	Ltd Lgnd	7	74	When played, if you are winning the round, give your Life on Land cards +18 Power for the next 3 turns. If you are losing the round, give your Going Underground, Deep Ocean and Monsters of the Deep cards +32 Power this turn & next.
 ACTA003	The Tower (XVI)	Tarot	Arts & Culture	Ltd Epic	6	56	When drawn, give all cards in play -10 Power until played. When played, if you are winning the round, give +100 Power to a random card in your hand this turn (otherwise, give it to a random card in either player's hand) and reveal it before scoring.
-ACTA002	The Ace of Wands	Tarot	Arts & Culture	Ltd Epic	6	56	When played, give your Prominent Painters (even if they're in you're deck) +7 Power until played. If you have played at least one Prominent Painters card this game, give them an extra +7 Power.
+ACTA002	The Ace of Wands	Tarot	Arts & Culture	Ltd Epic	6	56	When played, give your Prominent Painters +7 Power until played. If you have played at least one Prominent Painters card this game, give them an extra +7 Power.
 ACTA005	The Fool (XXII)	Tarot	Arts & Culture	Ltd Lgnd	1	0	When drawn, give your Tarot cards +16 Power until the end of the game.
 ACTA004	Wheel of Fortune (X)	Tarot	Arts & Culture	Ltd Rare	6	45	When played, if you are losing the round, give this card +30 Power until the end of the game. 
 ACTA006	The Moon (XVIII)	Tarot	Arts & Culture	Ltd Epic	4	36	When drawn, if you are winning the round, give your cards +18 Power for the rest of the game. If are losing the round, give them -18 Power for the rest of the game instead.

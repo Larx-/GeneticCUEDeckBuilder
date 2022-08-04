@@ -28,15 +28,21 @@ public class Main {
     public static final String resultsDir = "src/main/resources/Results";
     public static final String resultsName = "Test_1";
 
-    public static final int runMode = -2; // -2 = Endless Player vs Bot,  -1 = Player vs Bot,  0 = Only GenAlg,  1 = Only TSVtoCSVPreProcessor,  2 = Both
+    public static final boolean doPreProcessing = true;
+    public static final boolean doPreDefDecks   = false;
+    public static final boolean doEndlessMode   = true;     // Not available for GenAlg mode
+    public static final int runMode             = 2;        // 0 = GenAlg, 1 = Player vs Bot, 2 = Bot vs Bot
+
+    // TODO: Bugs in the simulation part of the software:
+    //       SNB023]  Medusa Nebula -> Does not seem to give a random card of the opponent -36
 
     // Used for Player vs Bot
     public static final String[] noEffDeck = new String[]{
             "LDG005","LDG006","LDG007","LDG014","LDG009","LDG010",
             "PFF006","OMA006","OMA008","OMA010","OMA011","OMA012",
             "OMA013","OWA001","OWA007","OWA010","LRE009","LMA002",};
-    public static final String[] botDeck = noEffDeck;
-    public static final String[] playerDeck = new String[]{
+    public static final String[] residentDeck = noEffDeck;
+    public static final String[] opponentDeck = new String[]{
             "ACRR006","SFR003","EPP009","POM013","PFF001","PFF005",
             "PFF006","OMA006","OMA008","OMA010","OMA011","OMA012",
             "OMA013","OWA001","OWA007","OWA010","LRE009","LMA002",};
@@ -44,23 +50,16 @@ public class Main {
     public static void main(String[] args) {
         Main.random = new SecureRandom();
 
-        switch (runMode) {
-            case -2:
-                loopPlayerGames();
-                break;
-            case -1:
-                runPlayerGame();
-                break;
-            case 0:
-                runGenAlg();
-                break;
-            case 1:
-                runPreProcessor();
-                break;
-            case 2:
-                runPreProcessor();
-                runGenAlg();
-                break;
+        if (doPreProcessing) {
+            runPreProcessor();
+        }
+
+        if (runMode == 0) {
+            runGenAlg();
+
+        } else {
+            if (doEndlessMode) { loopGames(); }
+            else               { runGame();   }
         }
     }
 
@@ -74,12 +73,12 @@ public class Main {
         genAlg.runGeneticAlgorithm();
     }
 
-    private static void loopPlayerGames() {
+    private static void loopGames() {
         Scanner scanner = new Scanner(System.in);
         String inputLine = "y";
 
         while (inputLine.equalsIgnoreCase("y")) {
-            runPlayerGame();
+            runGame();
 
             log.debug("Play another game? [Y/n]");
             inputLine = scanner.nextLine();
@@ -90,16 +89,25 @@ public class Main {
         }
     }
 
-    private static void runPlayerGame() {
+    private static void runGame() {
         DeckInitializer deckInitializer = new DeckInitializer(cardsFile);
         RulesInitializer rulesInitializer = new RulesInitializer();
         Rules rules = rulesInitializer.getRulesFromFile(rulesFile);
 
-        Deck d1 = deckInitializer.createRandomDeckWithCardList(botDeck);
-        Deck d2 = deckInitializer.createRandomDeckWithCardList(playerDeck);
+        Deck d1;
+        Deck d2;
+        if (doPreDefDecks) {
+            d1 = deckInitializer.createRandomDeckWithCardList(residentDeck);
+            d2 = deckInitializer.createRandomDeckWithCardList(opponentDeck);
+        } else {
+            d1 = deckInitializer.createRandomDeck();
+            d2 = deckInitializer.createRandomDeck();
+        }
 
         AgentInterface a1 = new AgentRandom(d1);
-        AgentInterface a2 = new AgentPlayer(d2);
+        AgentInterface a2;
+        if (runMode == 1) { a2 = new AgentPlayer(d2); }
+        else              { a2 = new AgentRandom(d2); }
 
         Game game = new Game(rules, a1, a2);
         game.setDoOutput(true);
