@@ -307,7 +307,7 @@ public class Game {
                     if (!this.effectStackTimerOpponent.containsKey(timer)) {
                         this.effectStackTimerOpponent.put(timer, new ArrayList<>());
                     }
-                    this.effectStackTimerOpponent.get(this.totalTurnNumber + expiryEffect.getTimer()).add(expiryEffect);
+                    this.effectStackTimerOpponent.get(timer).add(expiryEffect);
                 }
 
             } else {
@@ -334,7 +334,7 @@ public class Game {
                         effectList = this.effectStackTimerResident.get(this.totalTurnNumber);
                     }
                 } else {
-                    if (this.effectStackTimerResident.containsKey(this.totalTurnNumber)) {
+                    if (this.effectStackTimerOpponent.containsKey(this.totalTurnNumber)) {
                         effectList = this.effectStackTimerOpponent.get(this.totalTurnNumber);
                     }
                 }

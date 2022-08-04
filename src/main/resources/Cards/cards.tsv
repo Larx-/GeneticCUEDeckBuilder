@@ -2885,7 +2885,7 @@ PHU004	Neanderthal	Human Evolution	Paleontology	Ltd Lgnd	5	50	When drawn, for ev
 PHU005	Denny	Human Evolution	Paleontology	Ltd Epic	6	46	When drawn, for every multiple of 2 Paleontology cards in both player's decks, give this card +6 Power until played.
 SFR001	Doomsday Clock	Futurology	Science	Ltd Epic	6	60	When played, if it is Turn 3 and you are losing the round, give this card +85 Power this turn.
 SFR002	Technological Singularity	Futurology	Science	Ltd Lgnd	4	46	When played, if your deck contains Artificial Intelligence, give your Space Technology cards +22 Power until played.
-SFR003	Cloning	Futurology	Science	Ltd Lgnd	2	22	When played, give all cards with a Base Power of 22 or less +22 Power until played.
+SFR003	Cloning	Futurology	Science	Ltd Lgnd	2	22	When played, give all cards in hand with a Base Power of 22 or less +22 Power until played.
 SFR005	Powered Exoskeleton	Futurology	Science	Ltd Epic	8	77	When drawn, give your Science cards +10 Power for 3 turns. Repeat if your deck contains Skeleton.
 SFR004	Cloaking Device	Futurology	Science	Ltd Lgnd	5	40	When played, give 3 random cards in your hand +35 Power this turn. Reveal after scoring.
 SFR006	Cryogenic Freezing	Futurology	Science	Ltd Epic	6	140	When drawn, lock this card for the rest of this round. While in your hand at the start of each turn, give this card -30 Power until played.

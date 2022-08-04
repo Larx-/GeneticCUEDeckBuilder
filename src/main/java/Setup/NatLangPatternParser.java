@@ -1850,11 +1850,21 @@ public class NatLangPatternParser {
                             "}]," +
                             "'Combos':'[~1~,~4~]'}");
 
-            // (Cloning) When played, give all cards with a Base Power of 22 or less +22 Power until played.
+            // () When played, give all cards with a Base Power of 22 or less +22 Power until played.
             this.addPattern(new String[]{"~TIME~ give all cards with a Base Power of ","~NUM~1~"," or less ","~NUM~2~"," Power until played."},
                     "{'Effects':[{" +
                             "'TriggerTime':'~TIME~'," +
                             "'Target':{'Who':'BOTH','Where':'CARDS_IN_DECK','What':'BASE_POWER','CompareTo':'<=~1~'}," +
+                            "'Effect':{'Type':'POWER','Value':'~2~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "}]," +
+                            "'Combos':'[]'}");
+
+            // (Cloning) When played, give all cards in hand with a Base Power of 22 or less +22 Power until played.
+            this.addPattern(new String[]{"~TIME~ give all cards in hand with a Base Power of ","~NUM~1~"," or less ","~NUM~2~"," Power until played."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'BOTH','Where':'CARDS_IN_HAND','What':'BASE_POWER','CompareTo':'<=~1~'}," +
                             "'Effect':{'Type':'POWER','Value':'~2~'}," +
                             "'Duration':'UNTIL_PLAYED'," +
                             "}]," +
@@ -3272,6 +3282,16 @@ public class NatLangPatternParser {
                             "'Conditions':[{'Type':'TURN_STATE','Value':'Win'}]" +
                             "}]," +
                             "'Combos':'[Constellations,Signs of the Zodiac,Solar System]'}");
+
+            // (German Shepherd) When drawn, give your cards +10 Power until played.
+            this.addPattern(new String[]{"~TIME~ give your cards ","~NUM~1~"," Power until played."},
+                    "{'Effects':[{" +
+                            "'TriggerTime':'~TIME~'," +
+                            "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND'}," +
+                            "'Effect':{'Type':'POWER','Value':'~1~'}," +
+                            "'Duration':'UNTIL_PLAYED'," +
+                            "}]," +
+                            "'Combos':'[]'}");
 
         } catch (Exception e) {
             e.printStackTrace();

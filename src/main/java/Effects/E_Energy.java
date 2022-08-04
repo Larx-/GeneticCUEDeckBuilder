@@ -46,7 +46,7 @@ public class E_Energy extends Effect {
                 if (super.duration != null && super.duration != TriggerTime.PERMANENT) {
                     if (super.duration == TriggerTime.UNTIL_PLAYED) {
                         for (Card card : targetCards) {
-                            card.getExpiryEffectsAfterPlayed().add(new E_Power(super.duration, null, (-this.changeBy), null, null));
+                            card.getExpiryEffectsAfterPlayed().add(new E_Energy(super.duration, null, (-this.changeBy), null, null));
                         }
                     } else {
                         Target selectedTargetCards = new Target(targetCards);

@@ -31,17 +31,15 @@ public class Main {
     public static final int runMode = -2; // -2 = Endless Player vs Bot,  -1 = Player vs Bot,  0 = Only GenAlg,  1 = Only TSVtoCSVPreProcessor,  2 = Both
 
     // Used for Player vs Bot
-    public static final String[] noEffDeck = new String[]{  "ACRR006","SFR003","EPP009","POM013","PFF001","PFF005",
-                                                            "PFF006","OMA006","OMA008","OMA010","OMA011","OMA012",
-                                                            "OMA013","OWA001","OWA007","OWA010","LRE009","LMA002",};
+    public static final String[] noEffDeck = new String[]{
+            "LDG005","LDG006","LDG007","LDG014","LDG009","LDG010",
+            "PFF006","OMA006","OMA008","OMA010","OMA011","OMA012",
+            "OMA013","OWA001","OWA007","OWA010","LRE009","LMA002",};
     public static final String[] botDeck = noEffDeck;
-    public static final String[] playerDeck = new String[]{"LDG005","LDG006","LDG007","LDG008","LDG009","LDG010",
-                                                           "PFF006","OMA006","OMA008","OMA010","OMA011","OMA012",
-                                                           "OMA013","OWA001","OWA007","OWA010","LRE009","LMA002",};
-
-    // TODO: Until played seems to not actually reset, see "Jolly Roger" (EPP009)
-    // TODO: PPT does not return to normal, see "Friday the 13th" (ACRR006)
-    // TODO: Expiry effects in general seem to not work
+    public static final String[] playerDeck = new String[]{
+            "ACRR006","SFR003","EPP009","POM013","PFF001","PFF005",
+            "PFF006","OMA006","OMA008","OMA010","OMA011","OMA012",
+            "OMA013","OWA001","OWA007","OWA010","LRE009","LMA002",};
 
     public static void main(String[] args) {
         Main.random = new SecureRandom();
