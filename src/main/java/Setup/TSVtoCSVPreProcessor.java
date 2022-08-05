@@ -17,7 +17,7 @@ public class TSVtoCSVPreProcessor {
 
     public void processTSVtoCSV() {
         List<String[]> cardsFromTSV = new ArrayList<>();
-        String defaultFilenameTSV = "src/main/resources/Cards/cards.tsv";
+        String defaultFilenameTSV = "src/main/resources/Cards/PreParsing/cards.tsv";
         String defaultFilenameCSV = "src/main/resources/Cards/cards.csv";
 
         CSVParser tsvParser = new CSVParserBuilder().withSeparator('\t').build();

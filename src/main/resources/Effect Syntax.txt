@@ -44,36 +44,28 @@ Conditions:
     BEFORE_TURN (Value)
     PLAYED_WITH (Who, Where, What, CompareTo)
     PLAYED_BEFORE (Who, Where, What, CompareTo)
-    ROUND_STATE (Value)                                 // Value = Win | EqWin | Equal | EqLoss | Loss
+    ROUND_STATE (Value)                                 // Value = Win | EqWin | Equal | EqLoss | Loss // TODO: make >= available
     TURN_STATE (Value)                                  // Value = Win | EqWin | Equal | EqLoss | Loss   NOTE: Only properly applicable on RETURN
     TURN_IN_ROUND (Value)
     ROUNDS_LOST (Value)                                 // Value can be precise number or number with > | >= | <= | <
     ROUNDS_WON (Value)                                  // Value can be precise number or number with > | >= | <= | <
     DECK_CONTAINS (Who, Where, What, CompareTo, Value)  // Value can be precise number or number with > | >= | <= | <
 
-OFTEN USED SHORTCUTS:
-    THIS:
-        "'Target':{'Who':'SELF','Where':'CARDS_IN_HAND','What':'THIS'}," +
-
-    OPPOSITE (Workaround):
-        "'Target':{'Who':'OTHER','Where':'CARDS_PLAYED','What':'RANDOM','Value':'1'}," +
-
-    ADJACENT (Workaround):
-        "'Target':{'Who':'SELF','Where':'CARDS_PLAYED','What':'RANDOM','Value':'2'}," +
-
-    RARITY:
-        "'Target':{'Who':'SELF','Where':'CARDS_IN_DECK','What':'RARITY','CompareTo':'Cmmn/Rare/Epic/Lgnd/Mthc/Fusn'}," +
-
-    POWER:
-        "'Effect':{'Type':'POWER','Value':'~1~'}," +
-
-    TIMER:
-        "'Duration':{'Type':'TIMER','Value':'~1~'}," +
-
-    TURN STATE:
-        "'Conditions':[{'Type':'TURN_STATE','Value':'Win'}]" +
-
-// TODO: The patterns are case-sensitive !?!
-
 REGEX for finding all card names containing " and "
 .*\d\d\d\t.* and .*\t.*\t.*\t.*\t.*\t.*\t.*
+
+
+// TODO: Formalize this into something like above...
+NEW EXAMPLES HOW I WOULD LIKE TO APPROXIMATELY FORMAT THE EFFECTS USING REGEX:
+(D.B. Cooper) When drawn, lock this card in your hand for the rest of the round.
+              When played, for every Awesome Aviation card played this game by either player (up to a maximum of 18), give this card +10 Power this turn.
+              When returned to your deck, give your Money, Money, Money cards, wherever they are, +20 Power until played.
+    [TriggerTime:DRAW] [Effect:LOCK] [Target:THIS] [Duration:END_ROUND] &&
+    [TriggerTime:PLAY] [Effect:POWER_FOR_EACH, Value:10, CountEach:[Who:BOTH, Where:PLAY_HISTORY, CompareTo:Awesome Aviation], UpTo:18] [Target:THIS] [Duration:END_TURN] &&
+    [TriggerTime:RETURN] [Effect:POWER, Value:20] [Target:[Who:SELF, Where:CARDS_IN_DECK, CompareTo:Money; Money; Money]] [Duration:UNTIL_PLAYED]
+
+(Alexander Hamilton) When drawn, if your deck contains at least 1 Stage & Screen or Musically Minded card, give your History cards +17 Power until played.
+    [TriggerTime:DRAW] [Condition:DECK_CONTAINS, Find:[Who:SELF, Where:CARDS_IN_DECK, CompareTo:Stage & Screen OR Musically Minded]] [Target:[Who:SELF, Where:CARDS_IN_DECK, CompareTo:History]] [Effect:POWER, Value:20] [Duration:UNTIL_PLAYED]
+
+(Luxor Temple) When returned to your deck, reduce the Energy cost of your Common History cards by 1 until played.
+    [TriggerTime:RETURN] [Target:[Who:SELF, Where:CARDS_IN_DECK, CompareTo:History, Rarity:Common]] [Effect:ENERGY, Value:-1] [Duration:UNTIL_PLAYED]
