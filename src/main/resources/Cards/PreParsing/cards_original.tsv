@@ -26,7 +26,7 @@ OMA029	Guadalupe Fur Seal	Ocean Mammals	Oceans	Ltd Epic	3	26	When drawn, give yo
 OMA027	Bearded Seal	Ocean Mammals	Oceans	Epic	4	42	When played, give your Ice Age cards (even if they’re in your deck) +25 Power until played.
 OMA028	Bowhead Whale	Ocean Mammals	Oceans	Rare	2	14	When returned to deck, if you won this turn, reduce the Energy cost of your remaining cards in hand by 1 this round.
 OMA030	Hector's Dolphin	Ocean Mammals	Oceans	Cmmn	4	39	When played, gain +10 Power/Turn this turn and next.
-OMA025	Fin Whale	Ocean Mammals	Oceans	Cmmn	6	100	When drawn give your other cards -100 this turn.
+OMA025	Fin Whale	Ocean Mammals	Oceans	Cmmn	6	100	When drawn give your other cards -100 Power this turn.
 OMA026	Hourglass Dolphin	Ocean Mammals	Oceans	Ltd Lgnd	8	28	When drawn, give your cards in hand 8 Power until the end of the round, steal 8 Power/Turn from your Opponent this turn, and give yourself 8 Energy.
 OMA031	Minke Whale	Ocean Mammals	Oceans	Ltd Epic	4	32	When returned to your deck, reduce the Energy cost of your Ocean Mammals (even if they’re in your deck) by 1 until played.
 OMA032	Commerson's Dolphin	Ocean Mammals	Oceans	Ltd Epic	6	57	When drawn, if your deck contains Giant Panda, give your Crustaceans, Cephalopods, Feisty Fish and Fabulous Fish cards (even if they're in your deck) +13 Power until played.
@@ -47,7 +47,7 @@ OWA011	Mary Celeste	Riding the Waves!	Oceans	Ltd Rare	5	70	When played, if you a
 OWA012	Nao Victoria	Riding the Waves!	Oceans	Rare	6	58	When played, your Solar System cards have +18 Power this turn.
 OWA013	USS Constitution	Riding the Waves!	Oceans	Epic	5	37	When played, if you win the turn, gain +3 energy.
 OWA014	Leif Erikson	Riding the Waves!	Oceans	Ltd Lgnd	3	28	When drawn, if you are losing the round, gain +4 Energy.
-OWA015	Bismarck	Riding the Waves!	Oceans	Ltd Epic	5	36	When returned to your deck, give your opponent -20 Power and -2 Energy/turn next turn.
+OWA015	Bismarck	Riding the Waves!	Oceans	Ltd Epic	5	36	When returned to your deck, give your opponent -20 Power/turn and -2 Energy/turn next turn.
 OWA017	The Octavius	Riding the Waves!	Oceans	Cmmn	7	91	When drawn, Lock this card until the end of the round.
 OWA019	HMT Empire Windrush	Riding the Waves!	Oceans	Cmmn	3	30	When drawn, your History cards have +13 Power this turn.
 OWA018	Flying Cloud	Riding the Waves!	Oceans	Rare	5	0	When returned to your deck, give this card +100 Power for the rest of the game.
@@ -104,7 +104,7 @@ LMA012	Okapi	Mammals	Life on Land	Epic	7	58	When played, your Opponent's cards h
 LMA013	Giant Anteater	Mammals	Life on Land	Cmmn	6	52	NULL
 LMA014	Peccary Hog	Mammals	Life on Land	Cmmn	9	58	When drawn, gain +3 Energy.
 LMA015	Grizzly Bear	Mammals	Life on Land	Fusn	5	30	When played, if you are winning the round, this card has +50 Power.
-LMA016	Hippopotamus	Mammals	Life on Land	Ltd Epic	5	46	When drawn, give your Opponent -15 Power per turn for the rest of the round.
+LMA016	Hippopotamus	Mammals	Life on Land	Ltd Epic	5	46	When drawn, give your Opponent -15 Power/turn for the rest of the round.
 LMA020	Black Rhinoceros	Mammals	Life on Land	Epic	2	14	When played with Elasmotherium, give it +40 Power
 LMA017	Giraffe	Mammals	Life on Land	Rare	5	70	When returned to your deck, if you lost this turn, this card has -50 Power for the rest of the game. If you win the turn, it has +15 Power instead.
 LMA018	African Elephant	Mammals	Life on Land	Lgnd	6	58	When played, give Mastodon and Woolly Mammoth (even if they're in your deck) +20 Power until they are played.
@@ -114,7 +114,7 @@ LMA021	Sun Bear	Mammals	Life on Land	Epic	6	53	When returned to your deck, if yo
 LMA023	Groundhog	Mammals	Life on Land	Ltd Epic	6	65	When played, give yourself -2 Energy/Turn for the rest of the round. If you win the turn, gain +5 Energy/Turn for the rest of the round.
 LMA024	Ox	Mammals	Life on Land	Rare	6	59	When drawn, if your deck contains at least 3 Chinese Folklore cards, give them all (even if they're in your deck) +8 Power for the rest of the game.
 LMA025	Plains Zebra	Mammals	Life on Land	Ltd Lgnd	6	55	When returned to your deck, gain +3 Energy/Turn and +10 Power/Turn for the rest of the Round.
-LMA027	Giant Panda	Mammals	Life on Land	Ltd Epic	6	50	When drawn, steal 3 Power from all your Opponent's cards this turn. When returned to your deck, give your opponent -15 Power next turn.
+LMA027	Giant Panda	Mammals	Life on Land	Ltd Epic	6	50	When drawn, steal 3 Power from all your Opponent's cards this turn. When returned to your deck, give your opponent -15 Power/turn next turn.
 LMA026	Bighorn Sheep	Mammals	Life on Land	Ltd Rare	3	25	When played, gain+3 Power/Turn for the rest of the game.
 LMA028	Warthog	Mammals	Life on Land	Ltd Epic	6	59	When played with Meerkat, give it +40 Power this turn. If it's the first turn of the round, give it an extra 20.
 LMA030	Echidna	Mammals	Life on Land	Ltd Epic	5	48	When drawn, if you are losing the round, give two random cards in your hand +20 Power until played. If you are winning the round, give 1 random card in your hand +40 Power until played.
@@ -412,7 +412,7 @@ STR018	Eiffel Tower	Super Structures	Science	Epic	8	65	When played, give your Su
 STR019	Sagrada Família	Super Structures	Science	Rare	2	9	When drawn, give this card +15 Power for the rest of the game.
 STR016	Marina Bay Sands Hotel	Super Structures	Science	Rare	4	39	When drawn, lose -4 Power per turn. When returned to your deck, gain +8 Power per turn.
 STR017	One World Trade Center	Super Structures	Science	Lgnd	3	20	When played, if you are losing the round, your cards have +20 Power this turn.
-STR020	Turning Torso	Super Structures	Science	Epic	6	86	When returned to your deck, if you won this turn, give your Opponent +20 Power next turn.
+STR020	Turning Torso	Super Structures	Science	Epic	6	86	When returned to your deck, if you won this turn, give your Opponent +20 Power/turn next turn.
 STR021	The Houses of Parliament	Super Structures	Science	Ltd Rare	4	39	When played with Gunpowder, give it +25 Power this turn.
 STR022	Sydney Opera House	Super Structures	Science	Ltd Lgnd	3	12	When played, give your cards +10 Power and your Opponent's cards -10 Power this turn
 STR023	Guggenheim Museum, Bilbao	Super Structures	Science	Rare	6	56	When drawn, give your Arts & Culture cards +12 Power until played.
@@ -1020,7 +1020,7 @@ LPR022	Panamanian White-faced Capuchin	Primates	Life on Land	Ltd Epic	4	37	When 
 LPR023	Potto	Primates	Life on Land	Ltd Cmmn	5	48	When played with Potoo, give it +39 Power this turn.
 LPR024	Aye-Aye	Primates	Life on Land	Ltd Lgnd	3	20	When played, give all cards -15 Power this turn. If you are winning the round, or the round is tied, give yours +30 back.
 LPR025	Red-shanked Douc	Primates	Life on Land	Ltd Epic	3	15	When played, give all your Primates cards +10 Power this turn. When returned to your deck, reduce the Energy cost of your Primates cards (even if they're in your deck) by 1 for the rest of the round.
-LPR019	Sifaka Lemur	Primates	Life on Land	Ltd Epic	4	25	When drawn, give your Mammals cards +20 Power this turn.  When played, give your Primates cards +20 this turn. When returned to your deck, give your Marsupials cards (even if they're in your deck) +20 Power next turn.
+LPR019	Sifaka Lemur	Primates	Life on Land	Ltd Epic	4	25	When drawn, give your Mammals cards +20 Power this turn.  When played, give your Primates cards +20 Power this turn. When returned to your deck, give your Marsupials cards (even if they're in your deck) +20 Power next turn.
 LPR028	Uakari	Primates	Life on Land	Ltd Epic	5	51	When returned to your deck, if you are losing the round, gain +2 Energy/Turn for the next two turns. If you are winning, Burn (42 P/T) a random card left in your opponent's hand until played.
 LPR027	Snub-nosed Monkey	Primates	Life on Land	Ltd Cmmn	3	27	When returned to your deck, if you lost the turn, give this card +45 Power until played.
 LPR026	Cotton-Top Tamarin	Primates	Life on Land	Ltd Rare	5	56	When returned to your deck, give Hair (even if it's in your deck) +20 Power until played.
@@ -1277,7 +1277,7 @@ SNV002	Optical Lenses	Ingenious Inventions	Science	Ltd Cmmn	5	46	When this card 
 SNV003	Printing Press	Ingenious Inventions	Science	Ltd Epic	3	34	When drawn, give Paper (even if it's in your deck) +30 Power for the rest of the game.
 SNV011	Paper	Ingenious Inventions	Science	Ltd Cmmn	6	0	Use other cards to improve this card.
 SNV012	Light Bulb	Ingenious Inventions	Science	Ltd Epic	5	47	When returned to your deck, reduce the Energy cost of Thomas Edison, even if it's in your deck, by 2 for the rest of the game.
-SNV016	Stone Tools	Ingenious Inventions	Science	Ltd Cmmn	2	14	When returned to the deck, give your Opponent -5 Power Per Turn for the rest of the Round.
+SNV016	Stone Tools	Ingenious Inventions	Science	Ltd Cmmn	2	14	When returned to the deck, give your Opponent -5 Power/turn for the rest of the Round.
 SNV010	Telephone	Ingenious Inventions	Science	Ltd Cmmn	6	41	When drawn, gain +2 Energy.
 SNV005	The Internet	Ingenious Inventions	Science	Ltd Lgnd	6	47	When played on the first turn of a round, give your cards +10 Power (even if they're in your deck) for the rest of the round.
 SNV006	Steam Engine	Ingenious Inventions	Science	Ltd Cmmn	4	39	When returned to your deck, if you won this turn, give your Ingenious Inventions cards (even if they're in your deck) +10 power until played.
@@ -1357,7 +1357,7 @@ SEL015	Titanium	Excellent Elements	Science	Fusn	3	30	When played, If you are los
 SEL006	Carbon	Excellent Elements	Science	Rare	3	28	When played, your Excellent Elements cards have +15 Power.
 SEL010	Copper	Excellent Elements	Science	Epic	2	19	When returned to your deck, if you lost this turn, gain +38 Power next turn.
 SEL012	Hydrogen	Excellent Elements	Science	Cmmn	4	30	When played, give Oxygen +30 Power for the rest of the game.
-SEL013	Nitrogen	Excellent Elements	Science	Ltd Lgnd	4	50	When drawn, if your deck contains only Science cards, give this +30 Power until played.
+SEL013	Nitrogen	Excellent Elements	Science	Ltd Lgnd	4	50	When drawn, if your deck contains only Science cards, give this card +30 Power until played.
 SEL017	Cobalt	Excellent Elements	Science	Ltd Epic	8	78	When drawn, reduce the Energy cost of a random card in your hand by 3 this turn.
 SEL020	Nickel	Excellent Elements	Science	Ltd Epic	4	28	When drawn, if you are winning the round, gain +5 Energy. If you are losing the round, gain +10 energy.
 SEL016	Tungsten	Excellent Elements	Science	Ltd Epic	5	46	When returned to your deck, gain +14 Power/Turn and -1 Energy/Turn for the rest of the game.
@@ -1592,7 +1592,7 @@ PFF017	Hatzegopteryx	Fearsome Flyers	Paleontology	Ltd Lgnd	5	44	When played, giv
 PFF015	Dsungaripterus	Fearsome Flyers	Paleontology	Ltd Cmmn	2	40	When drawn, give this card -15 Power for the rest of the game.
 PFF019	Zhejiangopterus	Fearsome Flyers	Paleontology	Ltd Epic	6	42	When returned to your deck, reduce the Energy cost of your Fearsome Flyers (even if they're in your deck) by 1 until they are played. If you are winning the round, reduce them by another 1.
 PFF011	Tapejara	Fearsome Flyers	Paleontology	Ltd Cmmn	3	10	When played, your Fearsome Flyers have +20 Power this turn.
-PFF016	Peteinosaurus	Fearsome Flyers	Paleontology	Ltd Rare	2	17	When played with Thick-headed Fly give it +20 Power. When returned to your deck, gain +1 Energy per turn for the rest of the round.
+PFF016	Peteinosaurus	Fearsome Flyers	Paleontology	Ltd Rare	2	17	When played with Thick-headed Fly, give it +20 Power. When returned to your deck, gain +1 Energy per turn for the rest of the round.
 PFF018	Anchiornis	Fearsome Flyers	Paleontology	Ltd Rare	2	22	When played with Anchisaurus, give it +36 Power.
 PFF020	Zhenyuanopterus	Fearsome Flyers	Paleontology	Ltd Rare	9	65	When returned to your deck, if you lost this turn, gain +65 Power next turn.
 PFF021	Pterodaustro	Fearsome Flyers	Paleontology	Ltd Epic	3	32	When drawn, give Flamingos (even if it's in your deck) +46 Power for the rest of the Game.
@@ -1705,7 +1705,7 @@ LBB031	Comet Moth	Beautiful Butterflies	Life on Land	Lgnd	5	47	When drawn, if yo
 SWA001	Mauna Kea Observatories	Watching the Skies	Space	Ltd Rare	5	45	When played on a matching arena, this card has +45 Power.
 SWA002	Johannes Kepler	Watching the Skies	Space	Ltd Epic	2	19	When played, give your Solar System cards (even if they're in your deck) +13 Power this round.
 SWA003	Lunar Phases	Watching the Skies	Space	Ltd Cmmn	6	59	When played, give The Moon +20 Power until played.
-SWA004	Roque de los Muchachos Observatory	Watching the Skies	Space	Ltd Rare	5	47	When returned to your deck, if you won this turn, give your opponent -20 Power next turn.
+SWA004	Roque de los Muchachos Observatory	Watching the Skies	Space	Ltd Rare	5	47	When returned to your deck, if you won this turn, give your opponent -20 Power/turn next turn.
 SWA005	Newton's Reflector	Watching the Skies	Space	Ltd Cmmn	2	22	When drawn, give a random card in both player's hands +22 Power this turn.
 SWA006	Astrolabe	Watching the Skies	Space	Ltd Lgnd	1	5	When played, give your Space cards (even if they're in your deck) +10 Power until the end of the round. If played on a matching Arena, give this card +10 Power this turn.
 SWA007	Prague Astronomical Clock	Watching the Skies	Space	Ltd Cmmn	6	64	When played on the first turn of a round, gain +1 Energy/turn for the rest of the round.
@@ -1803,7 +1803,7 @@ ACGM002	Aphrodite	Greek Mythology	Arts & Culture	Ltd Cmmn	4	40	When played with 
 ACGM003	Poseidon	Greek Mythology	Arts & Culture	Ltd Cmmn	4	36	When played, all Oceans and Seas cards in play have -20 Power this turn.
 ACGM012	Minotaur	Greek Mythology	Arts & Culture	Ltd Lgnd	6	66	When this returns to your deck, reduce the cost of this card by 3 for the rest of the game.
 ACGM016	Trojan Horse	Greek Mythology	Arts & Culture	Ltd Epic	2	0	When played, all cards with a Base Energy cost of 3 or less have +20 Power this turn.
-ACGM017	Achilles	Greek Mythology	Arts & Culture	Ltd Lgnd	5	70	When returned to the deck, give your Opponent -30 Power next turn if you lose the turn.
+ACGM017	Achilles	Greek Mythology	Arts & Culture	Ltd Lgnd	5	70	When returned to the deck, give your Opponent -30 Power/turn next turn if you lose the turn.
 ACGM013	Orpheus	Greek Mythology	Arts & Culture	Ltd Cmmn	2	16	When returned to the deck, give Paper +15 Power for the rest of the game (even if it's in your deck.)
 ACGM009	Atlas	Greek Mythology	Arts & Culture	Ltd Rare	3	0	When played, give this card +25 Power for the rest of the game.
 ACGM007	Artemis	Greek Mythology	Arts & Culture	Ltd Cmmn	5	68	When returned to the deck, this card costs 1 more Energy for the rest of the game.
@@ -1850,7 +1850,7 @@ ACGM052	Tartarus	Greek Mythology	Arts & Culture	Ltd Lgnd	6	56	When returned to y
 ACGM055	The Golden Fleece	Greek Mythology	Arts & Culture	Ltd Epic	2	23	When drawn, if your deck contains Bighorn Sheep and Aries, give your Greek Mythology cards, wherever they are, +10 Power until played.
 ACGM056	Bellerophon	Greek Mythology	Arts & Culture	Ltd Rare	4	31	When played, if you are winning the round, give Pegasus +60 Power this turn. If you lose the turn, give it -60 Power permanently.
 ACGM057	The Argo	Greek Mythology	Arts & Culture	Ltd Lgnd	3	28	When played next to Hera, give your Oceans and Seas cards, wherever they are, +12 Power for the rest of the round.
-ACGM058	Aether	Greek Mythology	Arts & Culture	Ltd Epic	6	90	When drawn, if the round is tied, give your Opponent +50 Power this turn.
+ACGM058	Aether	Greek Mythology	Arts & Culture	Ltd Epic	6	90	When drawn, if the round is tied, give your Opponent +50 Power/turn this turn.
 SAS005	Valentina Tereshkova	Amazing Astronauts	Space	Ltd Lgnd	4	40	When drawn, give your Space cards +25 Power this turn
 SAS009	Jim Lovell	Amazing Astronauts	Space	Ltd Cmmn	6	80	When returned to your deck, if you are losing the round, give all cards remaining in your hand -20 Power next turn.
 SAS010	Alan B. Shepard Jr.	Amazing Astronauts	Space	Ltd Cmmn	2	18	When played on the first turn of a round, this card has +18 Power.
@@ -1952,7 +1952,7 @@ ACHA018	Demon	Horrible Halloween	Arts & Culture	Ltd Lgnd	6	65	When played, if yo
 ACHA011	Dr. Jekyll	Horrible Halloween	Arts & Culture	Ltd Rare	3	30	When drawn, if you have played Mr Hyde this game, give it (even if it's in your deck) and this card +35 Power until played.
 ACHA010	Mr Hyde	Horrible Halloween	Arts & Culture	Ltd Rare	2	20	When drawn, if you have played Dr. Jekyll this game, give it (even if it's in your deck) and this card +35 Power until played.
 LUN001	Pika	Going Underground	Life on Land	Ltd Lgnd	5	25	When played, this card steals 7 Power from all of your opponent's cards (in play and in hand) and keeps it for the rest of the game.
-LUN002	Burrowing Owl	Going Underground	Life on Land	Ltd Cmmn	4	38	When played, give your opponent -5 Power per Turn for the rest of the round.
+LUN002	Burrowing Owl	Going Underground	Life on Land	Ltd Cmmn	4	38	When played, give your opponent -5 Power/turn for the rest of the round.
 LUN003	Leafcutter Ant	Going Underground	Life on Land	Ltd Cmmn	7	100	When played, all your cards (except this one) have -40 Power this turn.
 LUN004	Fennec Fox	Going Underground	Life on Land	Ltd Epic	8	64	When returned to your deck, reduce the energy cost of your Going Underground cards (even if they're in your deck) by 2 until played.
 LUN007	Arachnocampa	Going Underground	Life on Land	Ltd Cmmn	2	8	When played on the first turn of a round, gain +8 Power per Turn for the rest of the round.
@@ -2141,7 +2141,7 @@ ECF012	The Great Race	Chinese Folklore	History	Rare	4	37	When drawn, give your L
 ECF014	Nüwa	Chinese Folklore	History	Ltd Epic	2	21	When played, gain +12 Power/Turn this round and give Fuxi (coming soon) +20 Power this turn.
 ECF013	Caishen	Chinese Folklore	History	Cmmn	3	33	When returned to your deck, lose 4 Energy. When drawn, if you're winning the round, gain 7 Energy.
 ECF015	Zhong Kui	Chinese Folklore	History	Lgnd	4	43	When played, give all your opponent's cards from collections with "Mythology" in the name -40 Power this round.
-ECF016	Yin & Yang	Chinese Folklore	History	Ltd Rare	2	20	When played, give you and your opponent +22 Power/Turn this turn. If you lose the turn, you keep the +22 power until the end of the round. If you win the turn, give your opponent +22 power until the end of the round.
+ECF016	Yin & Yang	Chinese Folklore	History	Ltd Rare	2	20	When played, give you and your opponent +22 Power/Turn this turn. If you lose the turn, you keep the +22 power until the end of the round. If you win the turn, give your opponent +22 power/turn until the end of the round.
 ECF017	Wuxing	Chinese Folklore	History	Ltd Rare	5	55	When drawn, reduce the Energy cost of your Marvellous Medicine and Watching the Skies cards (even if they're in your deck) by 2 for 5 turns.
 ECF018	Pixiu	Chinese Folklore	History	Epic	4	40	When drawn, if your deck contains 5 or more Hidden Gems cards, give them all (even if they're in your deck) -10 Power, and give this +70 Power, for the rest of the game.
 ECF019	Sun Wukong	Chinese Folklore	History	Ltd Lgnd	8	72	When drawn, Lock this card for two turns. When played, give your Primates cards (even if they're in your deck) +30 Power until played. When returned to your deck, reduce their Energy cost by 1 until the end of the game.
@@ -2224,7 +2224,7 @@ EPP010	Henry Morgan	Plundering Pirates	History	Ltd Rare	1	10	When played, give G
 EPP008	Keelhauling	Plundering Pirates	History	Ltd Cmmn	3	14	When returned to your deck, if your Opponent is losing the Round, give them -25 Power/Turn until the end of the Round.
 EPP007	Letters of Marque	Plundering Pirates	History	Ltd Cmmn	4	32	When played, give your Epic cards +10 Power for the rest of this Round.
 EPP004	Cheung Po Tsai	Plundering Pirates	History	Ltd Cmmn	1	12	When returned to your deck, give this card +13 Power and increase its Energy cost by 1 for the rest of the game.
-EPP012	Captain Kidd	Plundering Pirates	History	Ltd Lgnd	4	45	When returned to your deck, if you lost this turn, give your opponent -40 Power next turn. If you won, give yourself +30 instead.
+EPP012	Captain Kidd	Plundering Pirates	History	Ltd Lgnd	4	45	When returned to your deck, if you lost this turn, give your opponent -40 Power/turn next turn. If you won, give yourself +30 instead.
 EPP013	François l'Olonnais	Plundering Pirates	History	Ltd Rare	5	45	When drawn, increase the Energy cost of a random card in your opponent's hand by 4 for the rest of this round.
 EPP014	Grace O'Malley	Plundering Pirates	History	Ltd Lgnd	4	20	When drawn, give your Plundering Pirates cards (even if they're in your deck) +30 Power, and give a random card in your opponent's hand -20 Power, for this turn and next.
 EPP016	Raïs Hamidou	Plundering Pirates	History	Ltd Epic	5	75	When drawn, if you have 10 or more Oceans and Seas cards in your deck, reduce the Energy cost of this card by 5 until played.
@@ -2487,7 +2487,7 @@ EES022	Cambridge Five	Espionage	History	Ltd Epic	5	50	When drawn, if your deck c
 CEV001	Fabergé Eggs	Science Specials	Science	Rare	4	38	When played, give your Unruly Rulers cards +12 Power this turn.
 SRR005	Space Shuttle	Radical Rockets	Space	Ltd Lgnd	2	28	When returned to your deck, give a random card in your hand +28 Power until played.
 SRR004	SpaceX Falcon Heavy	Radical Rockets	Space	Ltd Epic	10	100	When drawn, if your deck contains 10 or more Space cards, reduce the Energy cost of this card by 5 this round.
-SRR008	Jupiter-C	Radical Rockets	Space	Ltd Cmmn	4	38	When returned to your deck, if you won this turn, give your opponent -10 Power next turn.
+SRR008	Jupiter-C	Radical Rockets	Space	Ltd Cmmn	4	38	When returned to your deck, if you won this turn, give your opponent -10 Power/turn next turn.
 SRR006	White Knight Two	Radical Rockets	Space	Ltd Cmmn	2	5	When played, give your Radical Rockets cards +15 Power this turn.
 SRR007	V-2 Rocket	Radical Rockets	Space	Ltd Cmmn	2	40	When returned to your deck, give a random card in your Opponent's hand +15 Power this round.
 SRR003	Soyuz	Radical Rockets	Space	Ltd Rare	7	72	When returned to your deck, reduce the Energy cost of your Radical Rockets cards (even if they're in your deck) by 2 this round.
@@ -2692,7 +2692,7 @@ OFF008	Fugu	Feisty Fish	Oceans	Ltd Lgnd	7	76	When drawn, steal 2 energy from you
 OFF009	Goliath Tigerfish	Feisty Fish	Oceans	Ltd Rare	2	30	When returned to your deck, give your Feisty Fish and Monsters of the Deep cards (even if they're in your deck) +12 Power next turn, and increase the Energy cost of this card by 1 until played.
 OFF010	Oyster Toadfish	Feisty Fish	Oceans	Ltd Cmmn	2	18	When drawn, reduce the Energy cost of your Omnivores cards (even if they're in your deck) by 1 until played.
 OFF011	Payara	Feisty Fish	Oceans	Ltd Lgnd	5	20	When drawn, increase the Energy cost of your opponent's Fabulous Fish and Feisty Fish cards by 1 until played and give yourself -10 Power/Turn until played. At the start of your turn, while in your hand, give this card +20 Power until played.
-OFF027	Icefish	Feisty Fish	Oceans	Ltd Epic	5	44	When drawn, give your cards (even if they're in your deck) +7 and give your opponent’s cards -7 this turn and next. Repeat if your deck contains Blood Circulation.
+OFF027	Icefish	Feisty Fish	Oceans	Ltd Epic	5	44	When drawn, give your cards (even if they're in your deck) +7 and give your opponent’s cards -7 Power this turn and next. Repeat if your deck contains Blood Circulation.
 ACEM013	Ra	Egyptian Mythology	Arts & Culture	Ltd Rare	4	43	When played with Osiris, give it +40 Power.
 ACEM003	Sekhmet	Egyptian Mythology	Arts & Culture	Ltd Cmmn	4	36	When played with Ra, give it +40 Power.
 ACEM012	Osiris	Egyptian Mythology	Arts & Culture	Ltd Rare	4	31	When played with Sekhmet, give it +40 Power.
@@ -2855,7 +2855,7 @@ SMT011	Burkhan Khaldun	Majestic Mountains	Science	Ltd Epic	8	40	When played, giv
 EJF001	1000 Paper Cranes	Japanese Folklore	History	Ltd Epic	5	48	While in your hand, at the start of your turn, if you are losing the round, reduce the Energy cost of this card by 4 this turn.
 EJF003	Takarabune	Japanese Folklore	History	Ltd Rare	8	76	When returned to your deck, give your Lost Treasures cards +12 Power for the next 4 turns.
 EJF002	Daruma Doll	Japanese Folklore	History	Ltd Lgnd	3	10	While in your hand, at the start of each turn if you're winning the round, give this card +20 Power until played.
-EJF004	Izanami	Japanese Folklore	History	Ltd Rare	5	45	When drawn, reduce the Energy cost of this card by 3 this turn. When returned to your deck, if you are losing the round, give your opponent -25 Power next turn.
+EJF004	Izanami	Japanese Folklore	History	Ltd Rare	5	45	When drawn, reduce the Energy cost of this card by 3 this turn. When returned to your deck, if you are losing the round, give your opponent -25 Power/turn next turn.
 EJF005	Amaterasu	Japanese Folklore	History	Ltd Epic	5	43	While in your hand, at the start of each turn, give Ise Grand Shrine +15 Power (even if it’s in your deck) until played.
 EJF006	Kitsune	Japanese Folklore	History	Ltd Cmmn	1	9	When drawn, give your Feudal Japan cards +16 Power this turn and next.
 EJF007	Shinigami	Japanese Folklore	History	Ltd Lgnd	6	40	When played in the first 13 turns of the game, the card opposite this has -500 Power this turn, otherwise give this card -500 Power this turn.

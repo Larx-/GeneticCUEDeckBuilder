@@ -1,7 +1,11 @@
 package PreProcessing;
 
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -13,6 +17,8 @@ public class RegexPreProcessor {
     private static final String formattedFile = "src/main/resources/Cards/PreParsing/cards_formatted.tsv";
     private static final String regexFile = "src/main/resources/Cards/PreParsing/cards_regex_effects.tsv";
 
+    private static List<String> anomalies = new ArrayList<>();
+    private static final int percToAnomalyFlag = 120; // Percent compared to average a replacement has to be, to be flagged as an anomaly
 
     public static void main(String[] args) throws IOException {
         // First fixing some general inconsistencies and oddities about the original .tsv
@@ -23,7 +29,7 @@ public class RegexPreProcessor {
 
         // Write formatted file
         writeFullFile(formattedFile, preFormatted);
-
+        int charsBefore = countNotReplacedChars(preFormatted);
 
         // Regex EFFECT replacement
         // TriggerTime
@@ -33,22 +39,25 @@ public class RegexPreProcessor {
         preFormatted = replaceAll(preFormatted, Pattern.compile("When played, if you are winning the round,"),"[TriggerTime:PLAY] [Condition:ROUND_STATE, Value:Win] ", false);
         preFormatted = replaceAll(preFormatted, Pattern.compile("When played on the first turn of a round,"),"[TriggerTime:PLAY] [Condition:TURN_IN_ROUND, Value:1] ", false);
         preFormatted = replaceAll(preFormatted, Pattern.compile("When played,"),"[TriggerTime:PLAY] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("When played with (.*?),|When played adjacent to (.*?),|When played next to (.*?),"),"[TriggerTime:PLAY] [Condition:PLAYED_WITH, Value:($1$2$3)] ");
-        // FIXME: When played with Thick-headed Fly give it +20 Power. When returned to your deck,
+        preFormatted = replaceAll(preFormatted, Pattern.compile("When played with (.*?),|When played adjacent to (.*?),|When played next to (.*?),"),"[TriggerTime:PLAY] [Condition:PLAYED_WITH, Value:($1$2$3)] ", false);
 
         preFormatted = replaceAll(preFormatted, Pattern.compile("When returned to your deck|When returned to the deck|When returned to deck"),"[TriggerTime:RETURN] ", false);
 
 
         // Effect
-        preFormatted = replaceAll(preFormatted, Pattern.compile("this card has ([+|-]\\d+?) Power\\."),"[Effect:POWER, Value:$1] [Target:THIS] [Duration:END_TURN]", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("all (.*?) cards have ([+|-]\\d*) Power this turn\\."),"[Target:[Who:BOTH, Where:CARDS_IN_HAND, CompareTo:($1)]] [Effect:POWER, Value:$2] [Duration:END_TURN]");
-        // FIXME: all your cards have +40 Power this turn.
-        preFormatted = replaceAll(preFormatted, Pattern.compile("all (.*?) cards have ([+|-]\\d*) Power"),"[Target:[Who:BOTH, Where:CARDS_IN_HAND, CompareTo:($1)]] [Effect:POWER, Value:$2]", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("reduce the energy cost of (.*?) by (.*?)[,]* "),"[Effect:ENERGY, Value:-$2] [Target:($1)]]");
-        // FIXME: reduce the energy cost of your cards with 65 or more Power by -1 	 -> 	 [Effect:ENERGY, Value:--1] [Target:your cards with 65 or more Power]]
-        // FIXME: reduce the energy cost of all Paleontology cards with 'Mega' in the title by 1 	 -> 	 [Effect:ENERGY, Value:-1] [Target:all Paleontology cards with 'Mega' in the title]]
-        // FIXME: reduce the energy cost of a random card with a base energy cost of 9 or more by -7 	 -> 	 [Effect:ENERGY, Value:--7] [Target:a random card with a base energy cost of 9 or more]]
-        preFormatted = replaceAll(preFormatted, Pattern.compile("for each (.*?) card in your deck.*maximum of (\\d*?)\\).*give this card ([+|-]\\d*?) Power this turn\\."),"[Effect:POWER_FOR_EACH, Value:$3, CountEach:[Who:SELF, Where:CARDS_IN_DECK, CompareTo:$1], UpTo:$2] [Target:THIS] [Duration:END_TURN]", false);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("this card has ([+|-]\\d+?) Power\\."),"[Effect:POWER, Value:$1] [Target:THIS] [Duration:END_TURN] ", false);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("all your cards have ([+|-]\\d*) Power this turn\\."),"[Target:[Who:SELF, Where:CARDS_IN_HAND]] [Effect:POWER, Value:$1] [Duration:END_TURN] ", false);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("all (.*?) cards have ([+|-]\\d*) Power this turn\\."),"[Target:[Who:BOTH, Where:CARDS_IN_HAND, CompareTo:($1)]] [Effect:POWER, Value:$2] [Duration:END_TURN] ", false);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("all (.*?) cards have ([+|-]\\d*) Power"),"[Target:[Who:BOTH, Where:CARDS_IN_DECK, CompareTo:($1)]] [Effect:POWER, Value:$2] ", false);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("reduce the energy cost of (.*?) by (.*?)[,]* "),"[Effect:ENERGY, Value:-$2] [Target:($1)]] ", false);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("for each (.*?) card in your deck.*maximum of (\\d*?)\\).*give this card ([+|-]\\d*?) Power this turn, false\\."),"[Effect:POWER_FOR_EACH, Value:$3, CountEach:[Who:SELF, Where:CARDS_IN_DECK, CompareTo:($1)], UpTo:$2] [Target:THIS] [Duration:END_TURN] ", false);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("(gain|give yourself|get|you have|gain an extra) ([+|-]\\d*) Energy/Turn"),"[Target:SELF] [Effect:ENERGY_PER_TURN, Value:$2] ", false);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("reduce the Energy [c|C]ost of your (.*?) [c|C]ards by (.*?) "),"[Effect:ENERGY, Value:-$2] [Target:[Who:SELF, What:CARDS_IN_DECK, CompareTo:($1)]]] ", false);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("give this card ([+|-]\\d*) Power"),"[Target:THIS] [Effect:POWER, Value:$1] ", false);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("give your Opponent ([+|-]\\d*) [p|P]ower\\/[t|T]urn"),"[Target:OTHER] [Effect:POWER_PER_TURN, Value:$1] ", false);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("give your Opponent ([+|-]\\d*) [e|E]nergy\\/[t|T]urn"),"[Target:OTHER] [Effect:ENERGY_PER_TURN, Value:$1] ", false);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("give (.*?) ([+|-]\\d*) [p|P]ower"),"[Target:($1)] [Effect:POWER, Value:$2] ", false);
+
 
         // Conditions
         preFormatted = replaceAll(preFormatted, Pattern.compile("[i|I]f you are losing the [r|R]ound by (\\d+).*?more.*?,"),"[Condition:ROUND_STATE, Value:Loss>=$1] ", false);
@@ -57,35 +66,52 @@ public class RegexPreProcessor {
         preFormatted = replaceAll(preFormatted, Pattern.compile("[i|I]f you are winning the [r|R]ound by (\\d+).*?more.*?,"),"[Condition:ROUND_STATE, Value:Win>=$1] ", false);
         preFormatted = replaceAll(preFormatted, Pattern.compile("[i|I]f you are winning the [r|R]ound by (\\d+).*?less.*?,"),"[Condition:ROUND_STATE, Value:Win<=$1] ", false);
         preFormatted = replaceAll(preFormatted, Pattern.compile("[i|I]f you are winning the [r|R]ound,"),"[Condition:ROUND_STATE, Value:Win] ", false);
-
         preFormatted = replaceAll(preFormatted, Pattern.compile("if you (\\w*) this turn"),"[Condition:TURN_STATE, Value:($1)] ", false);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("if your deck contains (\\d*) or more (.*?) and (\\d*) or more (.*?),"),"[Condition:DECK_CONTAINS, Value:>=$1, CountEach:[Who:SELF, Where:CARDS_IN_DECK, CompareTo:($2)]] [Condition:DECK_CONTAINS, Value:>=$3, CountEach:[Who:SELF, Where:CARDS_IN_DECK, CompareTo:($4)]] ", false);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("if your deck contains (\\d*) or more (.*?) ([ card,| cards,]*?),"),"[Condition:DECK_CONTAINS, Value:>=$1, CountEach:[Who:SELF, Where:CARDS_IN_DECK, CompareTo:($2)]] ", false);
 
-        // Blocked by line 1365: "if your deck contains (.*?)," -> "[Condition:DECK_CONTAINS, Find:[Who:SELF, Where:CARDS_IN_DECK, CompareTo:($1)]] "
 
+        // Duration
+        preFormatted = replaceAll(preFormatted, Pattern.compile("for the rest of the game."),"[Duration:PERMANENT] ", false);
 
+        // For COPY & PASTE
 //        preFormatted = replaceAll(preFormatted, Pattern.compile(""),"");
 
         // Post-processing
         // TODO: Everything in brackets (ex. targets) need to be defined better
 
         // Clean up
-        preFormatted = replaceAll(preFormatted, Pattern.compile("\\[.*?\\]"),"-", false); // FIXME: REMOVAL OF EVERYTING IN BRACKETS ONLY FOR DEBUGGING
+        preFormatted = replaceAll(preFormatted, Pattern.compile("--+"),"-", false);
         preFormatted = replaceAll(preFormatted, Pattern.compile("  +")," ", false);
 
+        // Count percentage of replaced
+        int charsAfter = countNotReplacedChars(preFormatted);
+        float percToReplace = (float) charsAfter * 100 / charsBefore;
+        log.debug(String.format("Percentage left to replace: %.2f%%", percToReplace));
+        log.debug("");
+
+        // FIXME: REMOVAL OF EVERYTHING IN BRACKETS ONLY FOR DEBUGGING
+        preFormatted = replaceAll(preFormatted, Pattern.compile("\\[.*?\\]"),"-", false);
+
+        // Output anomalies
+        outputAnomalies(true);
 
         // Write regex replaced file
         writeFullFile(regexFile, preFormatted);
     }
 
-    public static String replaceAll (String allRows, Pattern pattern, String replacement) {
+    private static String replaceAll (String allRows, Pattern pattern, String replacement) {
         return replaceAll(allRows, pattern, replacement, true);
     }
 
-    public static String replaceAll (String allRows, Pattern pattern, String replacement, boolean doLog) {
+    private static String replaceAll (String allRows, Pattern pattern, String replacement, boolean doLog) {
         if (doLog) {
             log.debug("REGEX and REPLACEMENT");
             log.debug(pattern.pattern() + "\t -> \t " + replacement);
         }
+
+        List<String> replacements = new ArrayList<>();
+        int totalLength = 0;
 
         Matcher matcher = pattern.matcher(allRows);
 
@@ -100,8 +126,19 @@ public class RegexPreProcessor {
                 replaced = replaced.replace("$"+i, replacedBy);
             }
 
+            replacements.add(replaced);
+            totalLength += replaced.length();
+
             if (doLog) {
-                log.debug(matcher.group() + "\t -> \t " + replaced); // TODO: Better String formatting
+                log.debug(StringUtils.rightPad(matcher.group(), 60) + "\t -> \t " + StringUtils.rightPad(replaced, 60));
+            }
+        }
+
+        float avgRepLen = (float) totalLength / replacements.size();
+        for (String rep : replacements) {
+            float repLenPerc = rep.length() * 100 / avgRepLen;
+            if (repLenPerc >= percToAnomalyFlag) {
+                anomalies.add(pattern.pattern() + "\t -> \t " + rep);
             }
         }
 
@@ -111,7 +148,7 @@ public class RegexPreProcessor {
         return matcher.replaceAll(replacement);
     }
 
-    public static String readFullFile (String fileName) {
+    private static String readFullFile (String fileName) {
         StringBuilder fullFile = new StringBuilder();
 
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
@@ -126,7 +163,7 @@ public class RegexPreProcessor {
         return fullFile.toString();
     }
 
-    public static void writeFullFile (String fileName, String content) {
+    private static void writeFullFile (String fileName, String content) {
         // Write formatted file to be processed using regex
         try (FileWriter fr = new FileWriter(fileName)) {
             fr.write(content);
@@ -135,7 +172,7 @@ public class RegexPreProcessor {
         }
     }
 
-    public static String fixFormatting (String allRows) {
+    private static String fixFormatting (String allRows) {
         // Fixing albums
         allRows = allRows.replace("Oceans and Seas","Oceans & Seas");
         allRows = allRows.replace("Oceans\t","Oceans & Seas\t");
@@ -237,12 +274,39 @@ public class RegexPreProcessor {
         return allRows;
     }
 
-    static String optionalFormatting (String allRows) {
+    private static String optionalFormatting (String allRows) {
         allRows = allRows.replaceAll("Cmmn","Common");
         allRows = allRows.replaceAll("Lgnd","Legendary");
         allRows = allRows.replaceAll("Ult-Fusn","Ultra-Fusion");
         allRows = allRows.replaceAll("Fusn","Fusion");
 
         return allRows;
+    }
+
+    private static int countNotReplacedChars(String allRows) {
+        int numChars = 0;
+        String[] rows = allRows.split("\n");
+
+        for (String row : rows) {
+            row = row.substring(row.lastIndexOf("\t"));
+            row = row.replaceAll("\\[.*\\]","");
+            row = row.replaceAll("- ","");
+
+            if (!row.matches("NULL")) {
+                numChars += row.length();
+            }
+        }
+
+        return numChars;
+    }
+
+    private static void outputAnomalies (boolean onlyNumber) {
+        log.debug("FOUND " + anomalies.size() + " ANOMALIES:");
+        if (!onlyNumber) {
+            for (String ano : anomalies) {
+                log.debug(ano);
+            }
+        }
+        log.debug("");
     }
 }
