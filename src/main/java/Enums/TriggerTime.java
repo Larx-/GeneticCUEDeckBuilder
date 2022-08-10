@@ -13,7 +13,8 @@ public enum TriggerTime {
     END_ROUND,
     TIMER,
     PERMANENT,
-    UNTIL_PLAYED;
+    UNTIL_PLAYED,
+    WHILE_IN_HAND; // TODO
 
     public static TriggerTime fromString(String search) {
         for (TriggerTime nextElem : TriggerTime.values()) {
