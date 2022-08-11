@@ -33,127 +33,11 @@ public class RegexPreProcessor {
         int charsBefore = countNotReplacedChars(preFormatted);
 
         // Regex EFFECT replacement
-        // Special cases (+ potentially needed special cases)
-        preFormatted = replaceAll(preFormatted, Pattern.compile("BURN \\((\\d+?)\\) all cards - yours until next turn, your Opponent's until played\\."),"[Effect:BURN, Value:15] [Target:SELF, Where:CARDS_IN_HAND] [Duration:TIMER, Value:1] [Effect:BURN, Value:15] [Target:OTHER, Where:CARDS_IN_HAND] [Duration:UNTIL_PLAYED] ", false);
-        // SDD029:  When drawn, gain +10 Power/Turn and 1 Energy/Turn until this card is played. If you have played Electricity, when drawn, gain an additional +10 Power/ Turn until this card is played.
-        // LUN006:  if you have played Pika, Prairie Dog, Fennec Fox or Angora Rabbit at least once, give this card +20 for each card played
-        // LMA023:  When played, give yourself -2 Energy/Turn for the rest of the round. If you win the turn, gain +5 Energy/Turn for the rest of the round.
-        // PHE027:  When played, if your deck contains Green Iguana give your Reptiles cards +19 Power this round.
-        // EWW041:  When returned to your deck, give whoever won this turn +36 Power/Turn next turn.
-        // SGM025:  While in your hand, you have -1 Energy/Turn. When returned to your deck, gain +3 Energy/Turn for the rest of this round.
-        // LCA021:  When returned to your deck, gain +4 Power/turn and +1 Energy/Turn for the rest of the game.
-        // ECF016:  When played, give you and your Opponent +22 Power/Turn this turn. If you lose the turn, you keep the +22 power until the end of the round. If you win the turn, give your Opponent +22 power/turn until the end of the round.
-        // EWW041:  When returned to your deck, give whoever won this turn +36 Power/Turn next turn.
-        // LUN006:  When played, if you have played Pika, Prairie Dog, Fennec Fox or Angora Rabbit at least once, give this card +20 for each card played this turn.
-        // LBB006:  When played on a matching Arena, steal two Energy from your Opponent when it returns to your deck.
-        // OFI031:  When returned to your deck, give your Amphibians cards +14 Power this round (and if your deck contains Glass Frog or Axolotl, give them an extra +12 Power for each).
-        // ACHA001: When played, give your Horrible Halloween cards +40 Power this turn (and, if played on the Halloween Arena, give them an extra +40 Power)
-
-        // TriggerTime
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[w|W]hile in your hand, at the start of (your|each) turn,"),"[TriggerTime:START] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[w|W]hen drawn,|[o|O]n draw,"),"[TriggerTime:DRAW] ", false);
-
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[w|W]hen played, if you are winning the round,"),"[TriggerTime:PLAY] [Condition:ROUND_STATE, Value:Win] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[w|W]hen played on the first turn of a round,"),"[TriggerTime:PLAY] [Condition:TURN_IN_ROUND, Value:1] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[w|W]hen played,"),"[TriggerTime:PLAY] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("([w|W]hen played with |[w|W]hen played adjacent to |[w|W]hen played next to |[i|I]f played next to |[i|I]f played alongside )(.*?),"),"[TriggerTime:PLAY] [Condition:PLAYED_WITH, Value:($2)] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[w|W]hen played in the middle slot and adjacent to (.*?),"),"[TriggerTime:PLAY] [Condition:PLAYED_WITH, Value:($1)] ", false); // NOTE: Here should be another condition, that I skipped because I only use random agents
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[w|W]hen played in the right slot and adjacent to (.*?),"),"[TriggerTime:PLAY] [Condition:PLAYED_WITH, Value:($1)] ", false); // NOTE: Here should be another condition, that I skipped because I only use random agents
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[w|W]hen played in the(.*?)slot"),"[TriggerTime:PLAY] ", false); // NOTE: Here should be another condition, that I skipped because I only use random agents
-
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[w|W]hen returned to your deck|[w|W]hen returned to the deck|[w|W]hen returned to deck|[w|W]hen this card returns to your deck"),"[TriggerTime:RETURN] ", false);
-
-
-        // Effect
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[t|T]his [c|C]ard has (.?\\d+?) [p|P]ower\\."),"[Effect:POWER, Value:$1] [Target:THIS] [Duration:END_TURN] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[a|A]ll your [c|C]ards have (.?\\d+?) [p|P]ower this turn\\."),"[Target:[Who:SELF, Where:CARDS_IN_HAND]] [Effect:POWER, Value:$1] [Duration:END_TURN] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[a|A]ll (.*?) [c|C]ards have (.?\\d+?) [p|P]ower this turn\\."),"[Target:[Who:BOTH, Where:CARDS_IN_HAND, CompareTo:($1)]] [Effect:POWER, Value:$2] [Duration:END_TURN] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[a|A]ll (.*?) [c|C]ards have (.?\\d+?) [p|P]ower"),"[Target:[Who:BOTH, Where:CARDS_IN_DECK, CompareTo:($1)]] [Effect:POWER, Value:$2] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[r|R]educe the [e|E]nergy [c|C]ost of (.*?) by .?(\\d+?).?"),"[Effect:ENERGY, Value:-$2] [Target:($1)] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[f|F]or each (.*?) [c|C]ard in your deck.*maximum of (\\d+?)\\).*give this [c|C]ard (.?\\d+?) [p|P]ower this turn,"),"[Effect:POWER_FOR_EACH, Value:$3, CountEach:[Who:SELF, Where:CARDS_IN_DECK, CompareTo:($1)], UpTo:$2] [Target:THIS] [Duration:END_TURN] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("([g|G]ain|[g|G]ive yourself|[g|G]et|[y|Y]ou have|[g|G]ain an extra|[r|R]eceive) ([+-|]\\d+) [e|E]nergy/[t|T]urn"),"[Target:SELF] [Effect:ENERGY_PER_TURN, Value:$2] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[r|R]educe the [e|E]nergy [c|C]ost of your (.*?) [c|C]ards by (.*?) "),"[Effect:ENERGY, Value:-$2] [Target:[Who:SELF, What:CARDS_IN_DECK, CompareTo:($1)]] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[g|G]ive this [c|C]ard (.?\\d+?) [p|P]ower"),"[Target:THIS] [Effect:POWER, Value:$1] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[g|G]ive your Opponent (.?\\d+?) [p|P]ower/[t|T]urn"),"[Target:OTHER] [Effect:POWER_PER_TURN, Value:$1] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[g|G]ive your Opponent (.?\\d+?) [e|E]nergy\\/[t|T]urn"),"[Target:OTHER] [Effect:ENERGY_PER_TURN, Value:$1] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[g|G]ive (.*?) (.?\\d+?) [p|P]ower(?!/)"),"[Target:($1)] [Effect:POWER, Value:$2] ", false);
-
-
-        // Conditions
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[i|I]f you are losing the [r|R]ound by (\\d+).*?more.*?,"),"[Condition:ROUND_STATE, Value:Loss>=$1] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[i|I]f you are losing the [r|R]ound by (\\d+).*?less.*?,"),"[Condition:ROUND_STATE, Value:Loss<=$1] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[i|I]f you are losing the [r|R]ound,"),"[Condition:ROUND_STATE, Value:Loss] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[i|I]f you are winning the [r|R]ound by (\\d+).*?more.*?,"),"[Condition:ROUND_STATE, Value:Win>=$1] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[i|I]f you are winning the [r|R]ound by (\\d+).*?less.*?,"),"[Condition:ROUND_STATE, Value:Win<=$1] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[i|I]f you are winning the [r|R]ound,"),"[Condition:ROUND_STATE, Value:Win] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[i|I]f you (\\w*) (this|the) turn"),"[Condition:TURN_STATE, Value:($1)] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[i|I]f your deck contains (\\d+?) or more (.*?) and (\\d+?) or more (.*?),"),"[Condition:DECK_CONTAINS, Value:>=$1, CountEach:[Who:SELF, Where:CARDS_IN_DECK, CompareTo:($2)]] [Condition:DECK_CONTAINS, Value:>=$3, CountEach:[Who:SELF, Where:CARDS_IN_DECK, CompareTo:($4)]] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[i|I]f your deck contains (\\d+?) or more (.*?)(( card,| cards,)*?),"),"[Condition:DECK_CONTAINS, Value:>=$1, CountEach:[Who:SELF, Where:CARDS_IN_DECK, CompareTo:($2)]] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[i|I]f you have played (.*?) this game"),"[Condition:PLAYED_BEFORE, Who:SELF, Where:CARDS_IN_DECK, CompareTo:($1)] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[i|I]f (.*?) has been played this game"),"[Condition:PLAYED_BEFORE, Who:BOTH, Where:CARDS_IN_DECK, CompareTo:($1)] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[i|I]f your deck contains (.*?) and you have already played (.*?),"),"[Condition:DECK_CONTAINS, Who:SELF, Where:CARDS_IN_DECK, CompareTo:($1)] [Condition:PLAYED_BEFORE, Who:SELF, Where:CARDS_IN_DECK, CompareTo:($2)] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[i|I]f your deck contains (.*?)(,|\\[)"),"[Condition:DECK_CONTAINS, Who:SELF, Where:CARDS_IN_DECK, CompareTo:($1)] $2", false);
-
-        // Duration
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[f|F]or the [r|R]est of the [g|G]ame"),"[Duration:PERMANENT] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[u|U]ntil the [e|E]nd of the [g|G]ame"),"[Duration:PERMANENT] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[u|U]ntil the [e|E]nd of (the|this) [r|R]ound"),"[Duration:END_ROUND] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("(([u|U]ntil next turn)|([t|T]his [t|T]urn & [n|N]ext))(\\.|)"),"[Duration:TIMER, Value:1] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("([u|U]ntil played|[u|U]ntil(.*?)played)"),"[Duration:UNTIL_PLAYED] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("([t|T]his [t|T]urn)(\\.|)"),"[Duration:END_TURN] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("(for the rest of|) [t|T]his [r|R]ound(\\.|)"),"[Duration:END_ROUND] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[u|U]ntil [g|G]ame [e|E]nd(\\.|)"),"[Duration:PERMANENT] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[p|P]ermanently(\\.|)"),"[Duration:PERMANENT] ", false);
-
-
+        preFormatted = replaceSpecialCases(preFormatted, true);
         preFormatted = cleanUp(preFormatted);
-
-
-        // REST OF THE THINGS, STARTING HERE TO AVOID SIDE EFFECTS FROM SORTING
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[i|I]f you have won one [r|R]ound this [g|G]ame, "),"[Condition:ROUNDS_WON, Value:1] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[w|W]hen played with (.*?) \\["),"[TriggerTime:PLAY] [Condition:PLAYED_WITH, Value:($1)] [", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("for the [r|R]est of the [r|R]ound"),"[Duration:END_ROUND] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[b|B]oth.*[g|G]ain (.?\\d+?) [e|E]nergy"),"[Target:BOTH] [Effect:ENERGY] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[g|G]ain (.?\\d+?) [e|E]nergy"),"[Target:SELF] [Effect:ENERGY] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[r|R]educe its Energy cost by (.?)(\\d+?)"),"[Effect:ENERGY, Value:-$2] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("([g|G]ive yourself|[g|G]ain|[y|Y]ou have) (.?\\d+?) [p|P]ower/[t|T]urn"),"[Target:SELF] [Effect:POWER_PER_TURN, Value:$2] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("([g|G]ive both players|[g|G]ive each player|[g|G]ive yourself and your Opponent) (.?\\d+?) [p|P]ower/[t|T]urn"),"[Target:BOTH] [Effect:POWER_PER_TURN, Value:$2] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("([s|S]teal) (.?\\d+?) [p|P]ower/[t|T]urn from your Opponent"),"[Target:SELF] [Effect:POWER_PER_TURN, Value:$2] [Target:SELF] [Effect:POWER_PER_TURN, Value:-$2] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[g|G]ive this [c|C]ard (.?\\d+?) [p|P]ower"),"[Target:THIS] [Effect:POWER_PER_TURN, Value:$1] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[g|G]ive this [c|C]ard (.?\\d+?) \\["),"[Target:THIS] [Effect:POWER_PER_TURN, Value:$1] [", false);
-
-        // All other TriggerTimes
-        preFormatted = replaceAll(preFormatted, Pattern.compile("When drawn and returned to your deck, "),"[TriggerTime:DRAW] [TriggerTime:RETURN] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("When drawn or played, "),"[TriggerTime:DRAW] [TriggerTime:PLAY] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("When drawn "),"[TriggerTime:DRAW] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("When this returns to your deck, "),"[TriggerTime:RETURN] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("When played\\["),"[TriggerTime:PLAY] [", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("When played |When you play this,|When played\\."),"[TriggerTime:PLAY] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("If drawn "),"[TriggerTime:DRAW] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("On play "),"[TriggerTime:PLAY] ", false);
-
-        preFormatted = replaceAll(preFormatted, Pattern.compile("first turn of the round"),"[Condition:TURN_IN_ROUND, Value:1] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("if you have played (.*?) at least once,"),"[Condition:PLAYED_BEFORE, Who:SELF, Where:CARDS_IN_DECK, CompareTo:($1)] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("if you have played Urðr, Verðandi and Skuld,"),"[Condition:PLAYED_BEFORE, Who:SELF, Where:CARDS_IN_DECK, CompareTo:(Urðr, Verðandi and Skuld)] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[i|I]f you have played(.*?), "),"[Condition:PLAYED_BEFORE, Who:SELF, Where:CARDS_IN_DECK, CompareTo:($1)] ", false);
-
-        preFormatted = replaceAll(preFormatted, Pattern.compile("While in your hand, (.*?) have (.?\\d+?) Power"),"[TriggerTime:DRAW] [Target:($1)] [Effect:POWER, Value:$2] [Duration:WHILE_IN_HAND] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("] your (.*?) cards have (.\\d*?) Power \\["),"[Target:($1)] [Effect:POWER, Value:$2] [", false);
-
-        preFormatted = replaceAll(preFormatted, Pattern.compile("(RETURN.*) next turn"),"$1 [Duration:TIMER, Value:1] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("(([a|A]t the start.*?)|)[w|W]hile(.*?)hand(.*?)[a|A]t the.*?(turn.)"),"[TriggerTime:START] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("At the start of each turn\\,"),"[TriggerTime:START] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("(at this |[a|A]t the )start.*?turn."),"[TriggerTime:START] ", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[w|W]hile(.*?)hand(.*?)."),"[TriggerTime:START] [Duration:END_TURN] ", false);
-
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[f|F]or (every|each) (.*?) in your deck.(.*?)([\\[|\\.])"),"[Effect:FOR_EACH_TODO, Values:($2) ($3)] [", false);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("for ([a-zA-Z\\d]*?) turn."),"[Duration:TIMER, Values:($1)] ", false);
-
-
-
-        // For COPY & PASTE
-//        preFormatted = replaceAll(preFormatted, Pattern.compile(""),"");
-
+        preFormatted = replaceManualCases(preFormatted, false);
+        preFormatted = cleanUp(preFormatted);
+        preFormatted = replaceGeneratedCases(preFormatted, true);
         preFormatted = cleanUp(preFormatted);
 
         // Post-processing
@@ -165,6 +49,7 @@ public class RegexPreProcessor {
         // Count percentage of replaced
         int charsAfter = countNotReplacedChars(preFormatted);
         float percToReplace = (float) charsAfter * 100 / charsBefore;
+        log.debug("");
         log.debug(String.format("Percentage left to replace: %.2f%%", percToReplace));
         log.debug("");
 
@@ -387,16 +272,195 @@ public class RegexPreProcessor {
 //        allRows = allRows.replace("","");
     }
 
+    private String replaceSpecialCases (String preFormatted, boolean doLogs) {
+        preFormatted = replaceAll(preFormatted, Pattern.compile("BURN \\((\\d+?)\\) all cards - yours until next turn, your Opponent's until played\\."),
+                "[Effect:BURN, Value:15] [Target:SELF, Where:CARDS_IN_HAND] [Duration:TIMER, Value:1] [Effect:BURN, Value:15] [Target:OTHER, Where:CARDS_IN_HAND] [Duration:UNTIL_PLAYED] ",  doLogs);
+
+        preFormatted = replaceAll(preFormatted, Pattern.compile("When drawn, gain \\+10 Power/Turn and 1 Energy/Turn until this card is played\\. If you have played Electricity, when drawn, gain an additional \\+10 Power/Turn until this card is played\\."),
+                "[TriggerTime:DRAW] [Target:SELF] [Effect:POWER_PER_TURN, Value:+10] [Effect:ENERGY_PER_TURN, Value:+1] [Duration:WHILE_IN_HAND] [TriggerTime:DRAW] [Target:SELF] [Effect:POWER_PER_TURN, Value:+10] [Condition:PLAYED_BEFORE, Who:SELF, Where:CARDS_IN_DECK, CompareTo:Electricity]",  doLogs);
+
+        preFormatted = replaceAll(preFormatted, Pattern.compile("When played, if you have played Pika, Prairie Dog, Fennec Fox or Angora Rabbit at least once, give this card \\+20 for each card played this turn\\."),
+                "[TriggerTime:PLAY] [Target:THIS] [Effect:POWER, Value:+20] [Duration:END_TURN] [Condition:PLAYED_BEFORE, Who:SELF, Where:CARDS_IN_DECK, CompareTo:Pika] " +
+                        "[TriggerTime:PLAY] [Target:THIS] [Effect:POWER, Value:+20] [Duration:END_TURN] [Condition:PLAYED_BEFORE, Who:SELF, Where:CARDS_IN_DECK, CompareTo:Prairie Dog] " +
+                        "[TriggerTime:PLAY] [Target:THIS] [Effect:POWER, Value:+20] [Duration:END_TURN] [Condition:PLAYED_BEFORE, Who:SELF, Where:CARDS_IN_DECK, CompareTo:Angora Rabbit] " +
+                        "[TriggerTime:PLAY] [Target:THIS] [Effect:POWER, Value:+20] [Duration:END_TURN] [Condition:PLAYED_BEFORE, Who:SELF, Where:CARDS_IN_DECK, CompareTo:Fennec Fox] ", doLogs);
+
+        preFormatted = replaceAll(preFormatted, Pattern.compile("When played, give yourself -2 Energy/Turn for the rest of the round\\. If you win the turn, gain \\+5 Energy/Turn for the rest of the round\\."),
+                "[TriggerTime:PLAY] [Target:SELF] [Effect:ENERGY_PER_TURN, Value:-2] [Duration:END_ROUND] " +
+                        "[TriggerTime:RETURN] [Target:SELF] [Effect:ENERGY_PER_TURN, Value:5] [Duration:END_ROUND] [Condition:TURN_STATE, Value:Win]", doLogs);
+
+        preFormatted = replaceAll(preFormatted, Pattern.compile("When returned to your deck, give whoever won this turn \\+36 Power/Turn next turn\\."),
+                "[TriggerTime:RETURN] [Target:SELF] [Effect:POWER_PER_TURN, Value:+36] [Duration:TIMER, Value:1] [Condition:TURN_STATE, Value:Win] " +
+                        "[TriggerTime:RETURN] [Target:OTHER] [Effect:POWER_PER_TURN, Value:+36] [Duration:TIMER, Value:1] [Condition:TURN_STATE, Value:Loss]", doLogs);
+
+        preFormatted = replaceAll(preFormatted, Pattern.compile("When played, give you and your Opponent \\+22 Power/Turn this turn\\. If you lose the turn, you keep the \\+22 power until the end of the round\\. If you win the turn, give your Opponent \\+22 power/turn until the end of the round\\."),
+                "[TriggerTime:PLAY] [Target:BOTH] [Effect:POWER_PER_TURN, Value:+22] [Duration:END_TURN] " +
+                        "[TriggerTime:RETURN] [Target:SELF] [Effect:POWER_PER_TURN, Value:+22] [Duration:END_ROUND] [Condition:TURN_STATE, Value:Win] " +
+                        "[TriggerTime:RETURN] [Target:OTHER] [Effect:POWER_PER_TURN, Value:+22] [Duration:END_ROUND] [Condition:TURN_STATE, Value:Loss]", doLogs);
+
+        preFormatted = replaceAll(preFormatted, Pattern.compile("When returned to your deck, give whoever won this turn \\+36 Power/Turn next turn\\."),
+                "[TriggerTime:RETURN] [Target:SELF] [Effect:POWER_PER_TURN, Value:+36] [Duration:TIMER, Value:1] [Condition:TURN_STATE, Value:Win] " +
+                        "[TriggerTime:RETURN] [Target:OTHER] [Effect:POWER_PER_TURN, Value:+22] [Duration:TIMER, Value:1] [Condition:TURN_STATE, Value:Loss]", doLogs);
+
+        preFormatted = replaceAll(preFormatted, Pattern.compile("When played on a matching Arena, steal two Energy from your Opponent when it returns to your deck\\."),
+                "[TriggerTime:RETURN] [Target:SELF] [Effect:ENERGY, Value:2] [Condition:ARENA_MATCHING] [TriggerTime:RETURN] [Target:OTHER] [Effect:ENERGY, Value:-2] [Condition:ARENA_MATCHING]", doLogs);
+
+        preFormatted = replaceAll(preFormatted, Pattern.compile("When returned to your deck, give your Amphibians cards \\+14 Power this round \\(and if your deck contains Glass Frog or Axolotl, give them an extra \\+12 Power for each\\)\\."),
+                "[TriggerTime:RETURN] [Target:(your Amphibians cards)] [Effect:POWER, Value:+14] [Duration:END_ROUND] " +
+                        "[TriggerTime:RETURN] [Condition:DECK_CONTAINS, Who:SELF, Where:CARDS_IN_DECK, CompareTo:Glass Frog] [Target:(your Amphibians cards)] [Effect:POWER, Value:+12]" +
+                        "[TriggerTime:RETURN] [Condition:DECK_CONTAINS, Who:SELF, Where:CARDS_IN_DECK, CompareTo:Axolotl] [Target:(your Amphibians cards)] [Effect:POWER, Value:+12]", doLogs);
+
+        preFormatted = replaceAll(preFormatted, Pattern.compile("\\(and, if played on the Halloween Arena, give them an extra \\+40 Power\\)"), "", doLogs); // Almost never happens, as it is only once a year
+
+        preFormatted = replaceAll(preFormatted, Pattern.compile("When drawn, Burn \\(23\\) 3 random cards in your Opponent's hand, and 1 random card in your hand, until played\\."),
+                "", doLogs);
+
+        return preFormatted;
+    }
+
+    private String replaceManualCases (String preFormatted, boolean doLogs) {
+        // TriggerTime
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[w|W]hile in your hand, at the start of (your|each) turn,"),"[TriggerTime:START] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[w|W]hen drawn,|[o|O]n draw,"),"[TriggerTime:DRAW] ", doLogs);
+
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[w|W]hen played, if you are winning the round,"),"[TriggerTime:PLAY] [Condition:ROUND_STATE, Value:Win] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[w|W]hen played on the first turn of a round,"),"[TriggerTime:PLAY] [Condition:TURN_IN_ROUND, Value:1] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[w|W]hen played,"),"[TriggerTime:PLAY] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("([w|W]hen played with |[w|W]hen played adjacent to |[w|W]hen played next to |[i|I]f played next to |[i|I]f played alongside )(.*?),"),"[TriggerTime:PLAY] [Condition:PLAYED_WITH, Value:($2)] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[w|W]hen played in the middle slot and adjacent to (.*?),"),"[TriggerTime:PLAY] [Condition:PLAYED_WITH, Value:($1)] ", doLogs); // NOTE: Here should be another condition, that I skipped because I only use random agents
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[w|W]hen played in the right slot and adjacent to (.*?),"),"[TriggerTime:PLAY] [Condition:PLAYED_WITH, Value:($1)] ", doLogs); // NOTE: Here should be another condition, that I skipped because I only use random agents
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[w|W]hen played in the(.*?)slot"),"[TriggerTime:PLAY] ", doLogs); // NOTE: Here should be another condition, that I skipped because I only use random agents
+
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[w|W]hen returned to your deck|[w|W]hen returned to the deck|[w|W]hen returned to deck|[w|W]hen this card returns to your deck"),"[TriggerTime:RETURN] ", doLogs);
+
+
+        // Effect
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[t|T]his [c|C]ard has (.?\\d+?) [p|P]ower\\."),"[Effect:POWER, Value:$1] [Target:THIS] [Duration:END_TURN] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[a|A]ll your [c|C]ards have (.?\\d+?) [p|P]ower this turn\\."),"[Target:[Who:SELF, Where:CARDS_IN_HAND]] [Effect:POWER, Value:$1] [Duration:END_TURN] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[a|A]ll (.*?) [c|C]ards have (.?\\d+?) [p|P]ower this turn\\."),"[Target:[Who:BOTH, Where:CARDS_IN_HAND, CompareTo:($1)]] [Effect:POWER, Value:$2] [Duration:END_TURN] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[a|A]ll (.*?) [c|C]ards have (.?\\d+?) [p|P]ower"),"[Target:[Who:BOTH, Where:CARDS_IN_DECK, CompareTo:($1)]] [Effect:POWER, Value:$2] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[r|R]educe the [e|E]nergy [c|C]ost of (.*?) by .?(\\d+?).?"),"[Effect:ENERGY, Value:-$2] [Target:($1)] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[f|F]or each (.*?) [c|C]ard in your deck.*maximum of (\\d+?)\\).*give this [c|C]ard (.?\\d+?) [p|P]ower this turn,"),"[Effect:POWER_FOR_EACH, Value:$3, CountEach:[Who:SELF, Where:CARDS_IN_DECK, CompareTo:($1)], UpTo:$2] [Target:THIS] [Duration:END_TURN] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("([g|G]ain|[g|G]ive yourself|[g|G]et|[y|Y]ou have|[g|G]ain an extra|[r|R]eceive) ([+-|]\\d+) [e|E]nergy/[t|T]urn"),"[Target:SELF] [Effect:ENERGY_PER_TURN, Value:$2] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[r|R]educe the [e|E]nergy [c|C]ost of your (.*?) [c|C]ards by (.*?) "),"[Effect:ENERGY, Value:-$2] [Target:[Who:SELF, What:CARDS_IN_DECK, CompareTo:($1)]] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[g|G]ive this [c|C]ard (.?\\d+?) [p|P]ower"),"[Target:THIS] [Effect:POWER, Value:$1] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[g|G]ive your Opponent (.?\\d+?) [p|P]ower/[t|T]urn"),"[Target:OTHER] [Effect:POWER_PER_TURN, Value:$1] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[g|G]ive your Opponent (.?\\d+?) [e|E]nergy\\/[t|T]urn"),"[Target:OTHER] [Effect:ENERGY_PER_TURN, Value:$1] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[g|G]ive (.*?) (.?\\d+?) [p|P]ower(?!/)"),"[Target:($1)] [Effect:POWER, Value:$2] ", doLogs);
+
+
+        // Conditions
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[i|I]f you are losing the [r|R]ound by (\\d+).*?more.*?,"),"[Condition:ROUND_STATE, Value:Loss>=$1] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[i|I]f you are losing the [r|R]ound by (\\d+).*?less.*?,"),"[Condition:ROUND_STATE, Value:Loss<=$1] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[i|I]f you are losing the [r|R]ound,"),"[Condition:ROUND_STATE, Value:Loss] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[i|I]f you are winning the [r|R]ound by (\\d+).*?more.*?,"),"[Condition:ROUND_STATE, Value:Win>=$1] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[i|I]f you are winning the [r|R]ound by (\\d+).*?less.*?,"),"[Condition:ROUND_STATE, Value:Win<=$1] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[i|I]f you are winning the [r|R]ound,"),"[Condition:ROUND_STATE, Value:Win] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[i|I]f you (\\w*) (this|the) turn"),"[Condition:TURN_STATE, Value:($1)] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[i|I]f your deck contains (\\d+?) or more (.*?) and (\\d+?) or more (.*?),"),"[Condition:DECK_CONTAINS, Value:>=$1, CountEach:[Who:SELF, Where:CARDS_IN_DECK, CompareTo:($2)]] [Condition:DECK_CONTAINS, Value:>=$3, CountEach:[Who:SELF, Where:CARDS_IN_DECK, CompareTo:($4)]] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[i|I]f your deck contains (\\d+?) or more (.*?)(( card,| cards,)*?),"),"[Condition:DECK_CONTAINS, Value:>=$1, CountEach:[Who:SELF, Where:CARDS_IN_DECK, CompareTo:($2)]] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[i|I]f you have played (.*?) this game"),"[Condition:PLAYED_BEFORE, Who:SELF, Where:CARDS_IN_DECK, CompareTo:($1)] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[i|I]f (.*?) has been played this game"),"[Condition:PLAYED_BEFORE, Who:BOTH, Where:CARDS_IN_DECK, CompareTo:($1)] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[i|I]f your deck contains (.*?) and you have already played (.*?),"),"[Condition:DECK_CONTAINS, Who:SELF, Where:CARDS_IN_DECK, CompareTo:($1)] [Condition:PLAYED_BEFORE, Who:SELF, Where:CARDS_IN_DECK, CompareTo:($2)] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[i|I]f your deck contains (.*?)(,|\\[)"),"[Condition:DECK_CONTAINS, Who:SELF, Where:CARDS_IN_DECK, CompareTo:($1)] $2", doLogs);
+
+        // Duration
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[f|F]or the [r|R]est of the [g|G]ame"),"[Duration:PERMANENT] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[u|U]ntil the [e|E]nd of the [g|G]ame"),"[Duration:PERMANENT] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[u|U]ntil the [e|E]nd of (the|this) [r|R]ound"),"[Duration:END_ROUND] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("(([u|U]ntil next turn)|([t|T]his [t|T]urn & [n|N]ext))(\\.|)"),"[Duration:TIMER, Value:1] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("([u|U]ntil played|[u|U]ntil(.*?)played)"),"[Duration:UNTIL_PLAYED] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("([t|T]his [t|T]urn)(\\.|)"),"[Duration:END_TURN] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("(for the rest of|) [t|T]his [r|R]ound(\\.|)"),"[Duration:END_ROUND] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[u|U]ntil [g|G]ame [e|E]nd(\\.|)"),"[Duration:PERMANENT] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[p|P]ermanently(\\.|)"),"[Duration:PERMANENT] ", doLogs);
+
+
+        preFormatted = cleanUp(preFormatted);
+
+
+        // REST OF THE THINGS, STARTING HERE TO AVOID SIDE EFFECTS FROM SORTING
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[i|I]f you have won one [r|R]ound this [g|G]ame, "),"[Condition:ROUNDS_WON, Value:1] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[w|W]hen played with (.*?) \\["),"[TriggerTime:PLAY] [Condition:PLAYED_WITH, Value:($1)] [", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("for the [r|R]est of the [r|R]ound"),"[Duration:END_ROUND] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[b|B]oth.*[g|G]ain (.?\\d+?) [e|E]nergy"),"[Target:BOTH] [Effect:ENERGY] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[g|G]ain (.?\\d+?) [e|E]nergy"),"[Target:SELF] [Effect:ENERGY] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[r|R]educe its Energy cost by (.?)(\\d+?)"),"[Effect:ENERGY, Value:-$2] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("([g|G]ive yourself|[g|G]ain|[y|Y]ou have) (.?\\d+?) [p|P]ower/[t|T]urn"),"[Target:SELF] [Effect:POWER_PER_TURN, Value:$2] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("([g|G]ive both players|[g|G]ive each player|[g|G]ive yourself and your Opponent) (.?\\d+?) [p|P]ower/[t|T]urn"),"[Target:BOTH] [Effect:POWER_PER_TURN, Value:$2] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("([s|S]teal) (.?\\d+?) [p|P]ower/[t|T]urn from your Opponent"),"[Target:SELF] [Effect:POWER_PER_TURN, Value:$2] [Target:SELF] [Effect:POWER_PER_TURN, Value:-$2] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[g|G]ive this [c|C]ard (.?\\d+?) [p|P]ower"),"[Target:THIS] [Effect:POWER_PER_TURN, Value:$1] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[g|G]ive this [c|C]ard (.?\\d+?) \\["),"[Target:THIS] [Effect:POWER_PER_TURN, Value:$1] [", doLogs);
+
+        // All other TriggerTimes
+        preFormatted = replaceAll(preFormatted, Pattern.compile("When drawn and returned to your deck, "),"[TriggerTime:DRAW] [TriggerTime:RETURN] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("When drawn or played, "),"[TriggerTime:DRAW] [TriggerTime:PLAY] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("When drawn "),"[TriggerTime:DRAW] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("When this returns to your deck, "),"[TriggerTime:RETURN] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("When played\\["),"[TriggerTime:PLAY] [", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("When played |When you play this,|When played\\."),"[TriggerTime:PLAY] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("If drawn "),"[TriggerTime:DRAW] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("On play "),"[TriggerTime:PLAY] ", doLogs);
+
+        preFormatted = replaceAll(preFormatted, Pattern.compile("first turn of the round"),"[Condition:TURN_IN_ROUND, Value:1] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("if you have played (.*?) at least once,"),"[Condition:PLAYED_BEFORE, Who:SELF, Where:CARDS_IN_DECK, CompareTo:($1)] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("if you have played Urðr, Verðandi and Skuld,"),"[Condition:PLAYED_BEFORE, Who:SELF, Where:CARDS_IN_DECK, CompareTo:(Urðr, Verðandi and Skuld)] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[i|I]f you have played(.*?), "),"[Condition:PLAYED_BEFORE, Who:SELF, Where:CARDS_IN_DECK, CompareTo:($1)] ", doLogs);
+
+        preFormatted = replaceAll(preFormatted, Pattern.compile("While in your hand, (.*?) have (.?\\d+?) Power"),"[TriggerTime:DRAW] [Target:($1)] [Effect:POWER, Value:$2] [Duration:WHILE_IN_HAND] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("] your (.*?) cards have (.\\d*?) Power \\["),"[Target:($1)] [Effect:POWER, Value:$2] [", doLogs);
+
+        preFormatted = replaceAll(preFormatted, Pattern.compile("(RETURN.*) next turn"),"$1 [Duration:TIMER, Value:1] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("(([a|A]t the start.*?)|)[w|W]hile(.*?)hand(.*?)[a|A]t the.*?(turn.)"),"[TriggerTime:START] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("At the start of each turn\\,"),"[TriggerTime:START] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("(at this |[a|A]t the )start.*?turn."),"[TriggerTime:START] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[w|W]hile(.*?)hand(.*?)."),"[TriggerTime:START] [Duration:END_TURN] ", doLogs);
+
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[f|F]or (every|each) (.*?) in your deck.(.*?)([\\[|\\.])"),"[Effect:FOR_EACH_TODO, Values:($2) ($3)] [", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("for ([a-zA-Z\\d]*?) turn."),"[Duration:TIMER, Values:($1)] ", doLogs);
+
+        return preFormatted;
+    }
+
+    private String replaceGeneratedCases (String preFormatted, boolean doLogs) {
+        preFormatted = replaceAll(preFormatted, Pattern.compile("BURN \\((\\d+)\\) (\\[)"),"[Effect:BURN, Value:$1] [Target:THIS] [", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("BURN \\((\\d+)\\) (.*?) (\\[|and)"),"[Effect:BURN, Value:$1] [Target:($2)] $3", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("for (\\d+) [t|T]urns"),"[Duration:TIMER, Value:$1] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("(lock|Lock|LOCK) (.*?) (\\[|and)"),"[Effect:BURN, Value:$1] [Target:($2)] $3", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("\\].{0,10}gain (.?\\d+) Power \\["),"] [Effect:POWER_PER_TURN, Value:$1] [Target:[Who:SELF]] [", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("\\].{0,10}reduce (.*?) [e|E]nergy (.*?) by (.?\\d+) (\\[|and)"),"] [Effect:ENERGY, Value:-$3] [Target:($1)] $4", doLogs);
+
+        preFormatted = replaceAll(preFormatted, Pattern.compile("and (.?\\d+?) Energy/Turn"),"[Effect:ENERGY_PER_TURN, Value:$1] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[c|C]ost (.?\\d+?) [e|E]nergy less"),"[Effect:ENERGY, Value:-$1] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[c|C]ost (.?\\d+?) [e|E]nergy"),"[Effect:ENERGY, Value:$1] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("for the next (.*?) turns"),"[Duration:TIMER, Value:($1)] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("if it contains (\\d*?) or more (.*?) cards."),"[Condition:DECK_CONTAINS, Who:SELF, Where:CARDS_IN_DECK, CompareTo:($2), Value:>=$1] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("increase the ([E|e]nergy |)cost of (.*?) card(s|) by (\\d+)"),"[Effect:ENERGY, Value:(+$4)] [Target:($2)] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("if you're winning the round"),"[Condition:ROUND_STATE, Value:Win] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("if you're losing the round"),"[Condition:ROUND_STATE, Value:Loss] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("your cards have (.?\\d+) Power"),"[Effect:POWER, Value:$1] [Target:[Who:SELF, What:CARDS_IN_DECK]] ", doLogs);
+
+
+//        preFormatted = replaceAll(preFormatted, Pattern.compile(""),"", doLogs);
+        // For COPY & PASTE
+
+
+        return preFormatted;
+    }
+
     private String cleanUp(String allRows) {
         allRows = replaceAll(allRows, Pattern.compile("--+"),"-", false);
         allRows = replaceAll(allRows, Pattern.compile("  +")," ", false);
         allRows = replaceAll(allRows, Pattern.compile("\\] \\, \\["),"] [", false);
         allRows = replaceAll(allRows, Pattern.compile("\\] \\."),"]", false);
+        allRows = replaceAll(allRows, Pattern.compile("\\] \\)\\."),"]", false);
         allRows = replaceAll(allRows, Pattern.compile("]\\["),"] [", false);
-        allRows = replaceAll(allRows, Pattern.compile("] and \\["),"] [", false);
-        allRows = replaceAll(allRows, Pattern.compile("] , and \\["),"] [", false);
-        allRows = replaceAll(allRows, Pattern.compile("] \\(and, \\["),"] [", false);
-        allRows = replaceAll(allRows, Pattern.compile("] \\(and \\["),"] [", false);
+        allRows = replaceAll(allRows, Pattern.compile("] *, *\\["),"] [", false);
+        allRows = replaceAll(allRows, Pattern.compile("] *and *\\["),"] [", false);
+        allRows = replaceAll(allRows, Pattern.compile("] *, and *\\["),"] [", false);
+        allRows = replaceAll(allRows, Pattern.compile("] *and, *\\["),"] [", false);
+        allRows = replaceAll(allRows, Pattern.compile("] *\\(and *\\["),"] [", false);
+        allRows = replaceAll(allRows, Pattern.compile("] *\\(and, *\\["),"] [", false);
         allRows = replaceAll(allRows, Pattern.compile("\\[\\\n"),"\n", false);
         allRows = replaceAll(allRows, Pattern.compile("\\[TriggerTime:PLAY\\["),"[TriggerTime:PLAY] [", false);
         allRows = replaceAll(allRows, Pattern.compile("] on the \\["),"] [", false);

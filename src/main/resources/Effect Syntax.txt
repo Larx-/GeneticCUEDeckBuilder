@@ -36,6 +36,7 @@ Duration:
     TIMER (Value)
     PERMANENT
     UNTIL_PLAYED
+    WHILE_IN_HAND
 
 Conditions:
     AFTER_ROUND (Value)
