@@ -507,7 +507,7 @@ LAM028	Gray Treefrog	Amphibians	Life on Land	Rare	6	42	While in your hand, at th
 SCC001	Pacific Trash Vortex	Climate Change	Science	Epic	9	82	When played, give your Opponent's Oceans & Seas -22 Power this turn.
 SCC002	Slash-and-Burn	Climate Change	Science	Common	7	63	When drawn, BURN (10) your Opponent's Life on Land cards until played.
 SCC003	Greenhouse Gases	Climate Change	Science	Common	6	52	When played, give your Opponent's Our Planet cards -14 Power this turn.
-SCC004	Reforestation	Climate Change	Science	Rare	6	62	When drawn, give Slash-and-Burn -63 Power and reduce its Energy cost by 7 until played.
+SCC004	Reforestation	Climate Change	Science	Rare	6	62	When drawn, give Slash-and- BURN -63 Power and reduce its Energy cost by 7 until played.
 SCC005	Carbon Neutrality	Climate Change	Science	Rare	7	71	When drawn, give Greenhouse Gases -52 Power and reduce its Energy cost by 6 until played.
 SCC006	Recycling	Climate Change	Science	Common	5	51	When drawn, give Pacific Trash Vortex -82 Power and reduce its Energy cost by 9 until played.
 SCC007	Permafrost Thaw	Climate Change	Science	Ltd Epic	7	70	When drawn, increase the Energy cost of your Opponent's Life on Land cards by 2 this round.
@@ -1021,7 +1021,7 @@ LPR023	Potto	Primates	Life on Land	Ltd Common	5	48	When played with Potoo, give 
 LPR024	Aye-Aye	Primates	Life on Land	Ltd Legendary	3	20	When played, give all cards -15 Power this turn. If you are winning the round, or the round is tied, give yours +30 back.
 LPR025	Red-shanked Douc	Primates	Life on Land	Ltd Epic	3	15	When played, give all your Primates cards +10 Power this turn. When returned to your deck, reduce the Energy cost of your Primates cards by 1 for the rest of the round.
 LPR019	Sifaka Lemur	Primates	Life on Land	Ltd Epic	4	25	When drawn, give your Mammals cards +20 Power this turn. When played, give your Primates cards +20 Power this turn. When returned to your deck, give your Marsupials cards +20 Power next turn.
-LPR028	Uakari	Primates	Life on Land	Ltd Epic	5	51	When returned to your deck, if you are losing the round, gain +2 Energy/Turn for the next two turns. If you are winning, Burn (42) a random card left in your Opponent's hand until played.
+LPR028	Uakari	Primates	Life on Land	Ltd Epic	5	51	When returned to your deck, if you are losing the round, gain +2 Energy/Turn for the next two turns. If you are winning, BURN (42) a random card left in your Opponent's hand until played.
 LPR027	Snub-nosed Monkey	Primates	Life on Land	Ltd Common	3	27	When returned to your deck, if you lost the turn, give this card +45 Power until played.
 LPR026	Cotton-Top Tamarin	Primates	Life on Land	Ltd Rare	5	56	When returned to your deck, give Hair +20 Power until played.
 LPR029	Lemurine Owl Monkey	Primates	Life on Land	Ltd Legendary	7	46	While in your hand, at the start of each turn, give your Primates in hand +7 Power until played.
@@ -1305,7 +1305,7 @@ SNV030	Joystick	Ingenious Inventions	Science	Ltd Common	5	46	When played, give a
 SNV032	Artificial Intelligence	Ingenious Inventions	Science	Ltd Legendary	4	42	When drawn, give your Common and Rare Ingenious Inventions cards +18 Power for the rest of the game.
 SNV031	Light Emitting Diode	Ingenious Inventions	Science	Ltd Epic	6	57	When played, if your deck contains 5 cards from Arts & Culture, gain +5 Power/Turn for the rest of the game. Repeat for Life on Land and Oceans & Seas.
 SNV033	Brain-computer Interface	Ingenious Inventions	Science	Ltd Rare	2	15	When played, if you have played Personal Computer this game, give this card +15 power this turn. Repeat for The Brain.
-SNV035	Candles	Ingenious Inventions	Science	Ltd Legendary	6	60	When played, if you have played Zippo Lighter this game, give this card +45 Power this turn and, when returned to your deck, Burn (25) a random card left in your Opponent's hand until played.
+SNV035	Candles	Ingenious Inventions	Science	Ltd Legendary	6	60	When played, if you have played Zippo Lighter this game, give this card +45 Power this turn and, when returned to your deck, BURN (25) a random card left in your Opponent's hand until played.
 SNV036	Armstrong's Mixture	Ingenious Inventions	Science	Ltd Epic	2	18	When played, if you're winning the round, give your cards +12 Power this turn. When returned to your deck, if you are winning the round, give your cards +12 Power next turn.
 SNV037	Holography	Ingenious Inventions	Science	Ltd Rare	3	33	When played, if you are losing the round, gain +5 Power/Turn, and give your Opponent -5 Power/Turn, for 4 turns.
 SNV038	Braille	Ingenious Inventions	Science	Ltd Rare	4	37	When played with Louis Braille, give that card +43 Power this turn.
@@ -2327,7 +2327,7 @@ LTT008	Kapok	Tremendous Trees	Life on Land	Ltd Rare	3	30	When played with Clouds
 LTT009	Major Oak	Tremendous Trees	Life on Land	Ltd Epic	5	49	When returned to your deck, if you won this turn, gain +22 Power/Turn for the rest of the round.
 LTT011	Angel Oak	Tremendous Trees	Life on Land	Ltd Epic	5	54	When played, give your Tremendous Trees cards +28 Power this turn.
 LTT012	Methuselah	Tremendous Trees	Life on Land	Ltd Epic	7	72	While in your hand, you have +11 Power/Turn.
-LTT013	Dragon's Blood Tree	Tremendous Trees	Life on Land	Ltd Epic	5	52	When returned to your deck, Burn (24) all cards left in your Opponent's hand for the next two turns.
+LTT013	Dragon's Blood Tree	Tremendous Trees	Life on Land	Ltd Epic	5	52	When returned to your deck, BURN (24) all cards left in your Opponent's hand for the next two turns.
 LTT014	The Charter Oak	Tremendous Trees	Life on Land	Ltd Common	4	37	When drawn, if your deck contains 3 or more Documented cards, reduce the cost of your Tremendous Trees cards by 2 until the end of the round.
 LTT015	Boab Prison Tree	Tremendous Trees	Life on Land	Ltd Rare	5	84	When drawn, LOCK this card for the rest of the round.
 LTT016	Chêne Chapelle	Tremendous Trees	Life on Land	Ltd Epic	4	44	When drawn, reduce the Energy cost of your cards with Mary in the name by 1 until played. When played, give Thunderstorms +30 power until played.
@@ -2418,7 +2418,7 @@ SGD010	Bendy Straw	Grand Designs	Science	Common	3	26	When returned to your deck,
 SGD011	Telephone Box	Grand Designs	Science	Epic	5	48	When returned to your deck, give Telephone and Cell Phone +28 Power for the rest of the game.
 SGD012	No. 14 Chair	Grand Designs	Science	Common	4	39	When played, give Coffee +22 Power until played.
 SGD013	Wurlitzer Jukebox	Grand Designs	Science	Legendary	5	20	When played on the first turn of a round, gain +25 Power/Turn for the rest of the round.
-SGD014	Zippo Lighter	Grand Designs	Science	Ltd Epic	4	36	When drawn, Burn (23) 3 random cards in your Opponent's hand, and 1 random card in your hand, until played.
+SGD014	Zippo Lighter	Grand Designs	Science	Ltd Epic	4	36	When drawn, BURN (23) 3 random cards in your Opponent's hand, and 1 random card in your hand, until played.
 SGD015	Lava Lamp	Grand Designs	Science	Ltd Epic	7	68	When drawn, if you are losing the round, give your cards -10 Power this turn & next, and decrease their Energy cost by -3 this turn & next.
 SGD016	Vacuum Flask	Grand Designs	Science	Ltd Rare	6	55	When played, if you are winning by 50 or more Power, give your cards +10 Power this turn.
 SGD017	Snow Globe	Grand Designs	Science	Epic	3	26	When returned to your deck, if you lost this turn, give this card and a random card left in your hand +35 Power until played.
@@ -2558,7 +2558,7 @@ SMW006	Siege Tower	Machines of War	Science	Ltd Epic	6	54	When drawn, increase th
 SMW007	VW Schwimmwagen	Machines of War	Science	Ltd Common	3	32	When played, give your Life on Land and Oceans & Seas cards +16 Power this turn.
 SMW011	M4 Sherman	Machines of War	Science	Ltd Legendary	4	13	When drawn, give your Machines of War cards +30 Power this round.
 SMW015	Da Vinci's Fighting Vehicle	Machines of War	Science	Ltd Epic	4	37	When drawn, give Paper +20 Power for the rest of the game.
-SMW014	Greek Fire	Machines of War	Science	Ltd Legendary	7	72	When drawn, Burn (16) your Opponent's cards in hand for the rest of the round and reduce the Energy cost of your Ancient Greece and Greek Mythology cards by 2 until played.
+SMW014	Greek Fire	Machines of War	Science	Ltd Legendary	7	72	When drawn, BURN (16) your Opponent's cards in hand for the rest of the round and reduce the Energy cost of your Ancient Greece and Greek Mythology cards by 2 until played.
 SMW013	Katyusha Rocket Launcher	Machines of War	Science	Ltd Common	2	19	When played, give your Radical Rockets cards +27 Power this turn & next.
 SMW012	The Gustav Gun	Machines of War	Science	Ltd Rare	6	59	When returned to your deck, increase the Energy cost of your Opponent's Super Structures cards by 2 next turn. If you lost the turn, do the same to your Opponent's History cards.
 SMW016	Type 97 Te-Ke Tankette	Machines of War	Science	Ltd Epic	4	38	When drawn, give a random card in your hand +20 Power this turn and give yourself +2 Energy.
@@ -2872,7 +2872,7 @@ EJF017	Jikininki	Japanese Folklore	History	Ltd Rare	4	32	Give adjacent cards -10
 EJF019	Tamamo-no-Mae	Japanese Folklore	History	Ltd Legendary	7	64	When played, if your deck contains Kitsune, give your Japanese Folklore cards +22 Power until played.
 EJF018	Urashima Taro	Japanese Folklore	History	Ltd Epic	5	45	When returned to your deck, give your Ocean Reptiles +25 Power this round.
 EJF020	Kintaro	Japanese Folklore	History	Ltd Legendary	11	80	When played on the first turn of the round give this card +70 Power this turn. If you have played Shuten-Doji, reduce this card's energy cost by 3 permanently.
-EJF021	Basan	Japanese Folklore	History	Ltd Common	4	39	When played next to Chicken, your Opponent's cards in hand Burn(20) until played.
+EJF021	Basan	Japanese Folklore	History	Ltd Common	4	39	When played next to Chicken, your Opponent's cards in hand BURN (20) until played.
 ACRR001	Witching Hour	Rites & Rituals	Arts & Culture	Ltd Legendary	3	33	When played on Rounds 3 or 4, and if your deck contains REM Sleep, give your Horrible Halloween cards +14 Power until played.
 ACRR005	Fortune Cookie	Rites & Rituals	Arts & Culture	Ltd Common	3	28	At the start of each turn, give a random card in either player's hand +10 Power this turn.
 ACRR004	Rabbit's Foot	Rites & Rituals	Arts & Culture	Ltd Legendary	5	96	While in your hand, at the start of each turn, give this card -12 Power and give another random card in your hand +12 Power permanently.
@@ -2915,7 +2915,7 @@ EHC004	Mary Toft's Rabbit Birth	Hoaxes & Cons	History	Ltd Rare	6	55	When returne
 EHC003	Piltdown Man	Hoaxes & Cons	History	Ltd Rare	6	52	When played, if your deck contains The Brain, give your Primates and Human Evolution cards +12 Power until played.
 EHC007	Goodtimes Virus	Hoaxes & Cons	History	Ltd Rare	5	44	When played, if it is the last turn of the round, give your History of the Internet cards, wherever they are, +14 Power until played.
 EHC006	D.B. Cooper	Hoaxes & Cons	History	Ltd Legendary	6	45	When drawn, lock this card in your hand for the rest of the round. When played, for every Awesome Aviation card played this game by either player (up to a maximum of 18), give this card +10 Power this turn. When returned to your deck, give your Money; Money; Money cards, wherever they are, +20 Power until played.
-SCV001	Mount Etna	Volcanoes	Science	Ltd Epic	4	80	While in your hand, this card Burns(10) until played. When played, all other cards have -20 Power this turn.
+SCV001	Mount Etna	Volcanoes	Science	Ltd Epic	4	80	While in your hand, this card BURN (10) until played. When played, all other cards have -20 Power this turn.
 EBT002	Siege of Baghdad (1258)	Battle!	History	Ltd Epic	6	50	When drawn, your Opponent's Legendary cards, wherever they are, lose 25 Power for 3 turns.
 EBT004	Battle of Waterloo (1815)	Battle!	History	Ltd Legendary	7	61	When returned to your deck, if you lost the turn, gain +120 Power/Turn next turn.
 EBT003	Battle of Leipzig (1813)	Battle!	History	Epic	8	55	If played after turn 6 give your Opponents cards with 4 or less base energy wherever they are -18 power for 3 turns

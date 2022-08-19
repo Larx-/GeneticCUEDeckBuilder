@@ -7,14 +7,14 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class C_AfterTurn extends Condition {
 
-    int afterRound;
+    int afterTotalTurn;
 
-    public C_AfterTurn(int afterRound) {
-        this.afterRound = afterRound;
+    public C_AfterTurn(int afterTotalTurn) {
+        this.afterTotalTurn = afterTotalTurn;
     }
 
     @Override
     public boolean checkConditionFulfilled(Game game, Who selfPlayer) {
-        return this.afterRound < game.getTotalTurnNumber();
+        return this.afterTotalTurn < game.getTotalTurnNumber();
     }
 }

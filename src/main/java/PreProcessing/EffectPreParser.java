@@ -78,8 +78,10 @@ public class EffectPreParser {
                 }
             }
         }
+        // <DEBUG>
         sortAndLogArray(failedChunks, "PreParsing failed for -> " + failedChunks.size() + " <- chunks in -> " + failedRowNumber + " <- rows ...");
-//        sortAndLogArray(chunkSequences, "Different chunk sequences: ");
+        sortAndLogArray(chunkSequences, "Different chunk sequences: ");
+        // </DEBUG>
     }
 
     public static void sortAndLogArray(List<String> array, String description) {
