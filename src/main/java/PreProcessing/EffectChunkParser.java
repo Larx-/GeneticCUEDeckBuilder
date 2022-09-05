@@ -19,14 +19,17 @@ public class EffectChunkParser {
         String processed = regexPreProcessor.readFullFile(RegexPreProcessor.regexFile);
         String[] rows = processed.split("\n");
 
+        List<List<Effect>> effectListList = new ArrayList<>();
         for (String row : rows) {
             String[] rowParts   = row.split("\t");
             String cardName     = rowParts[1];
             String effectString = rowParts[7];
 
             List<Effect> parseEffect = parseEffect(cardName.trim(), effectString.trim());
+            effectListList.add(parseEffect);
             log.debug(parseEffect);
         }
+        log.debug(effectListList);
     }
 
     private List<Effect> parseEffect (String name, String effect) {
@@ -77,7 +80,7 @@ public class EffectChunkParser {
                     effectBuilder.triggerTime(chunkParam);
                     break;
                 case "Condition":
-                    effectBuilder.condition(chunkParam);
+                    effectBuilder.condition(chunkParam, name);
                     break;
                 case "Target":
                     effectBuilder.target(chunkParam, name);
@@ -88,6 +91,7 @@ public class EffectChunkParser {
                 case "Duration":
                     effectBuilder.duration(chunkParam);
                     break;
+                case "Repeat":
                 default:
                     log.error("Parsing failed during chunk type determination.");
                     break;
