@@ -8,7 +8,9 @@ public enum Album {
     HISTORY          ("History"),
     PALEONTOLOGY     ("Paleontology"),
     SCIENCE          ("Science"),
-    NAN              ("NAN");
+    NAN              ("NAN"),
+    NAN_2            ("NAN_2"),
+    NAN_3            ("NAN_3");
 
     private final String name;
 

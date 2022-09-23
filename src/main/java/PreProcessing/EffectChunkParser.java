@@ -4,10 +4,14 @@ import Effects.Effect;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Log4j2
 public class EffectChunkParser {
+
+    Set<String> cardNames;
 
     public static void main(String[] args) {
         EffectChunkParser effectChunkParser = new EffectChunkParser();
@@ -19,6 +23,13 @@ public class EffectChunkParser {
         String processed = regexPreProcessor.readFullFile(RegexPreProcessor.regexFile);
         String[] rows = processed.split("\n");
 
+        this.cardNames = new HashSet<>();
+        for (String row : rows) {
+            String[] rowParts   = row.split("\t");
+            String cardName     = rowParts[1];
+            this.cardNames.add(cardName.toLowerCase().trim());
+        }
+
         List<List<Effect>> effectListList = new ArrayList<>();
         for (String row : rows) {
             String[] rowParts   = row.split("\t");
@@ -27,12 +38,12 @@ public class EffectChunkParser {
 
             List<Effect> parseEffect = parseEffect(cardName.trim(), effectString.trim());
             effectListList.add(parseEffect);
-            log.debug(parseEffect);
+            //log.debug(parseEffect);
         }
-        log.debug(effectListList);
+        //log.debug(effectListList);
     }
 
-    private List<Effect> parseEffect (String name, String effect) {
+    private List<Effect> parseEffect (String cardName, String effect) {
         if (!effect.equalsIgnoreCase("NULL")) {
 
             int openedBrackets = 0;
@@ -54,7 +65,7 @@ public class EffectChunkParser {
 
                 } else {
                     if (openedBrackets <= 0 && nextChar != ' ') {
-                        log.error("Could not parse effect: " + effect);
+                        //log.error("Could not parse effect: " + effect);
                         return null; // Effect could not be parsed
                     } else {
                         if (!(chunkInBrackets.equals("") && nextChar == ' ')) {
@@ -63,44 +74,21 @@ public class EffectChunkParser {
                     }
                 }
             }
-            return parseChunks(name, chunks);
+            return parseChunks(cardName, chunks);
         }
         return null; // Default, no effect
     }
 
-    private List<Effect> parseChunks (String name, List<String> chunks) {
-        EffectBuilder effectBuilder = new EffectBuilder();
+    private List<Effect> parseChunks (String cardName, List<String> chunks) {
+        EffectBuilder effectBuilder = new EffectBuilder(this.cardNames);
 
-        // TODO: "Multi"-Effects
         while (!chunks.isEmpty()) {
             String nextChunk = chunks.remove(0);
+            String chunkType  = nextChunk.substring(0,nextChunk.indexOf(":"));
             String chunkParam = nextChunk.substring(nextChunk.indexOf(":")+1);
-            switch (nextChunk.substring(0,nextChunk.indexOf(":"))){
-                case "TriggerTime":
-                    effectBuilder.triggerTime(chunkParam);
-                    break;
-                case "Condition":
-                    effectBuilder.condition(chunkParam, name);
-                    break;
-                case "Target":
-                    effectBuilder.target(chunkParam, name);
-                    break;
-                case "Effect":
-                    effectBuilder.effect(chunkParam);
-                    break;
-                case "Duration":
-                    effectBuilder.duration(chunkParam);
-                    break;
-                case "Repeat":
-                default:
-                    log.error("Parsing failed during chunk type determination.");
-                    break;
-            }
+            effectBuilder.addChunk(chunkType, chunkParam, cardName);
         }
 
-        List<Effect> effectList = new ArrayList<>();
-        effectList.add(effectBuilder.build());
-
-        return effectList;
+        return effectBuilder.build();
     }
 }

@@ -13,15 +13,15 @@ import java.util.List;
 @Log4j2
 public class E_EPT extends Effect {
 
-    int changeBy;
+    Integer changeBy;
 
-    public E_EPT(TriggerTime triggerTime, Target targetPlayer, int changeBy, TriggerTime duration, int timer, List<Condition> conditions) {
+    public E_EPT(TriggerTime triggerTime, Target targetPlayer, Integer changeBy, TriggerTime duration, Integer timer, List<Condition> conditions) {
         super(triggerTime, targetPlayer, duration, timer, conditions);
 
         this.changeBy = changeBy;
     }
 
-    public E_EPT(TriggerTime triggerTime, Target targetPlayer, int changeBy, TriggerTime duration, List<Condition> conditions) {
+    public E_EPT(TriggerTime triggerTime, Target targetPlayer, Integer changeBy, TriggerTime duration, List<Condition> conditions) {
         super(triggerTime, targetPlayer, duration, conditions);
 
         this.changeBy = changeBy;

@@ -61,8 +61,14 @@ public class TSVtoCSVPreProcessor {
             rarity = rarity.replace("Lvl ", "");
             rarity = rarity.replace("Cft ", "");
 
-            String jsonEffect = effectParser.translateEffects(effects.trim(), cardName);
-            String combosWith = effectParser.getCombos(jsonEffect);
+//            String jsonEffect = effectParser.translateEffects(effects.trim(), cardName);
+//            String combosWith = effectParser.getCombos(jsonEffect);
+
+            // No effects and combos to isolate influence of different rules better
+            effects = "NULL";
+            String jsonEffect = "NULL";
+            String combosWith = "[]";
+
             if (jsonEffect != null) {
                 // Make sure EffectParser can handle all added cases
                 Map<TriggerTime, List<Effect>> effectsParsed = effectParser.parseEffects(jsonEffect);
@@ -73,14 +79,14 @@ public class TSVtoCSVPreProcessor {
             }
         }
 
-        int missingPatterns = effectParser.parser.getNumEffectsWithoutPattern();
-        int numPatterns = effectParser.parser.getNumPatterns();
-        int effMatched = 2700 - missingPatterns;
-        float avgEffPerPattern = (float) effMatched / numPatterns;
-        float avgMissingPattern = (float) missingPatterns / avgEffPerPattern;
-        log.debug("ATTENTION: " + missingPatterns + " effects without matching pattern found!");
-        log.debug(effMatched + " / 2700 effects have been matched using " + numPatterns + " patterns, resulting in " + avgEffPerPattern + " per pattern.");
-        log.debug("This means on average there are " + avgMissingPattern + " more patterns to write.\n\n\n");
+//        int missingPatterns = effectParser.parser.getNumEffectsWithoutPattern();
+//        int numPatterns = effectParser.parser.getNumPatterns();
+//        int effMatched = 2700 - missingPatterns;
+//        float avgEffPerPattern = (float) effMatched / numPatterns;
+//        float avgMissingPattern = (float) missingPatterns / avgEffPerPattern;
+//        log.debug("ATTENTION: " + missingPatterns + " effects without matching pattern found!");
+//        log.debug(effMatched + " / 2700 effects have been matched using " + numPatterns + " patterns, resulting in " + avgEffPerPattern + " per pattern.");
+//        log.debug("This means on average there are " + avgMissingPattern + " more patterns to write.\n\n\n");
 
         try (CSVWriter writer = new CSVWriter(new FileWriter(defaultFilenameCSV))) {
             writer.writeAll(processedCards);

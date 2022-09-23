@@ -14,12 +14,12 @@ import java.util.List;
 @Log4j2
 public class E_PowerForEach extends Effect {
 
-    int changeBy;
+    Integer changeBy;
     int upTo;
     boolean countPlayHistory;
     Target countEach;
 
-    public E_PowerForEach(TriggerTime triggerTime, Target targetCards, int changeBy, TriggerTime duration, int timer, List<Condition> conditions, Target countEach, int upTo, boolean countPlayHistory) {
+    public E_PowerForEach(TriggerTime triggerTime, Target targetCards, Integer changeBy, TriggerTime duration, Integer timer, List<Condition> conditions, Target countEach, int upTo, boolean countPlayHistory) {
         super(triggerTime, targetCards, duration, timer, conditions);
 
         this.changeBy = changeBy;
@@ -28,7 +28,7 @@ public class E_PowerForEach extends Effect {
         this.countPlayHistory = countPlayHistory;
     }
 
-    public E_PowerForEach(TriggerTime triggerTime, Target targetCards, int changeBy, TriggerTime duration, List<Condition> conditions, Target countEach, int upTo, boolean countPlayHistory) {
+    public E_PowerForEach(TriggerTime triggerTime, Target targetCards, Integer changeBy, TriggerTime duration, List<Condition> conditions, Target countEach, int upTo, boolean countPlayHistory) {
         super(triggerTime, targetCards, duration, conditions);
 
         this.changeBy = changeBy;

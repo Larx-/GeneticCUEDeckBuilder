@@ -1,0 +1,8 @@
+{
+  "EnergyStarting": 20,
+  "EnergyMin": 0,
+  "EnergyMax": 40,
+  "EnergyPerTurn": 10,
+  "GuaranteedBoni": {"NAN": 0, "NAN_2": 0, "NAN_3": 0},
+  "AdditionalBoni": {"NAN": 0, "NAN_2": 0, "NAN_3": 0}
+}

@@ -13,15 +13,15 @@ import java.util.List;
 @Log4j2
 public class E_Burn extends Effect {
 
-    int burnAmount;
+    Integer burnAmount;
 
-    public E_Burn(TriggerTime triggerTime, Target targetCards, int burnAmount, TriggerTime duration, int timer, List<Condition> conditions) {
+    public E_Burn(TriggerTime triggerTime, Target targetCards, Integer burnAmount, TriggerTime duration, Integer timer, List<Condition> conditions) {
         super(triggerTime, targetCards, duration, timer, conditions);
 
         this.burnAmount = burnAmount;
     }
 
-    public E_Burn(TriggerTime triggerTime, Target targetCards, int burnAmount, TriggerTime duration, List<Condition> conditions) {
+    public E_Burn(TriggerTime triggerTime, Target targetCards, Integer burnAmount, TriggerTime duration, List<Condition> conditions) {
         super(triggerTime, targetCards, duration, conditions);
 
         this.burnAmount = burnAmount;

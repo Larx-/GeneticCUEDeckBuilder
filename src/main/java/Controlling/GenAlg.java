@@ -24,13 +24,13 @@ public class GenAlg {
     public static DeckInitializer deckInitializer;
     public static RulesInitializer rulesInitializer;
 
-    public static final int numResidents = 6;
-    public static final int numCandidates = 5000;
+    public static final int numResidents = 10;
+    public static final int numCandidates = 100;
 
-    public static final int repetitions = 20;
+    public static final int repetitions = 50;
     public static final int tournamentSize = 5;
-    public static final int generations = 1000;
-    public static final int comboMutationChance = 50;
+    public static final int generations = 100;
+    public static final int comboMutationChance = 0;
 
     public static ResultWriter resultWriter;
     private List<String[]> resDecks;

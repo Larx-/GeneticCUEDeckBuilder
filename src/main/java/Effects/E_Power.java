@@ -13,15 +13,15 @@ import java.util.List;
 @Log4j2
 public class E_Power extends Effect {
 
-    int changeBy;
+    Integer changeBy;
 
-    public E_Power(TriggerTime triggerTime, Target targetCards, int changeBy, TriggerTime duration, int timer, List<Condition> conditions) {
+    public E_Power(TriggerTime triggerTime, Target targetCards, Integer changeBy, TriggerTime duration, Integer timer, List<Condition> conditions) {
         super(triggerTime, targetCards, duration, timer, conditions);
 
         this.changeBy = changeBy;
     }
 
-    public E_Power(TriggerTime triggerTime, Target targetCards, int changeBy, TriggerTime duration, List<Condition> conditions) {
+    public E_Power(TriggerTime triggerTime, Target targetCards, Integer changeBy, TriggerTime duration, List<Condition> conditions) {
         super(triggerTime, targetCards, duration, conditions);
 
         this.changeBy = changeBy;

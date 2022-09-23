@@ -21,17 +21,17 @@ public class Main {
 
     public static SecureRandom random;
     public static final String cardsFile = "src/main/resources/Cards/cards.csv";
-    public static final String rulesFile = "src/main/resources/Rules/rules_1.json";
+    public static final String rulesFile = "src/main/resources/Rules/Default.json";
     public static final String residentsFile = "src/main/resources/Residents/residents.csv";
     public static final String candidatesFile = null;
 
     public static final String resultsDir = "src/main/resources/Results";
-    public static final String resultsName = "Test_1";
+    public static final String resultsName = "Resident_Determination_QualityTest_2";
 
     public static final boolean doPreProcessing = true;
     public static final boolean doPreDefDecks   = false;
     public static final boolean doEndlessMode   = true;     // Not available for GenAlg mode
-    public static final int runMode             = 2;        // 0 = GenAlg, 1 = Player vs Bot, 2 = Bot vs Bot
+    public static final int runMode             = 0;        // 0 = GenAlg, 1 = Player vs Bot, 2 = Bot vs Bot
 
     // TODO: Bugs in the simulation part of the software:
     //       SNB023]  Medusa Nebula -> Does not seem to give a random card of the opponent -36

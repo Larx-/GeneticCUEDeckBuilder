@@ -14,7 +14,7 @@ import java.util.Map;
 @Log4j2
 public class E_Lock extends Effect {
 
-    public E_Lock(TriggerTime triggerTime, Target targetCards, TriggerTime duration, int timer, List<Condition> conditions) {
+    public E_Lock(TriggerTime triggerTime, Target targetCards, TriggerTime duration, Integer timer, List<Condition> conditions) {
         super(triggerTime, targetCards, duration, timer, conditions);
     }
 
