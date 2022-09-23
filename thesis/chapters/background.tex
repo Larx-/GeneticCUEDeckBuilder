@@ -1,0 +1,17 @@
+\chapter{Background}
+\label{ch:background}
+In this chapter I plan to describe the problem of deck building in CCG’s in a general sense and point out some of the difficulties an AI might have to efficiently create a reasonably strong deck. For this purpose there will be an introduction to the basic principles of CCG’S.
+
+\section{Collectible Card Games (CCG) in general}
+\label{sec:background:ccg}
+Matches of a CCG game are played by two people, each using a set of cards (their deck). The game consists of turns which generally include drawing cards to your hand and playing some of these cards. The cards usually have some kind of cost to play, a strength attribute and often some kind of effect. One example for an effect is lowering your opponents health points directly. To win the game you usually have to lower your opponents health points to zero. 
+Another, often just as important or even more important part of the game, is selecting your deck. Almost all CCG’s have a huge number of available cards to choose from. This is an example of a combinatorial optimization problem, where an exhaustive search is not feasible, so players often use shortcuts like building their deck around some kind of specific mechanic.
+
+\section{Related work}
+\label{sec:background:related}
+There is a fair amount of recent related work in the area of autonomous deck building and similar optimization problems, as is reviewed well in [1]. Most research concerning CCG deck building use a specific example, since every game is slightly different and might need different strategies, though not all, for example [4]. Commonly used, because of their popularity are “Magic: The Gathering” [1] and “Hearthstone” [2]. More recently released “Legends of Code and Magic” also has some literature [3], because it is designed to be machine playable.
+
+\section{Cards, the Universe \& Everything (CUE) as a specific example of a CCG}
+\label{sec:background:cue}
+In this chapter I want to justify my decision to use a fairly unknown example of a CCG, by explaining it’s mechanics and weekly rule changes. Since I’m especially interested in the effects of these changes and whether just mutating the decks continuously, akin to something a real player may choose to do, might be a viable option, I believe it is the right choice for me. Additionally its comparatively less complex design may allow for a fairly comprehensive representation of the game, as opposed to a game like Magic, which has around 50,000 printed cards and has even been shown to be Turing-Complete. citation \\
+To briefly explain the mechanics of CUE, you gain a variable amount of energy per turn to play up to three cards out of five in your hand to maximize the power you generate. After each turn, played cards are put under their corresponding deck, consisting of 18 cards total, and new ones are drawn until five are on hand again. After every three turns a round ends and whoever managed to generate the most power in those three turns wins that round. The rounds are played as a best of five, so a game can have between three and five. Each round is played in an arena that gives a specific set of cards a bonus. Each week the amount of energy you gain per turn, the possible sets that can get bonuses, as well as a few other parameters/rules are changed.

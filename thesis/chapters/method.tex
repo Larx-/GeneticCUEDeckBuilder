@@ -1,0 +1,88 @@
+\chapter{Method}
+\label{ch:method}
+
+% TODO: Figure out how one can make multiple files out of this mess...
+
+\section{Simulation compatible re-implementation of the game}
+\label{sec:method:game}
+Here will be a short description of my re-implementation of the game to allow for simulating games. It will also include any simplifications I may have had to compromise on, either because of time constraints and unexpected complexity or because of limitations in other areas. With some simplifications, like not requiring 2 cards to be played next to each other for a specific condition, it might be possible to get better data, that can then be more meaningfully extrapolated to the full game.\\
+CUE developers "Avid Games" kindly provided me with a .tsv list of all cards including information and nat lang effect.
+
+\subsection{Structure of the general game logic}
+\label{sec:method:game:general}
+Isn't this pretty much covered already? \\
+
+\subsection{Implementation of a natural language effect parser}
+\label{sec:method:game:natlang_parser}
+Describe some of the issues I had getting this to work reliably
+
+% TODO: Break here
+
+\section{Implementation of bot agents for fitness evaluation}
+\label{sec:method:agents}
+To be able to judge how well a deck might do, it needs to be tested against all other current decks or at least a few preset decks created by players. To do this, there will have to be an AI, that can play using the decks created by the genetic algorithm.
+
+\subsection{Simple random agent}
+\label{sec:method:agents:random}
+For my implementation I chose a bot, that randomly picks as many cards as it's current energy allows.
+
+\subsection{Other agents}
+\label{sec:method:agents:other}
+Of course a more intelligent AI would be able to more accurately represent how a human might play and there are a lot of different approaches, like neural nets, heuristics based MiniMax or Monte Carlo methods. It would be interesting to compare these in a separate paper, but because of time constraints and to avoid introducing more variables, I have not. In addition, even the bots in the actual game seemed to play with a mostly random approach for a long time, so it is not a bad analogue to the game.
+
+\subsection{Deck selection for “Resident agents”}
+\label{sec:method:agents:resident_decks}
+Decks for “resident bots” to compare the population against
+
+% TODO: Break here
+
+\section{Implementation of the genetic algorithm}
+\label{sec:method:genalg}
+This section describes the structure of the genetic algorithm, as well as the methodology of finding parameters for the selection, mutation, crossover and rate change processes. \\
+Another possible parameter is what I’m calling “combo affinity”. This describes that cards that combine well together, for example because they increase specifically each others power, should be more likely to be picked together. This makes intuitive sense, but may be difficult to implement without defining theses combinations. That would be impractical at best, as there are many cards that effect more cards positively than can be in a deck, so some form of decision has to be made by the algorithm anyways. \\
+Another aspect are requirements for certain effects like having only cards from a specific type in your deck. It might be helpful to weight the AI towards fulfilling those goals, as cards with such requirements might be judged unfairly without. \\
+Lastly it might be interesting to track the performance of individual cards during the testing phase, to influence which cards are more likely to stay or be replaced. \\
+But even with a well working implementation of all these ideas, evaluating these skewed chances will also increase calculation time drastically. And even though the cutoff for the simulations will be a set number of generations and not a certain amount of time, so that the comparison can be as fair as possible without having to watch out for runtime differences, it still needs to run fairly efficiently, to allow for all the tuning, testing and experiments.
+This makes the additions to the basic algorithm a relatively low priority, though I would find it very interesting to see, if that would result in more human-like decision making and deck building. Or possibly if the results are fairly similar, adjusting for the required time might mean that simple with more generations in the same time is better in this case. \\
+
+\subsection{Initialization}
+\label{sec:method:genalg:init}
+With random decks or from file to be able to continue / restart from any point
+
+\subsection{Overview of steps in the algorithm}
+\label{sec:method:genalg:overview}
+Overview of the overall procedure structure 
+
+\subsection{Fitness evaluation}
+\label{sec:method:genalg:fitness}
+according parameters discussed
+
+\subsection{Selection}
+\label{sec:method:genalg:selection}
+according parameters discussed
+
+\subsection{Mutation}
+\label{sec:method:genalg:mutation}
+according parameters discussed
+
+\subsection{Hyper-mutation}
+\label{sec:method:genalg:hyper_mutation}
+according parameters discussed
+
+% TODO: Break here
+
+\section{Testing strategies}
+\label{sec:method:testing}
+Explain (possible) split with single vs specialized decks \\
+Easier to benchmark <-> Closer to reality \\
+Setting the parameters could be it’s own experiment, but to have enough time to answer my main question, these experiments might be fairly short. Once the resulting decks rank consistently high and at least a good amount above random, I will freeze the parameters of the genetic algorithm. \\
+The main test will then be running the algorithm for n generations using one set of game rules that have been used in the game. Then changing those rules and letting the algorithm run for n generations using the previously created decks as seeds again. Additionally the algorithm will also run n generations with the new rules without any previous decks.  \\
+Repeating this with different game rules should hopefully give some insight whether the head start is good, bad or inconsequential, depending on how drastic the change in game rules were. \\
+
+\subsection{Same resident decks for all rule sets}
+\label{sec:method:testing:single}
+Still need to create the decks or competition
+
+\subsection{Specialized resident decks for each rule set}
+\label{sec:method:testing:special}
+Might not even happen

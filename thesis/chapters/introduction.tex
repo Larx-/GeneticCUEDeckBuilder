@@ -1,0 +1,26 @@
+\chapter{Introduction} 
+\label{ch:intro}
+
+\section{Motivation}
+\label{sec:intro:motivation}
+
+\section{Goals}
+\label{sec:intro:goals}
+% My goal is to create a genetic algorithm that can create interesting and varied, but also reasonably strong decks.
+The goal is to answer the question if continued evolution or a completely fresh start with every rule change is advantageous. For this purpose a genetic algorithm for deck building has to be developed. A secondary goal is to make the algorithm so that it can create interesting and varied, but also reasonably strong decks. I do not expect to compete with good human built decks, as some of the limitations I will have to employ due to time constraints will make it difficult to compare my agents to actual human decision making. \\
+Instead I’m hoping to answer the question of how changing conditions effect the genetic deck building. Such big and common rule changes are fairly unique to CUE with it’s weekly energy and arena parameters, but it also has implications for other CCG’s, as for example new card releases have a comparable, if much weaker, effect.
+
+\section{Hypothesis}
+\label{sec:intro:hypothesis}
+My hypothesis is, that it will be equally successful or potentially even better to start from fresh, when the condition changes are sufficiently noticeable. Though “Hyper-mutation” may be a solution for overspecialization on a local maximum, due to loss of genetic diversity. \\
+I also suspect that there might not be significant changes in performance, when using different agents, trying “combo affinity” or even simplifications of the game. Based on previous experience with genetic algorithms I assume I’ll find at first glance inconspicuous parameters that influence the result greatly. I believe that the most likely conclusion will be to keep the algorithm as simple as possible for efficiency and run it freshly after every rule change to avoid fluctuations in deck quality.
+
+\section{Structure}
+\label{sec:intro:structure}
+\begin{enumerate}
+	\item Previous work and other necessary background information
+	\item Description of the initial parsing of natural language effects 
+	\item All aspects of the algorithm and it's parameters
+	\item How the experiment will be run
+	\item Discussion of results
+\end{enumerate}
