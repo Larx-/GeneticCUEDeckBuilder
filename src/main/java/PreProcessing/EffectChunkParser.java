@@ -80,13 +80,13 @@ public class EffectChunkParser {
     }
 
     private List<Effect> parseChunks (String cardName, List<String> chunks) {
-        EffectBuilder effectBuilder = new EffectBuilder(this.cardNames);
+        EffectBuilder effectBuilder = new EffectBuilder(this.cardNames, cardName);
 
         while (!chunks.isEmpty()) {
             String nextChunk = chunks.remove(0);
             String chunkType  = nextChunk.substring(0,nextChunk.indexOf(":"));
             String chunkParam = nextChunk.substring(nextChunk.indexOf(":")+1);
-            effectBuilder.addChunk(chunkType, chunkParam, cardName);
+            effectBuilder.addChunk(chunkType, chunkParam);
         }
 
         return effectBuilder.build();

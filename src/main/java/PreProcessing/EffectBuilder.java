@@ -13,6 +13,7 @@ import java.util.*;
 public class EffectBuilder {
 
     private int subEffectCounter;
+    private String cardName;
     private Set<String> cardNames;
 
     private Map<Integer,String> effect;
@@ -27,9 +28,10 @@ public class EffectBuilder {
     private Map<Integer,Integer>       upTo;                   // Only for PowerForEach
     private Map<Integer,Boolean>       countPlayHistory;       // Only for PowerForEach
 
-    public EffectBuilder (Set<String> cardNames) {
+    public EffectBuilder (Set<String> cardNames, String cardName) {
         this.subEffectCounter = 0;
         this.cardNames = cardNames;
+        this.cardName = cardName;
 
         this.effect           = new HashMap<>();
         this.triggerTime      = new HashMap<>();
@@ -45,11 +47,11 @@ public class EffectBuilder {
         this.countPlayHistory = new HashMap<>();
     }
 
-    public EffectBuilder addChunk (String chunkType, String chunkParam, String cardName) {
+    public EffectBuilder addChunk (String chunkType, String chunkParam) {
         switch (chunkType){
             case "TriggerTime": return this.triggerTime(chunkParam);
-            case "Condition":   return this.condition(chunkParam, cardName);
-            case "Target":      return this.target(chunkParam, cardName);
+            case "Condition":   return this.condition(chunkParam);
+            case "Target":      return this.target(chunkParam);
             case "Effect":      return this.effect(chunkParam);
             case "Duration":    return this.duration(chunkParam);
             case "Repeat":
@@ -65,9 +67,9 @@ public class EffectBuilder {
         return this;
     }
 
-    public EffectBuilder target(String target, String name) {
+    public EffectBuilder target(String target) {
         if (this.target.get(this.subEffectCounter) != null) { this.subEffectCounter++; }
-        this.target.put(this.subEffectCounter, parseTarget(target, name));
+        this.target.put(this.subEffectCounter, parseTarget(target));
         return this;
     }
 
@@ -131,7 +133,7 @@ public class EffectBuilder {
         return this;
     }
 
-    public EffectBuilder condition(String condition, String name) {
+    public EffectBuilder condition(String condition) {
         this.conditions.computeIfAbsent(this.subEffectCounter, k -> new ArrayList<>());
 
         int cut = condition.indexOf(",");
@@ -145,12 +147,12 @@ public class EffectBuilder {
         }
 
         if (conditionType.equals("PLAYED_WITH")) {
-            Target t = this.parseTarget(value, name);
+            Target t = this.parseTarget(value);
             if (t != null) {
                 this.conditions.get(this.subEffectCounter).add(new C_PlayedWith(t.getWho(),t.getWhat(),t.getName()));
             }
         } else if (conditionType.equals("PLAYED_BEFORE")) {
-            Target t = this.parseTarget(value, name);
+            Target t = this.parseTarget(value);
             if (t != null) {
                 this.conditions.get(this.subEffectCounter).add(new C_PlayedBefore(t.getWho(), t.getWhat(), t.getName()));
             }
@@ -216,11 +218,16 @@ public class EffectBuilder {
         }
     }
 
-    private Target parseTarget(String target, String cardName) {
+    private Target parseTarget(String target) {
         if (target.startsWith("(")) {
             Object o = this.parseBrackets(target);
-            if (o != null && o.getClass() == Target.class) {
-                return (Target) o;
+            if (o != null) {
+                if (o.getClass() == Target.class) {
+                    return (Target) o;
+                } else if (o.getClass() == List.class) {
+                    List<Target> multiTarget = (List<Target>) o;
+                    return multiTarget.get(0); // TODO: MULTI-TARGETS!!!
+                }
             } else {
                 log.error("TODO: determination of unsure targets in brackets: " + target);
             }
@@ -231,7 +238,7 @@ public class EffectBuilder {
 
         } else {
             switch (target) {
-                case "THIS":  return new Target(Who.SELF, Where.CARDS_IN_HAND, cardName, true);
+                case "THIS":  return new Target(Who.SELF, Where.CARDS_IN_HAND, this.cardName, true);
                 case "SELF":  return new Target(Who.SELF);
                 case "OTHER": return new Target(Who.OTHER);
                 default:
@@ -318,23 +325,89 @@ public class EffectBuilder {
     }
 
     private Object parseBrackets(String bracketText) {
-        bracketText = bracketText.replace("(","").replace(")","").trim();
+        // Cleanup TODO: Regex refactor
+        bracketText = bracketText.replace("(","").replace(")","");
+        bracketText = bracketText.replace(", wherever they are,", "").replace(", wherever they are", "").replace("wherever they are", "");
+        bracketText = bracketText.replace(", even if they're in your deck,","").replace(", even if it's in your deck,","").trim();
+        if (bracketText.endsWith("+")) { bracketText = bracketText.substring(0,bracketText.length() - 1).trim(); }
 
         // Find pure integers
         try { return Integer.parseInt(bracketText); }
         catch (NumberFormatException ignored) { }
 
+        // Default params for targets
+        Who who = Who.SELF;
+        Where where = Where.CARDS_IN_DECK;
+
+        // TODO: Pointers to previously mentioned cards
+        if (bracketText.equals("it") || bracketText.equals("their") || bracketText.equals("that card") ||
+                bracketText.equals("it and this card") || bracketText.equals("them")) {
+             return new Target(Who.SELF, Where.CARDS_IN_HAND, Collection.NAN); // TODO: Placeholder non-target
+        }
+
+        // Filter specific phrases that would mess up the next step
+        if (bracketText.equals("all other cards"))       { return new Target(Who.BOTH, Where.CARDS_IN_DECK); }  // TODO: check & don't include this card
+        if (bracketText.equals("your cards"))            { return new Target(Who.SELF, Where.CARDS_IN_DECK); }  // TODO: check
+        if (bracketText.equals("all your cards"))        { return new Target(Who.SELF, Where.CARDS_IN_DECK); }  // TODO: check
+        if (bracketText.equals("all of your cards"))     { return new Target(Who.SELF, Where.CARDS_IN_DECK); }  // TODO: check
+        if (bracketText.equals("your Opponent"))         { return new Target(Who.OTHER); }                      // TODO: check
+        if (bracketText.equals("your Opponent's cards")) { return new Target(Who.OTHER, Where.CARDS_IN_DECK); } // TODO: check
+        if (bracketText.equals("Opponent's"))            { return new Target(Who.OTHER, Where.CARDS_IN_DECK); } // TODO: check
+        if (bracketText.equals("your other cards"))      { return new Target(Who.SELF, Where.CARDS_IN_DECK); }  // TODO: check & don't include this card
+        if (bracketText.equals("your remaining cards in hand")) { return new Target(Who.OTHER, Where.CARDS_REMAINING); } // TODO: check & don't include this card
+        if (bracketText.equals("this") || bracketText.equals("this card's") || bracketText.equals("this card") || bracketText.equals("this cards")
+                || bracketText.equals("this card in hand")) { return new Target(Who.SELF, Where.CARDS_IN_HAND, this.cardName, true); } // TODO: check
+
+        // Remove starting words like "your" / "any" and set corresponding params
+        if (bracketText.startsWith("your")) {
+            bracketText = bracketText.replaceFirst("your", "").trim();
+
+            if (bracketText.startsWith("Opponent")) {
+                who = Who.OTHER;
+                bracketText = bracketText.replaceFirst("Opponents", "").replaceFirst("Opponent's", "").trim();
+            }
+        }
+        if (bracketText.startsWith("any")) {
+            who = Who.BOTH;
+            bracketText = bracketText.replaceFirst("any", "").trim();
+        }
+
+        // Remove ending words like "card(s)" / "in your (Opponent's) hand" and set corresponding params
+        if (bracketText.endsWith("in your hand")) {
+            where = Where.CARDS_IN_HAND;
+            bracketText = bracketText.substring(0, bracketText.lastIndexOf("in your hand")).trim();
+        }
+        if (bracketText.endsWith("in your Opponent's hand")) {
+            who = Who.OTHER;
+            where = Where.CARDS_IN_HAND;
+            bracketText = bracketText.substring(0, bracketText.lastIndexOf("in your Opponent's hand")).trim();
+        }
+        if (bracketText.endsWith("in your Opponent's deck and hand")) {
+            who = Who.OTHER;
+            where = Where.CARDS_IN_DECK;
+            bracketText = bracketText.substring(0, bracketText.lastIndexOf("in your Opponent's deck and hand")).trim();
+        }
+        if (bracketText.endsWith("card") || bracketText.endsWith("cards")) {
+            bracketText = bracketText.substring(0, bracketText.lastIndexOf(" card")).trim();
+        }
+
+        // Split multi target phrases and for now only consider the first one
+        if (bracketText.contains(" and ")) {
+            String[] splitBracketText = bracketText.split(", | and ");
+            bracketText = splitBracketText[0]; // TODO: Multi-Target
+        }
+
         // Find pure collections
         Collection collection = Collection.fromString(bracketText);
-        if (collection != null) { return new Target(Who.SELF, Where.CARDS_IN_DECK, collection); } // TODO: check
+        if (collection != null) { return new Target(who, where, collection); } // TODO: check
 
         // Find pure albums
         Album album = Album.fromString(bracketText);
-        if (album != null) { return new Target(Who.SELF, Where.CARDS_IN_DECK, album); } // TODO: check
+        if (album != null) { return new Target(who, where, album); } // TODO: check
 
         // Find pure cardNames
         if (this.cardNames.contains(bracketText.toLowerCase())) {
-            return new Target(Who.SELF, Where.CARDS_IN_DECK, bracketText, true); // TODO: check
+            return new Target(who, where, bracketText, true); // TODO: check
         }
 
         // Find win / loss sates
@@ -354,8 +427,8 @@ public class EffectBuilder {
         if (bracketText.equals("one or more"))  { return ">=1"; }
         if (bracketText.equals("two or more"))  { return ">=2"; }
 
-        //log.debug(bracketText);
-        return null;
+//        log.debug(bracketText);
+        return new Target(Who.SELF, Where.CARDS_IN_HAND, Collection.NAN); // TODO: Placeholder non-target
     }
 
     public List<Effect> build() {
