@@ -6,6 +6,7 @@ import Enums.Album;
 import Enums.Collection;
 import Enums.TriggerTime;
 import GameElements.Card;
+import PreProcessing.EffectChunkParser;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
 import lombok.extern.log4j.Log4j2;
@@ -23,7 +24,7 @@ public class CardReader {
     Map<String,Integer> nameIndex;
     Map<String,String> nameToStringIdIndex;
     private int numberOfCards;
-    EffectParser effectParser;
+    EffectChunkParser effectParser;
 
     Map<String,String[]> stringIndexToCombosMap;
     Map<Collection,List<String>> collectionToCardsMap;
@@ -39,7 +40,7 @@ public class CardReader {
         Energy,
         Power,
         EffectDescription,
-        EffectJSON,
+        Effect,
         CombosWith
     }
 
@@ -79,7 +80,7 @@ public class CardReader {
             log.error(Arrays.toString(e.getStackTrace()));
         }
 
-        this.effectParser = new EffectParser(this.nameIndex.keySet());
+        this.effectParser = new EffectChunkParser(this.nameIndex.keySet());
     }
 
     public Card getRandomCard () {
@@ -137,8 +138,8 @@ public class CardReader {
         int basePower = Integer.parseInt(cardCSV[header.Power.ordinal()]);
 
         String effectString = cardCSV[header.EffectDescription.ordinal()];
-        String effectJSON = cardCSV[header.EffectJSON.ordinal()];
-        Map<TriggerTime,List<Effect>> effectMap = this.effectParser.parseEffects(effectJSON);
+        String effect = cardCSV[header.Effect.ordinal()];
+        Map<TriggerTime,List<Effect>> effectMap = this.effectParser.parseEffects(name, effect);
 
         // Save combos here, instead of in the cards
         String comboString = cardCSV[header.CombosWith.ordinal()];

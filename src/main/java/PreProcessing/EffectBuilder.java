@@ -224,9 +224,8 @@ public class EffectBuilder {
             if (o != null) {
                 if (o.getClass() == Target.class) {
                     return (Target) o;
-                } else if (o.getClass() == List.class) {
-                    List<Target> multiTarget = (List<Target>) o;
-                    return multiTarget.get(0); // TODO: MULTI-TARGETS!!!
+                } else if (o.getClass() == ArrayList.class) {
+                    return ((ArrayList<Target>) o).get(0); // TODO: MULTI-TARGETS!!!
                 }
             } else {
                 log.error("TODO: determination of unsure targets in brackets: " + target);
@@ -346,17 +345,17 @@ public class EffectBuilder {
         }
 
         // Filter specific phrases that would mess up the next step
-        if (bracketText.equals("all other cards"))       { return new Target(Who.BOTH, Where.CARDS_IN_DECK); }  // TODO: check & don't include this card
-        if (bracketText.equals("your cards"))            { return new Target(Who.SELF, Where.CARDS_IN_DECK); }  // TODO: check
-        if (bracketText.equals("all your cards"))        { return new Target(Who.SELF, Where.CARDS_IN_DECK); }  // TODO: check
-        if (bracketText.equals("all of your cards"))     { return new Target(Who.SELF, Where.CARDS_IN_DECK); }  // TODO: check
-        if (bracketText.equals("your Opponent"))         { return new Target(Who.OTHER); }                      // TODO: check
-        if (bracketText.equals("your Opponent's cards")) { return new Target(Who.OTHER, Where.CARDS_IN_DECK); } // TODO: check
-        if (bracketText.equals("Opponent's"))            { return new Target(Who.OTHER, Where.CARDS_IN_DECK); } // TODO: check
-        if (bracketText.equals("your other cards"))      { return new Target(Who.SELF, Where.CARDS_IN_DECK); }  // TODO: check & don't include this card
-        if (bracketText.equals("your remaining cards in hand")) { return new Target(Who.OTHER, Where.CARDS_REMAINING); } // TODO: check & don't include this card
+        if (bracketText.equals("all other cards"))       { return new Target(Who.BOTH, Where.CARDS_IN_DECK); }  // TODO: don't include this card
+        if (bracketText.equals("your cards"))            { return new Target(Who.SELF, Where.CARDS_IN_DECK); }
+        if (bracketText.equals("all your cards"))        { return new Target(Who.SELF, Where.CARDS_IN_DECK); }
+        if (bracketText.equals("all of your cards"))     { return new Target(Who.SELF, Where.CARDS_IN_DECK); }
+        if (bracketText.equals("your Opponent"))         { return new Target(Who.OTHER); }
+        if (bracketText.equals("your Opponent's cards")) { return new Target(Who.OTHER, Where.CARDS_IN_DECK); }
+        if (bracketText.equals("Opponent's"))            { return new Target(Who.OTHER, Where.CARDS_IN_DECK); }
+        if (bracketText.equals("your other cards"))      { return new Target(Who.SELF, Where.CARDS_IN_DECK); }  // TODO: don't include this card
+        if (bracketText.equals("your remaining cards in hand")) { return new Target(Who.OTHER, Where.CARDS_REMAINING); } // TODO: don't include this card
         if (bracketText.equals("this") || bracketText.equals("this card's") || bracketText.equals("this card") || bracketText.equals("this cards")
-                || bracketText.equals("this card in hand")) { return new Target(Who.SELF, Where.CARDS_IN_HAND, this.cardName, true); } // TODO: check
+                || bracketText.equals("this card in hand")) { return new Target(Who.SELF, Where.CARDS_IN_HAND, this.cardName, true); }
 
         // Remove starting words like "your" / "any" and set corresponding params
         if (bracketText.startsWith("your")) {
@@ -394,21 +393,34 @@ public class EffectBuilder {
         // Split multi target phrases and for now only consider the first one
         if (bracketText.contains(" and ")) {
             String[] splitBracketText = bracketText.split(", | and ");
-            bracketText = splitBracketText[0]; // TODO: Multi-Target
+            bracketText = splitBracketText[0];
         }
+        // TODO: Multi-Target from HERE
+
+        if (bracketText.equals("a random"))           { return new Target(who, where, 1); }
+        if (bracketText.equals("two random"))         { return new Target(who, where, 2); }
+        if (bracketText.equals("3 random"))           { return new Target(who, where, 3); }
+        if (bracketText.equals("4 random"))           { return new Target(who, where, 4); }
+        if (bracketText.equals("a random card left")) { return new Target(who, Where.CARDS_REMAINING, 1); }
+
+        if (bracketText.equals("cards in hand"))      { return new Target(who, Where.CARDS_IN_HAND); }
+        if (bracketText.equals("all"))                { return new Target(who, where); }
+        if (bracketText.equals("adjacent"))           { return new Target(who, Where.CARDS_PLAYED, 2); } // TODO: fix workaround
 
         // Find pure collections
         Collection collection = Collection.fromString(bracketText);
-        if (collection != null) { return new Target(who, where, collection); } // TODO: check
+        if (collection != null) { return new Target(who, where, collection); }
 
         // Find pure albums
         Album album = Album.fromString(bracketText);
-        if (album != null) { return new Target(who, where, album); } // TODO: check
+        if (album != null) { return new Target(who, where, album); }
 
         // Find pure cardNames
         if (this.cardNames.contains(bracketText.toLowerCase())) {
-            return new Target(who, where, bracketText, true); // TODO: check
+            return new Target(who, where, bracketText, true);
         }
+
+        // TODO: to HERE
 
         // Find win / loss sates
         String state = this.parseState(bracketText);
@@ -428,6 +440,11 @@ public class EffectBuilder {
         if (bracketText.equals("two or more"))  { return ">=2"; }
 
 //        log.debug(bracketText);
+        if (EffectChunkParser.fuzzyBracketUnknowns.containsKey(bracketText)) {
+            EffectChunkParser.fuzzyBracketUnknowns.put(bracketText, EffectChunkParser.fuzzyBracketUnknowns.get(bracketText) + 1);
+        } else {
+            EffectChunkParser.fuzzyBracketUnknowns.put(bracketText, 1);
+        }
         return new Target(Who.SELF, Where.CARDS_IN_HAND, Collection.NAN); // TODO: Placeholder non-target
     }
 

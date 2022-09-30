@@ -88,7 +88,7 @@ LRE027	Satanic Leaf-Tailed Gecko	Reptiles	Life on Land	Legendary	7	70	When playe
 LRE028	Parson's Chameleon	Reptiles	Life on Land	Epic	6	46	When drawn, Lock this card in hand for 2 turns and give it +50 Power until played. When returned to your deck, give this card +10 Power until played.
 LRE029	Lace Monitor	Reptiles	Life on Land	Rare	5	44	When played, give your Tremendous Trees cards +8 Power until played.
 LRE030	Green Anaconda	Reptiles	Life on Land	Ltd Epic	4	110	When drawn, lock a random card in your hand and increase the energy cost of another by 5 until the end of the round.
-LRE031	Cryptic Skink	Reptiles	Life on Land	Legendary	9	90	When played next to any Mega Maths card, give your Reptiles cards, even if they're in your deck, +6 Power permanently.
+LRE031	Cryptic Skink	Reptiles	Life on Land	Legendary	9	90	When played next to any Mega Math card, give your Reptiles cards, even if they're in your deck, +6 Power permanently.
 LMA001	Coati	Mammals	Life on Land	Common	6	52	NULL
 LMA002	Tayra	Mammals	Life on Land	Common	5	45	NULL
 LMA003	Capybara	Mammals	Life on Land	Common	4	34	NULL
@@ -593,7 +593,7 @@ SMA032	Twin Paradox	Mega Math	Science	Ltd Epic	5	50	When returned to your deck, 
 SMA033	Golden Ratio	Mega Math	Science	Legendary	1	16	When played, if your deck contains 11 Science cards, give your Life on Land cards +19 Power until played.
 SMA034	Planck Length	Mega Math	Science	Ltd Epic	1	0	When returned to your deck, give your Space cards +20 Power and reduce their energy cost by 2 next turn.
 SMA035	Number 42	Mega Math	Science	Ltd Legendary	4	54	When drawn, give your cards in hand +9 Power for 6 turns.
-SMA036	Year 2038 Problem	Mega Math	Science	Legendary	3	38	When played, if your deck contains at least 9 Mega Maths cards, give this card +52 Power permanently.
+SMA036	Year 2038 Problem	Mega Math	Science	Legendary	3	38	When played, if your deck contains at least 9 Mega Math cards, give this card +52 Power permanently.
 STE001	Space Shuttle Discovery	Space Technology	Space	Common	2	20	NULL
 STE002	Hubble Space Telescope	Space Technology	Space	Rare	5	40	When played, gain +4 Power/Turn until the end of the game.
 STE003	Mars Rover Curiosity	Space Technology	Space	Common	1	8	When drawn, your Space Technology cards have +15 Power until played.

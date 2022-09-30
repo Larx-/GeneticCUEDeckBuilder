@@ -48,11 +48,11 @@ public class RegexPreProcessor {
         // <DEBUG>
 
         // Count percentage of replaced
-        int charsAfter = countNotReplacedChars(preFormatted);
-        float percToReplace = (float) charsAfter * 100 / charsBefore;
-        log.debug("");
-        log.debug(String.format("Percentage left to replace: %.2f%%", percToReplace));
-        log.debug("");
+//        int charsAfter = countNotReplacedChars(preFormatted);
+//        float percToReplace = (float) charsAfter * 100 / charsBefore;
+//        log.debug("");
+//        log.debug(String.format("Percentage left to replace: %.2f%%", percToReplace));
+//        log.debug("");
 
 //        preFormatted = replaceAll(preFormatted, Pattern.compile("\\[.*?\\]"),"-", false);
 
@@ -61,7 +61,7 @@ public class RegexPreProcessor {
 //        printMissing(preFormatted, Pattern.compile("Target:(\\(.*?\\))"));
 
         // Output anomalies
-        outputAnomalies(true);
+//        outputAnomalies(true);
 
         // </DEBUG>
 
@@ -217,6 +217,7 @@ public class RegexPreProcessor {
         allRows = allRows.replace("in-hand","in hand");
         allRows = allRows.replace("When played, your [REDACTED] cards have [REDACTED] this turn.","When played, your Solar System cards have +50 Power this turn.");
         allRows = allRows.replace("When played, give all cards with a Base Power of 22 or less +22 Power until played.","When played, give all cards in hand with a Base Power of 22 or less +22 Power until played.");
+        allRows = allRows.replace("Mega Maths","Mega Math");
 
         // Fixing burn to be written the same everywhere
         allRows = allRows.replaceAll(" P/T\\)",") ");

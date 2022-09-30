@@ -6,6 +6,7 @@ import Agents.AgentRandom;
 import GameElements.Deck;
 import GameElements.Game;
 import GameElements.Rules;
+import PreProcessing.RegexPreProcessor;
 import Setup.DeckInitializer;
 import Setup.RulesInitializer;
 import Setup.TSVtoCSVPreProcessor;
@@ -64,6 +65,9 @@ public class Main {
     }
 
     private static void runPreProcessor() {
+        RegexPreProcessor regexPreProcessor = new RegexPreProcessor();
+        String preFormatted = regexPreProcessor.processCardList();
+
         TSVtoCSVPreProcessor preProcessor = new TSVtoCSVPreProcessor();
         preProcessor.processTSVtoCSV();
     }

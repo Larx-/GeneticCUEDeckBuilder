@@ -1,24 +1,44 @@
 package PreProcessing;
 
 import Effects.Effect;
+import Enums.TriggerTime;
+import Setup.NatLangPatternParser;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Log4j2
 public class EffectChunkParser {
 
     Set<String> cardNames;
+    public static Map<String, Integer> fuzzyBracketUnknowns = new HashMap<>();
 
-    public static void main(String[] args) {
-        EffectChunkParser effectChunkParser = new EffectChunkParser();
-        effectChunkParser.parse();
+    public EffectChunkParser (Set<String> cardNames) {
+        this.cardNames = cardNames;
     }
 
-    private void parse () {
+    public Map<TriggerTime,List<Effect>> parseEffects (String cardName, String effectsString) {
+        List<Effect> parsedEffects = parseEffect(cardName.trim(), effectsString.trim());
+        if (parsedEffects == null) {
+            return null;
+        }
+
+        Map<TriggerTime,List<Effect>> orderedEffects = new HashMap<>();
+
+        for (Effect e : parsedEffects) {
+            if (orderedEffects.containsKey(e.getTriggerTime())) {
+                orderedEffects.get(e.getTriggerTime()).add(e);
+            } else {
+                List<Effect> effectList = new ArrayList<>();
+                effectList.add(e);
+                orderedEffects.put(e.getTriggerTime(), effectList);
+            }
+        }
+        return orderedEffects;
+    }
+
+    private void testParseAll () {
         RegexPreProcessor regexPreProcessor = new RegexPreProcessor();
         String processed = regexPreProcessor.readFullFile(RegexPreProcessor.regexFile);
         String[] rows = processed.split("\n");
@@ -38,9 +58,13 @@ public class EffectChunkParser {
 
             List<Effect> parseEffect = parseEffect(cardName.trim(), effectString.trim());
             effectListList.add(parseEffect);
-            //log.debug(parseEffect);
         }
-        //log.debug(effectListList);
+
+
+        // TODO: Make the others work
+//        for (String key : fuzzyBracketUnknowns.keySet()) {
+//            log.debug(StringUtils.rightPad(key, 60) + " " + fuzzyBracketUnknowns.get(key));
+//        }
     }
 
     private List<Effect> parseEffect (String cardName, String effect) {

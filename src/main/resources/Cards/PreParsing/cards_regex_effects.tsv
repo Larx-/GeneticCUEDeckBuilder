@@ -88,7 +88,7 @@ LRE027	Satanic Leaf-Tailed Gecko	Reptiles	Life on Land	Legendary	7	70	[TriggerTi
 LRE028	Parson's Chameleon	Reptiles	Life on Land	Epic	6	46	[TriggerTime:DRAW] [Effect:LOCK] [Target:(this card in hand)] [Duration:TIMER, Values:(2)] [Target:(it)] [Effect:POWER, Value:+50] [Duration:UNTIL_PLAYED] [TriggerTime:RETURN] [Target:THIS] [Effect:POWER, Value:+10] [Duration:UNTIL_PLAYED]
 LRE029	Lace Monitor	Reptiles	Life on Land	Rare	5	44	[TriggerTime:PLAY] [Target:(your Tremendous Trees cards)] [Effect:POWER, Value:+8] [Duration:UNTIL_PLAYED]
 LRE030	Green Anaconda	Reptiles	Life on Land	Ltd Epic	4	110	[TriggerTime:DRAW] [Effect:LOCK] [Target:(a random card in your hand)] and increase the energy cost of another by 5 [Duration:END_ROUND]
-LRE031	Cryptic Skink	Reptiles	Life on Land	Legendary	9	90	[TriggerTime:PLAY] [Condition:PLAYED_WITH, Value:(any Mega Maths card)] [Target:(your Reptiles cards, even if they're in your deck,)] [Effect:POWER, Value:+6] [Duration:PERMANENT] 
+LRE031	Cryptic Skink	Reptiles	Life on Land	Legendary	9	90	[TriggerTime:PLAY] [Condition:PLAYED_WITH, Value:(any Mega Math card)] [Target:(your Reptiles cards, even if they're in your deck,)] [Effect:POWER, Value:+6] [Duration:PERMANENT] 
 LMA001	Coati	Mammals	Life on Land	Common	6	52	NULL
 LMA002	Tayra	Mammals	Life on Land	Common	5	45	NULL
 LMA003	Capybara	Mammals	Life on Land	Common	4	34	NULL
@@ -593,7 +593,7 @@ SMA032	Twin Paradox	Mega Math	Science	Ltd Epic	5	50	[TriggerTime:RETURN] [Target
 SMA033	Golden Ratio	Mega Math	Science	Legendary	1	16	[TriggerTime:PLAY] [Condition:DECK_CONTAINS, Who:SELF, Where:CARDS_IN_DECK, CompareTo:(11 Science cards)] [Target:(your Life on Land cards)] [Effect:POWER, Value:+19] [Duration:UNTIL_PLAYED]
 SMA034	Planck Length	Mega Math	Science	Ltd Epic	1	0	[TriggerTime:RETURN] [Target:(your Space cards)] [Effect:POWER, Value:+20] [Effect:ENERGY, Value:-2] [Target:(their)] [Duration:TIMER, Value:1]
 SMA035	Number 42	Mega Math	Science	Ltd Legendary	4	54	[TriggerTime:DRAW] [Target:(your cards in hand)] [Effect:POWER, Value:+9] [Duration:TIMER, Values:(6)]
-SMA036	Year 2038 Problem	Mega Math	Science	Legendary	3	38	[TriggerTime:PLAY] [Condition:DECK_CONTAINS, Who:SELF, Where:CARDS_IN_DECK, CompareTo:(at least 9 Mega Maths cards)] [Target:THIS] [Effect:POWER, Value:+52] [Duration:PERMANENT] 
+SMA036	Year 2038 Problem	Mega Math	Science	Legendary	3	38	[TriggerTime:PLAY] [Condition:DECK_CONTAINS, Who:SELF, Where:CARDS_IN_DECK, CompareTo:(at least 9 Mega Math cards)] [Target:THIS] [Effect:POWER, Value:+52] [Duration:PERMANENT] 
 STE001	Space Shuttle Discovery	Space Technology	Space	Common	2	20	NULL
 STE002	Hubble Space Telescope	Space Technology	Space	Rare	5	40	[TriggerTime:PLAY] [Target:SELF] [Effect:POWER_PER_TURN, Value:+4] [Duration:PERMANENT]
 STE003	Mars Rover Curiosity	Space Technology	Space	Common	1	8	[TriggerTime:DRAW[Target:(Space Technology)] [Effect:POWER, Value:+15] [Duration:UNTIL_PLAYED]
