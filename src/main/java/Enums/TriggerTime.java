@@ -8,6 +8,8 @@ public enum TriggerTime {
     PLAY,
     RETURN,
 
+    ERROR,
+
     // Only ever in expiry effect
     END_TURN,
     END_ROUND,

@@ -166,8 +166,10 @@ public class EffectBuilder {
                 }
             }
 
+            String state = this.parseState(value);
+
             switch (conditionType){
-                case "ROUND_STATE":     this.conditions.get(this.subEffectCounter).add(new C_RoundState(this.parseState(value)));      break;
+                case "ROUND_STATE":     this.conditions.get(this.subEffectCounter).add(new C_RoundState(state));      break;
                 case "ROUNDS_LOST":     this.conditions.get(this.subEffectCounter).add(new C_RoundsLost(value));                       break;
                 case "ROUNDS_WON":      this.conditions.get(this.subEffectCounter).add(new C_RoundsWon(value));                        break;
                 case "TURN_STATE":      this.conditions.get(this.subEffectCounter).add(new C_TurnState(value));                        break;
@@ -210,12 +212,21 @@ public class EffectBuilder {
             case "lose":
             case "lost":
             case "losing":
+            case "are losing":
                 return "Loss";
 
             default:
                 //log.error("Effect parsing failed during round state parsing.");
-                return null;
         }
+
+        // TODO: implement "Win>=Integer" properly
+        if (state.startsWith("Win")) {
+            return "Win";
+        } else if (state.startsWith("Loss")) {
+            return "Loss";
+        }
+
+        return null;
     }
 
     private Target parseTarget(String target) {
@@ -239,6 +250,7 @@ public class EffectBuilder {
             switch (target) {
                 case "THIS":  return new Target(Who.SELF, Where.CARDS_IN_HAND, this.cardName, true);
                 case "SELF":  return new Target(Who.SELF);
+                case "BOTH":  return new Target(Who.BOTH);
                 case "OTHER": return new Target(Who.OTHER);
                 default:
                     //log.error("Effect parsing failed during target determination.");
@@ -433,6 +445,7 @@ public class EffectBuilder {
         if (bracketText.equals("third"))    { return 3; }
         if (bracketText.equals("three"))    { return 3; }
         if (bracketText.equals("last"))     { return 3; }
+        if (bracketText.equals("four"))     { return 3; }
 
         if (bracketText.equals("at least one")) { return ">=1"; }
         if (bracketText.equals("at least 1"))   { return ">=1"; }
@@ -449,11 +462,13 @@ public class EffectBuilder {
     }
 
     public List<Effect> build() {
-        List<Effect> effectList = new ArrayList<>();
+        if (this.subEffectCounter > 0) {
+            this.propagateBlocks();
+        }
 
+        List<Effect> effectList = new ArrayList<>();
         for (int i = 0; i <= this.subEffectCounter; i++) {
-            // TODO: Propagate values forward and back correctly
-            this.effect.putIfAbsent(i, "ERROR_EFFECT");
+            fillUndefinedBlocks(i);
 
             switch (this.effect.get(i)) {
                 case "POWER_FOR_EACH":  effectList.add(new E_PowerForEach (this.triggerTime.get(i), this.target.get(i), this.value.get(i), this.duration.get(i), this.timer.get(i), this.conditions.get(i), this.countEach.get(i), this.upTo.get(i), this.countPlayHistory.get(i))); break;
@@ -468,5 +483,48 @@ public class EffectBuilder {
         }
 
         return effectList;
+    }
+
+    private void propagateBlocks() {
+        // Forward
+        for (int i = 1; i <= this.subEffectCounter; i++) {
+            if (this.triggerTime.get(i) == null) {
+                this.triggerTime.put(i, this.triggerTime.get(i-1));
+            }
+            if (this.effect.get(i) == null) {
+                this.effect.put(i, this.effect.get(i-1));
+                this.value.put(i, this.value.get(i-1));
+            }
+            if (this.target.get(i) == null) {
+                this.target.put(i, this.target.get(i-1));
+            }
+        }
+        // Backward
+        for (int i = this.subEffectCounter-1; i >= 0; i--) {
+            if (this.triggerTime.get(i) == null) {
+                this.triggerTime.put(i, this.triggerTime.get(i+1));
+            }
+            if (this.effect.get(i) == null) {
+                this.effect.put(i, this.effect.get(i+1));
+                this.value.put(i, this.value.get(i+1));
+            }
+            if (this.target.get(i) == null) {
+                this.target.put(i, this.target.get(i+1));
+            }
+        }
+    }
+
+    private void fillUndefinedBlocks(int i) {
+        // Default/Error values, for when effects don't have all needed blocks
+        this.effect.putIfAbsent(i, "ERROR_EFFECT");
+        this.triggerTime.putIfAbsent(i, TriggerTime.ERROR);
+
+        if (this.target.get(i) == null) {
+            if (this.effect.get(i).equals("ENERGY") || this.effect.get(i).equals("ENERGY_PER_TURN") || this.effect.get(i).equals("POWER_PER_TURN")) {
+                this.target.put(i, new Target(Who.SELF));
+            } else {
+                this.target.put(i, new Target(Who.SELF, Where.CARDS_IN_HAND, this.cardName, true));
+            }
+        }
     }
 }

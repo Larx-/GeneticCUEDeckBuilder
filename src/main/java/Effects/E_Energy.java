@@ -7,6 +7,7 @@ import GameElements.Card;
 import GameElements.Game;
 import GameElements.Player;
 import GameElements.Target;
+import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
 @Log4j2
 public class E_Energy extends Effect {
 
-    Integer changeBy;
+    @Getter public Integer changeBy;
 
     public E_Energy(TriggerTime triggerTime, Target targetCards, Integer changeBy, TriggerTime duration, Integer timer, List<Condition> conditions) {
         super(triggerTime, targetCards, duration, timer, conditions);

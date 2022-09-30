@@ -98,7 +98,7 @@ LMA006	Vampire Bat	Mammals	Life on Land	Rare	1	9	[TriggerTime:PLAY] [Target:OTHE
 LMA007	Tamandua	Mammals	Life on Land	Common	2	16	NULL
 LMA008	Kinkajou	Mammals	Life on Land	Common	3	28	NULL
 LMA009	Agouti	Mammals	Life on Land	Common	5	43	NULL
-LMA010	Tapir	Mammals	Life on Land	Rare	10	76	[TriggerTime:DRAW] [Effect:POWER, Value:+10] [Target:[Who:SELF, What:CARDS_IN_DECK]] [Duration:END_TURN] 
+LMA010	Tapir	Mammals	Life on Land	Rare	10	76	[TriggerTime:DRAW] [Effect:POWER, Value:+10] [Target:[Who:SELF, Where:CARDS_IN_DECK]] [Duration:END_TURN] 
 LMA011	Brown Bear	Mammals	Life on Land	Legendary	4	42	[TriggerTime:RETURN] [Condition:ROUND_STATE, Value:Win] [Target:SELF] [Effect:ENERGY, Value:+4]
 LMA012	Okapi	Mammals	Life on Land	Epic	7	58	[TriggerTime:PLAY] [Target:(Opponent's)] [Effect:POWER, Value:-10] [Duration:END_TURN] 
 LMA013	Giant Anteater	Mammals	Life on Land	Common	6	52	NULL
@@ -339,7 +339,7 @@ PCA037	Shuvuuia	Carnivores	Paleontology	Epic	4	39	[TriggerTime:RETURN] [Conditio
 PCA038	Sinocalliopteryx	Carnivores	Paleontology	Ltd Epic	6	65	[TriggerTime:RETURN] [Condition:TURN_STATE, Value:(won)] [Target:SELF] [Effect:ENERGY, Value:+5] [Duration:TIMER, Value:1]
 PHE001	Saltasaurus	Herbivores	Paleontology	Common	5	42	NULL
 PHE002	Parasaurolophus	Herbivores	Paleontology	Common	7	62	[TriggerTime:PLAY] [Condition:PLAYED_WITH, Value:(Tupuxuara)] [Target:(that card)] [Effect:POWER, Value:+30]
-PHE003	Triceratops	Herbivores	Paleontology	Common	7	63	[TriggerTime:PLAY] [Effect:POWER, Value:+10] [Target:[Who:SELF, What:CARDS_IN_DECK]] [Duration:END_TURN] 
+PHE003	Triceratops	Herbivores	Paleontology	Common	7	63	[TriggerTime:PLAY] [Effect:POWER, Value:+10] [Target:[Who:SELF, Where:CARDS_IN_DECK]] [Duration:END_TURN] 
 PHE004	Alamosaurus	Herbivores	Paleontology	Common	2	16	NULL
 PHE005	Brachiosaurus	Herbivores	Paleontology	Common	6	43	[TriggerTime:PLAY] [Target:(Opponent's)] [Effect:POWER, Value:-5] [Duration:END_TURN] 
 PHE006	Argentinosaurus	Herbivores	Paleontology	Common	5	47	NULL
@@ -411,7 +411,7 @@ STR015	Golden Gate Bridge	Super Structures	Science	Epic	8	50	[TriggerTime:PLAY] 
 STR018	Eiffel Tower	Super Structures	Science	Epic	8	65	[TriggerTime:PLAY] [Target:(your Super Structures cards)] [Effect:POWER, Value:+25] [Duration:UNTIL_PLAYED]
 STR019	Sagrada Família	Super Structures	Science	Rare	2	9	[TriggerTime:DRAW] [Target:THIS] [Effect:POWER, Value:+15] [Duration:PERMANENT]
 STR016	Marina Bay Sands Hotel	Super Structures	Science	Rare	4	39	[TriggerTime:DRAW] lose -4 Power/Turn. [TriggerTime:RETURN] [Target:SELF] [Effect:POWER_PER_TURN, Value:+8]
-STR017	One World Trade Center	Super Structures	Science	Legendary	3	20	[TriggerTime:PLAY] [Condition:ROUND_STATE, Value:Loss] [Effect:POWER, Value:+20] [Target:[Who:SELF, What:CARDS_IN_DECK]] [Duration:END_TURN] 
+STR017	One World Trade Center	Super Structures	Science	Legendary	3	20	[TriggerTime:PLAY] [Condition:ROUND_STATE, Value:Loss] [Effect:POWER, Value:+20] [Target:[Who:SELF, Where:CARDS_IN_DECK]] [Duration:END_TURN] 
 STR020	Turning Torso	Super Structures	Science	Epic	6	86	[TriggerTime:RETURN] [Condition:TURN_STATE, Value:(won)] [Target:OTHER] [Effect:POWER_PER_TURN, Value:+20] [Duration:TIMER, Value:1]
 STR021	The Houses of Parliament	Super Structures	Science	Ltd Rare	4	39	[TriggerTime:PLAY] [Condition:PLAYED_WITH, Value:(Gunpowder)] [Target:(it)] [Effect:POWER, Value:+25] [Duration:END_TURN] 
 STR022	Sydney Opera House	Super Structures	Science	Ltd Legendary	3	12	[TriggerTime:PLAY] [Target:(your cards)] [Effect:POWER, Value:+10] and your Opponent's cards -10 Power [Duration:END_TURN] 
@@ -560,7 +560,7 @@ PMO026	Attenborosaurus	Monsters of the Deep	Paleontology	Ltd Legendary	5	52	[Tri
 PMO025	Gavialinum	Monsters of the Deep	Paleontology	Ltd Common	6	50	[TriggerTime:PLAY] [Condition:ROUND_STATE, Value:Loss] by 66 Power or more, [Target:THIS] [Effect:POWER, Value:+66] [Duration:END_TURN] 
 PMO028	Jaekelopterus	Monsters of the Deep	Paleontology	Ltd Legendary	6	75	[TriggerTime:PLAY] [Condition:TURN_IN_ROUND, Value:1] [Target:(your Bugs and Crustaceans cards)] [Effect:POWER, Value:+25] [Duration:END_ROUND] 
 SMA001	Pi	Mega Math	Science	Epic	3	14	[TriggerTime:PLAY] [Effect:POWER, Value:+25] [Target:THIS] [Duration:END_TURN] 
-SMA002	Playing Cards	Mega Math	Science	Common	1	1	[TriggerTime:PLAY] [Condition:ROUND_STATE, Value:(are losing)] [Effect:POWER, Value:+10] [Target:[Who:SELF, What:CARDS_IN_DECK]] [Duration:END_TURN] 
+SMA002	Playing Cards	Mega Math	Science	Common	1	1	[TriggerTime:PLAY] [Condition:ROUND_STATE, Value:(are losing)] [Effect:POWER, Value:+10] [Target:[Who:SELF, Where:CARDS_IN_DECK]] [Duration:END_TURN] 
 SMA003	Abacus	Mega Math	Science	Common	5	42	NULL
 SMA004	Zero	Mega Math	Science	Rare	0	0	[TriggerTime:PLAY] [Target:THIS] [Effect:POWER, Value:+0]
 SMA005	Fibonacci Spiral	Mega Math	Science	Rare	3	33	[TriggerTime:PLAY] [Effect:POWER, Value:-10] [Duration:END_TURN] 
@@ -866,7 +866,7 @@ ODE003	Painted Frogfish	Deep Ocean	Oceans & Seas	Common	4	32	NULL
 ODE005	Longnose Hawkfish	Deep Ocean	Oceans & Seas	Common	6	55	NULL
 ODE007	Hairy Frogfish	Deep Ocean	Oceans & Seas	Common	5	0	[TriggerTime:DRAW] this card has +60 Power [Duration:END_TURN] 
 ODE009	Fangtooth Moray	Deep Ocean	Oceans & Seas	Epic	3	29	[TriggerTime:DRAW] [Target:(The Moon and Pizza)] [Effect:POWER, Value:+60] [Duration:UNTIL_PLAYED]
-ODE010	Stingray	Deep Ocean	Oceans & Seas	Legendary	2	10	[TriggerTime:PLAY] [Effect:POWER, Value:+18] [Target:[Who:SELF, What:CARDS_IN_DECK]] [Duration:END_TURN] 
+ODE010	Stingray	Deep Ocean	Oceans & Seas	Legendary	2	10	[TriggerTime:PLAY] [Effect:POWER, Value:+18] [Target:[Who:SELF, Where:CARDS_IN_DECK]] [Duration:END_TURN] 
 ODE011	Japanese Sea Nettle	Deep Ocean	Oceans & Seas	Common	3	26	NULL
 ODE012	Giant Isopod	Deep Ocean	Oceans & Seas	Rare	8	72	[TriggerTime:PLAY] [Condition:TURN_STATE, Value:(lose)] [Target:SELF] [Effect:ENERGY, Value:+3]
 ODE013	Falco Hawkfish	Deep Ocean	Oceans & Seas	Fusion	6	65	[TriggerTime:PLAY] [Target:(Sea Birds)] [Effect:POWER, Value:+30] [Duration:END_TURN] 
@@ -920,7 +920,7 @@ OCE025	Orangutan Crab	Crustaceans	Oceans & Seas	Ltd Rare	6	46	[TriggerTime:DRAW]
 OCE024	Blue Crayfish	Crustaceans	Oceans & Seas	Ltd Legendary	5	24	[TriggerTime:PLAY] [Condition:PLAYED_BEFORE, Who:SELF, Where:CARDS_IN_DECK, CompareTo:(Sapphire)] [Target:(your Crustaceans cards)] [Effect:POWER, Value:+26] [Duration:UNTIL_PLAYED]
 OCE026	Warty Crab	Crustaceans	Oceans & Seas	Ltd Common	6	57	[TriggerTime:PLAY] [Condition:PLAYED_BEFORE, Who:SELF, Where:CARDS_IN_DECK, CompareTo:(Oliver Cromwell)] [Target:(it and Warthog)] [Effect:POWER, Value:+32] [Duration:UNTIL_PLAYED]
 LPL001	Petunia	Plant Life	Life on Land	Lvl Legendary	4	42	[TriggerTime:PLAY] [Condition:PLAYED_WITH, Value:(Sperm Whale)] [Target:(that card)] [Effect:POWER, Value:+70]
-LPL002	Pentas	Plant Life	Life on Land	Rare	5	30	[TriggerTime:DRAW] [Effect:POWER, Value:+5] [Target:[Who:SELF, What:CARDS_IN_DECK]] [Duration:UNTIL_PLAYED]
+LPL002	Pentas	Plant Life	Life on Land	Rare	5	30	[TriggerTime:DRAW] [Effect:POWER, Value:+5] [Target:[Who:SELF, Where:CARDS_IN_DECK]] [Duration:UNTIL_PLAYED]
 LPL014	Sunflower	Plant Life	Life on Land	Epic	4	25	[TriggerTime:PLAY] [Condition:MATCHING_ARENA, Value:Plant Life] your Life on Land cards have +15 Power [Duration:END_TURN] 
 LPL018	Venus Flytrap	Plant Life	Life on Land	Ltd Legendary	3	25	[TriggerTime:DRAW] [Effect:LOCK] [Target:(a random card in your Opponent's hand)] [Target:THIS] [Effect:POWER, Value:20] [Duration:END_TURN] 
 LPL010	Ivy	Plant Life	Life on Land	Ltd Rare	2	17	[TriggerTime:PLAY] [Condition:PLAYED_WITH, Value:(Holly or Festive Traditions cards)] [Target:(them)] [Effect:POWER, Value:+14] [Duration:END_TURN] 
@@ -1003,7 +1003,7 @@ LPR004	Gibbon	Primates	Life on Land	Ltd Common	4	22	[TriggerTime:PLAY] [Target:(
 LPR007	Colobus Monkey	Primates	Life on Land	Ltd Common	6	52	NULL
 LPR008	Howler Monkey	Primates	Life on Land	Ltd Common	3	28	NULL
 LPR014	Slow Loris	Primates	Life on Land	Ltd Common	1	9	NULL
-LPR012	Baboon	Primates	Life on Land	Ltd Epic	5	18	[TriggerTime:DRAW] [Effect:POWER, Value:+15] [Target:[Who:SELF, What:CARDS_IN_DECK]] [Duration:UNTIL_PLAYED]
+LPR012	Baboon	Primates	Life on Land	Ltd Epic	5	18	[TriggerTime:DRAW] [Effect:POWER, Value:+15] [Target:[Who:SELF, Where:CARDS_IN_DECK]] [Duration:UNTIL_PLAYED]
 LPR009	Mother Orangutan	Primates	Life on Land	Ltd Legendary	6	45	[TriggerTime:PLAY] [Condition:TURN_STATE, Value:(lose)] you have +45 Power next turn.
 LPR015	Japanese Snow Monkey	Primates	Life on Land	Ltd Common	4	35	[TriggerTime:PLAY] [Condition:PLAYED_WITH, Value:(Geothermal Energy)] [Target:(it)] [Effect:POWER, Value:+35]
 LPR006	Red Titi Monkey	Primates	Life on Land	Ltd Common	4	36	[TriggerTime:PLAY] [Condition:TURN_STATE, Value:(win)] gain +20 Power next turn.
@@ -1081,7 +1081,7 @@ SST012	Brown Dwarf	Exploring the Stars	Space	Ltd Common	4	35	NULL
 SST013	Helix Nebula	Exploring the Stars	Space	Ltd Common	6	59	NULL
 SST009	Ophiuchus Galaxy Explosion	Exploring the Stars	Space	Ltd Rare	5	39	[TriggerTime:DRAW] [Target:SELF] [Effect:ENERGY, Value:+3]
 SST002	TrES-2b	Exploring the Stars	Space	Ltd Epic	4	38	[TriggerTime:PLAY] [Condition:PLAYED_WITH, Value:(Sunshine)] [Target:(it)] [Effect:POWER, Value:+41] [Duration:END_TURN] 
-SST003	51 pegasi b	Exploring the Stars	Space	Ltd Common	3	28	[TriggerTime:PLAY] [Condition:ROUND_STATE, Value:Loss] [Effect:POWER, Value:+13] [Target:[Who:SELF, What:CARDS_IN_DECK]] [Duration:END_TURN] 
+SST003	51 pegasi b	Exploring the Stars	Space	Ltd Common	3	28	[TriggerTime:PLAY] [Condition:ROUND_STATE, Value:Loss] [Effect:POWER, Value:+13] [Target:[Who:SELF, Where:CARDS_IN_DECK]] [Duration:END_TURN] 
 SST006	Kepler-16b	Exploring the Stars	Space	Ltd Common	4	38	NULL
 SST008	GJ 504 b	Exploring the Stars	Space	Ltd Common	5	48	NULL
 SST014	Crab Nebula	Exploring the Stars	Space	Ltd Common	6	56	NULL
@@ -1114,7 +1114,7 @@ SST040	WASP-76b	Exploring the Stars	Space	Ltd Rare	8	76	[TriggerTime:PLAY] [Cond
 SST041	Earendel	Exploring the Stars	Space	Ltd Epic	5	45	[TriggerTime:PLAY] if you have already played The Big Bang, [Target:(your Science cards, wherever they are)] [Effect:POWER, Value:+5] [Duration:PERMANENT] 
 SFO006	King Tide	Forces of the Universe	Space	Common	4	32	NULL
 SFO009	The Big Bang	Forces of the Universe	Space	Rare	7	17	[TriggerTime:PLAY] [Target:SELF] [Effect:ENERGY_PER_TURN, Value:+1] [Duration:PERMANENT] 
-SFO011	Magnetar	Forces of the Universe	Space	Common	9	0	[TriggerTime:PLAY] [Effect:POWER, Value:+30] [Target:[Who:SELF, What:CARDS_IN_DECK]] [Duration:END_TURN] 
+SFO011	Magnetar	Forces of the Universe	Space	Common	9	0	[TriggerTime:PLAY] [Effect:POWER, Value:+30] [Target:[Who:SELF, Where:CARDS_IN_DECK]] [Duration:END_TURN] 
 SFO001	Asteroids	Forces of the Universe	Space	Common	7	66	NULL
 SFO003	Barringer Crater	Forces of the Universe	Space	Common	3	28	NULL
 SFO008	VY Canis Majoris	Forces of the Universe	Space	Epic	5	41	[TriggerTime:PLAY] [Target:(Forces of the Universe)] [Effect:POWER, Value:+15] [Duration:END_TURN] 
@@ -1175,7 +1175,7 @@ ERO002	The Colosseum	Roman Empire	History	Ltd Epic	1	12	[TriggerTime:PLAY] [Cond
 ERO004	Volubilis	Roman Empire	History	Ltd Common	7	62	NULL
 ERO005	Neptune; God of Water	Roman Empire	History	Ltd Rare	3	25	[TriggerTime:PLAY] [Target:(Oceans & Seas)] [Effect:POWER, Value:+15] [Duration:END_TURN] 
 ERO007	Hadrian's Wall	Roman Empire	History	Ltd Common	4	35	NULL
-ERO008	The Roman Army	Roman Empire	History	Ltd Common	3	17	[TriggerTime:PLAY] [Effect:POWER, Value:+5] [Target:[Who:SELF, What:CARDS_IN_DECK]] [Duration:TIMER, Value:1] 
+ERO008	The Roman Army	Roman Empire	History	Ltd Common	3	17	[TriggerTime:PLAY] [Effect:POWER, Value:+5] [Target:[Who:SELF, Where:CARDS_IN_DECK]] [Duration:TIMER, Value:1] 
 ERO011	The Forum in Rome	Roman Empire	History	Ltd Common	1	8	NULL
 ERO013	Mount Vesuvius	Roman Empire	History	Ltd Rare	8	65	[TriggerTime:PLAY] [Target:(Opponent's History)] [Effect:POWER, Value:-20] [Duration:END_TURN] 
 ERO001	Jupiter; King of the Gods	Roman Empire	History	Ltd Legendary	4	10	[TriggerTime:DRAW] [Target:SELF] [Effect:ENERGY_PER_TURN, Value:+4] [Duration:END_ROUND]
@@ -1231,7 +1231,7 @@ PAN005	Megalodon	Ancient Creatures	Paleontology	Ltd Rare	6	48	[TriggerTime:PLAY]
 PAN008	Dunkleosteus	Ancient Creatures	Paleontology	Ltd Common	5	49	NULL
 PAN010	Gastornis	Ancient Creatures	Paleontology	Ltd Common	3	27	NULL
 PAN014	Glyptodon	Ancient Creatures	Paleontology	Ltd Common	2	19	NULL
-PAN015	Woolly Mammoth	Ancient Creatures	Paleontology	Ltd Legendary	9	83	[TriggerTime:RETURN] [Target:[Who:SELF, What:CARDS_IN_HAND]] cost 1 less Energy [Duration:UNTIL_PLAYED]
+PAN015	Woolly Mammoth	Ancient Creatures	Paleontology	Ltd Legendary	9	83	[TriggerTime:RETURN] [Target:[Who:SELF, Where:CARDS_IN_HAND]] cost 1 less Energy [Duration:UNTIL_PLAYED]
 PAN017	Mastodon	Ancient Creatures	Paleontology	Ltd Epic	5	48	[TriggerTime:RETURN] [Effect:ENERGY, Value:-2] [Target:(Woolly Mammoth)] [Duration:UNTIL_PLAYED]
 PAN018	Carbonemys cofrinii	Ancient Creatures	Paleontology	Ltd Rare	2	18	[TriggerTime:PLAY] [Target:(your Ocean Reptiles cards)] [Effect:POWER, Value:+15] [Duration:END_TURN] [Condition:ROUND_STATE, Value:Loss] [Target:(them an additional)] [Effect:POWER, Value:10]
 PAN019	Andrewsarchus	Ancient Creatures	Paleontology	Ltd Epic	4	26	[TriggerTime:RETURN] [Target:SELF] [Effect:POWER_PER_TURN, Value:+26] [Duration:END_ROUND]
@@ -1370,10 +1370,10 @@ SME001	X-Rays	Marvellous Medicine	Science	Ltd Common	9	73	NULL
 SME003	Penicillin	Marvellous Medicine	Science	Ltd Rare	4	36	[TriggerTime:PLAY] [Target:(History)] [Effect:POWER, Value:+30] [Duration:END_TURN] 
 SME004	Vaccination	Marvellous Medicine	Science	Ltd Common	6	52	NULL
 SME005	Organ Transplantation	Marvellous Medicine	Science	Ltd Common	3	25	NULL
-SME009	Anaesthesia	Marvellous Medicine	Science	Ltd Common	4	65	[TriggerTime:PLAY] [Condition:TURN_STATE, Value:(lose)] [Target:[Who:SELF, What:CARDS_IN_HAND]] cost 2 more Energy next turn.
+SME009	Anaesthesia	Marvellous Medicine	Science	Ltd Common	4	65	[TriggerTime:PLAY] [Condition:TURN_STATE, Value:(lose)] [Target:[Who:SELF, Where:CARDS_IN_HAND]] cost 2 more Energy next turn.
 SME011	Defibrillator	Marvellous Medicine	Science	Ltd Common	6	49	[TriggerTime:RETURN] [Condition:ROUND_STATE, Value:Loss] [Target:SELF] [Effect:ENERGY, Value:+3]
 SME012	MRI Scanner	Marvellous Medicine	Science	Ltd Legendary	7	42	[TriggerTime:DRAW] your Science cards cost 2 less Energy [Duration:UNTIL_PLAYED]
-SME007	Germ Theory	Marvellous Medicine	Science	Ltd Epic	3	25	[TriggerTime:DRAW] [Effect:POWER, Value:+15] [Target:[Who:SELF, What:CARDS_IN_DECK]] [Duration:END_TURN] 
+SME007	Germ Theory	Marvellous Medicine	Science	Ltd Epic	3	25	[TriggerTime:DRAW] [Effect:POWER, Value:+15] [Target:[Who:SELF, Where:CARDS_IN_DECK]] [Duration:END_TURN] 
 SME008	Prosthetics	Marvellous Medicine	Science	Ltd Common	4	31	[TriggerTime:PLAY] [Condition:TURN_IN_ROUND, Value:1] [Effect:POWER, Value:+40] [Target:THIS] [Duration:END_TURN] 
 SME010	Thermometer	Marvellous Medicine	Science	Ltd Common	5	68	[TriggerTime:DRAW] [Target:(a random card in your hand)] [Effect:POWER, Value:-15] [Duration:END_ROUND]
 SME013	Artificial Heart	Marvellous Medicine	Science	Ltd Legendary	4	37	[TriggerTime:START] [Duration:END_TURN] this card generates +1 Energy/Turn.
@@ -1516,12 +1516,12 @@ POM013	Citipati	Omnivores	Paleontology	Common	4	39	NULL
 POM009	Ornithomimus	Omnivores	Paleontology	Common	5	43	NULL
 POM010	Caudipteryx	Omnivores	Paleontology	Common	3	26	[TriggerTime:PLAY] [Condition:PLAYED_WITH, Value:(Peacock)] [Target:(it)] [Effect:POWER, Value:+25]
 POM012	Oviraptor	Omnivores	Paleontology	Legendary	4	40	[TriggerTime:PLAY] [Condition:PLAYED_WITH, Value:(Dinosaur Eggs)] [Target:(it)] [Effect:POWER, Value:+50]
-POM003	Deinocheirus	Omnivores	Paleontology	Common	4	50	[TriggerTime:PLAY] [Effect:POWER, Value:-10] [Target:[Who:SELF, What:CARDS_IN_DECK]] [Duration:END_TURN] 
+POM003	Deinocheirus	Omnivores	Paleontology	Common	4	50	[TriggerTime:PLAY] [Effect:POWER, Value:-10] [Target:[Who:SELF, Where:CARDS_IN_DECK]] [Duration:END_TURN] 
 POM004	Gigantoraptor	Omnivores	Paleontology	Legendary	2	28	[TriggerTime:PLAY] [Condition:TURN_STATE, Value:(won)] this card gains +30 Power [Duration:PERMANENT]
 POM008	Heterodontosaurus	Omnivores	Paleontology	Rare	1	6	[TriggerTime:PLAY] [Target:(your Sharks! cards)] [Effect:POWER, Value:+12] [Duration:UNTIL_PLAYED]
 POM017	Hypsilophodon	Omnivores	Paleontology	Common	3	24	[TriggerTime:PLAY] [Target:(your Pioneers of Science cards)] [Effect:POWER, Value:+20] [Duration:END_TURN] 
 POM018	Balaur bondoc	Omnivores	Paleontology	Epic	7	72	[TriggerTime:DRAW] [Effect:BURN, Value:30] [Target:(a random card in your Opponent's hand)] [Duration:UNTIL_PLAYED]
-POM019	Plateosaurus	Omnivores	Paleontology	Rare	6	27	[TriggerTime:PLAY] [Effect:POWER, Value:+30] [Target:[Who:SELF, What:CARDS_IN_DECK]] and your Opponent's have +15 Power, [Duration:END_TURN] 
+POM019	Plateosaurus	Omnivores	Paleontology	Rare	6	27	[TriggerTime:PLAY] [Effect:POWER, Value:+30] [Target:[Who:SELF, Where:CARDS_IN_DECK]] and your Opponent's have +15 Power, [Duration:END_TURN] 
 POM016	Struthiomimus	Omnivores	Paleontology	Rare	2	16	[TriggerTime:PLAY] your Birds have +15 Power [Duration:END_TURN] 
 POM020	Anchisaurus	Omnivores	Paleontology	Ltd Epic	4	35	[TriggerTime:RETURN] [Condition:TURN_STATE, Value:(lost)] you have +35 Power and your Paleontology cards have +10 Power [Duration:TIMER, Value:1]
 POM021	Mononykus	Omnivores	Paleontology	Epic	3	13	[TriggerTime:PLAY] [Target:(Omnivores)] [Effect:POWER, Value:+17] [Duration:END_TURN] 
@@ -1580,7 +1580,7 @@ PFF002	Anhanguera	Fearsome Flyers	Paleontology	Ltd Common	4	30	[TriggerTime:DRAW
 PFF005	Thalassodromeus	Fearsome Flyers	Paleontology	Ltd Common	4	39	NULL
 PFF006	Dorygnathus	Fearsome Flyers	Paleontology	Ltd Common	5	41	NULL
 PFF007	Quetzalcoatlus	Fearsome Flyers	Paleontology	Ltd Rare	7	52	[TriggerTime:PLAY] [Condition:PLAYED_WITH, Value:(Bushmaster)] [Target:(that card)] [Effect:POWER, Value:+50]
-PFF012	Pterodactylus	Fearsome Flyers	Paleontology	Ltd Legendary	4	27	[TriggerTime:RETURN] [Effect:POWER, Value:+15] [Target:[Who:SELF, What:CARDS_IN_DECK]] [Duration:UNTIL_PLAYED]
+PFF012	Pterodactylus	Fearsome Flyers	Paleontology	Ltd Legendary	4	27	[TriggerTime:RETURN] [Effect:POWER, Value:+15] [Target:[Who:SELF, Where:CARDS_IN_DECK]] [Duration:UNTIL_PLAYED]
 PFF014	Rhamphorhynchus	Fearsome Flyers	Paleontology	Ltd Common	3	10	[TriggerTime:RETURN] your Paleontology cards have +10 Power [Duration:UNTIL_PLAYED]
 PFF004	Pteranodon	Fearsome Flyers	Paleontology	Ltd Legendary	4	31	[TriggerTime:PLAY] [Condition:TURN_STATE, Value:(win)] [Target:SELF] [Effect:ENERGY, Value:6]
 PFF003	Eudimorphodon	Fearsome Flyers	Paleontology	Ltd Common	3	29	[TriggerTime:PLAY] [Target:[Who:BOTH, Where:CARDS_IN_HAND, CompareTo:(Oceans & Seas)]] [Effect:POWER, Value:-15] [Duration:END_TURN] 
@@ -1609,10 +1609,10 @@ EOW006	Jesse James	Legends of the Old West	History	Common	7	62	NULL
 EOW010	Elmer McCurdy	Legends of the Old West	History	Common	3	24	NULL
 EOW014	Butch Cassidy	Legends of the Old West	History	Rare	4	5	[TriggerTime:PLAY] [Target:(Legends of the Old West)] [Effect:POWER, Value:+25] [Duration:END_TURN] 
 EOW015	Wild Bill Hickok	Legends of the Old West	History	Fusion	4	49	[TriggerTime:PLAY] [Condition:PLAYED_WITH, Value:(Playing Cards)] [Target:(that card)] [Effect:POWER, Value:+50]
-EOW003	Calamity Jane	Legends of the Old West	History	Common	5	92	[TriggerTime:PLAY] [Effect:POWER, Value:-40] [Target:[Who:SELF, What:CARDS_IN_DECK]] [Duration:END_TURN] 
+EOW003	Calamity Jane	Legends of the Old West	History	Common	5	92	[TriggerTime:PLAY] [Effect:POWER, Value:-40] [Target:[Who:SELF, Where:CARDS_IN_DECK]] [Duration:END_TURN] 
 EOW007	Doc Holliday	Legends of the Old West	History	Common	6	52	[TriggerTime:PLAY] [Condition:PLAYED_WITH, Value:(Wyatt Earp)] [Target:(it)] [Effect:POWER, Value:+25]
 EOW009	Pearl Hart	Legends of the Old West	History	Common	4	35	NULL
-EOW011	Sitting Bull	Legends of the Old West	History	Legendary	4	30	[TriggerTime:PLAY] [Condition:TURN_STATE, Value:(lose)] [Target:[Who:SELF, What:CARDS_IN_HAND]] have +25 Power next turn.
+EOW011	Sitting Bull	Legends of the Old West	History	Legendary	4	30	[TriggerTime:PLAY] [Condition:TURN_STATE, Value:(lose)] [Target:[Who:SELF, Where:CARDS_IN_HAND]] have +25 Power next turn.
 EOW012	Wyatt Earp	Legends of the Old West	History	Common	3	26	[TriggerTime:PLAY] [Condition:PLAYED_WITH, Value:(Doc Holliday)] [Target:(it)] [Effect:POWER, Value:+25]
 EOW004	Goyahkla	Legends of the Old West	History	Rare	3	29	[TriggerTime:DRAW] this card costs 1 less Energy [Duration:END_TURN] 
 EOW013	Mary Fields	Legends of the Old West	History	Epic	6	50	[TriggerTime:RETURN] [Target:(Paper)] [Effect:POWER, Value:+30] [Duration:PERMANENT]
@@ -1796,7 +1796,7 @@ FSP004	Zombie Star	Space Special Fusions	Space	Fusion	5	50	[TriggerTime:PLAY] al
 FSP005	Kraken Merger	Space Special Fusions	Space	Fusion	5	40	[TriggerTime:RETURN] [Target:(Milky Way)] [Effect:POWER, Value:+20] [Effect:ENERGY, Value:-5] [Duration:UNTIL_PLAYED]
 FSP006	Hypernova	Space Special Fusions	Space	Ultra-Fusion	6	50	[TriggerTime:DRAW] [Target:THIS] [Effect:POWER, Value:+100] [Duration:END_TURN] 
 FSP007	The Great Nothing	Space Special Fusions	Space	Fusion	0	0	[TriggerTime:DRAW] [Target:(all cards)] [Effect:POWER, Value:-50] [Duration:END_TURN] 
-FSP008	Giant GRB Ring	Space Special Fusions	Space	Fusion	4	60	[TriggerTime:DRAW] [Effect:BURN, Value:15] [Target:SELF, Where:CARDS_IN_HAND] [Duration:TIMER, Value:1] [Effect:BURN, Value:15] [Target:OTHER, Where:CARDS_IN_HAND] [Duration:UNTIL_PLAYED] 
+FSP008	Giant GRB Ring	Space Special Fusions	Space	Fusion	4	60	[TriggerTime:DRAW] [Effect:BURN, Value:15] [Target:[Who:SELF, Where:CARDS_IN_HAND]] [Duration:TIMER, Value:1] [Effect:BURN, Value:15] [Target:[Who:OTHER, Where:CARDS_IN_HAND]] [Duration:UNTIL_PLAYED] 
 FSP009	Braneworld	Space Special Fusions	Space	Ultra-Fusion	7	40	[TriggerTime:START] [Target:(all Space cards)] [Effect:POWER, Value:+2] [Duration:PERMANENT]
 ACGM001	Hades	Greek Mythology	Arts & Culture	Ltd Epic	2	19	[TriggerTime:PLAY] [Target:(Ancient Greece)] [Effect:POWER, Value:+28] [Duration:END_TURN] 
 ACGM002	Aphrodite	Greek Mythology	Arts & Culture	Ltd Common	4	40	[TriggerTime:PLAY] [Condition:PLAYED_WITH, Value:(Heart Nebula)] [Target:(that card)] [Effect:POWER, Value:+30]
@@ -1933,7 +1933,6 @@ SGM031	Tanzanite	Hidden Gems	Science	Ltd Rare	4	26	[TriggerTime:DRAW] [Target:(y
 SGM032	Garnet	Hidden Gems	Science	Ltd Rare	4	37	[TriggerTime:PLAY] [Condition:ROUND_STATE, Value:Loss] [Target:(your adjacent cards)] [Effect:POWER, Value:+14] [Duration:END_TURN] [Repeat:( this [Condition:TURN_IN_ROUND, Value:(last)] )] 
 SGM020	Amethyst	Hidden Gems	Science	Ltd Rare	3	37	[TriggerTime:PLAY] [Condition:PLAYED_WITH, Value:(Garnet)] [Target:(it)] [Effect:POWER, Value:+37] [Duration:END_TURN] [Repeat:( for Pearl)] 
 SGM033	Star of India	Hidden Gems	Science	Ltd Legendary	5	40	[TriggerTime:DRAW] [Condition:DECK_CONTAINS, Value:>=9, CountEach:[Who:SELF, Where:CARDS_IN_DECK, CompareTo:(cards with 'Star' in the name)]] [Target:THIS] [Effect:POWER, Value:+120] [Duration:END_TURN] 
-ACHA002	Frankenstein's Monster	Horrible Halloween	Arts & Culture	Fusion	5	NULL	NULL
 ACHA001	Count Dracula	Horrible Halloween	Arts & Culture	Ltd Legendary	4	0	[TriggerTime:PLAY] [Target:(your Horrible Halloween cards)] [Effect:POWER, Value:+40] [Duration:END_TURN] 
 ACHA003	Zombies	Horrible Halloween	Arts & Culture	Ltd Rare	6	40	[TriggerTime:PLAY] [Condition:TURN_IN_ROUND, Value:1] [Target:SELF] [Effect:POWER_PER_TURN, Value:+25] [Duration:END_ROUND] [TriggerTime:PLAY] [Condition:PLAYED_WITH, Value:(Arrowhead Crab)] [Target:(it)] [Effect:POWER, Value:+32] [Duration:END_TURN] 
 ACHA004	Mummy	Horrible Halloween	Arts & Culture	Ltd Rare	6	45	[TriggerTime:RETURN] [Target:(your Arts & Culture cards)] [Effect:POWER, Value:+11] [Duration:UNTIL_PLAYED]
@@ -2395,7 +2394,7 @@ SIW002	Walkie Talkie	Innovations of War	Science	Common	1	12	[TriggerTime:DRAW] [
 SIW006	Caterpillar Tracks	Innovations of War	Science	Common	2	25	[TriggerTime:PLAY] [Condition:ROUND_STATE, Value:Loss] [Target:THIS] [Effect:POWER, Value:+7] [Duration:PERMANENT]
 SIW001	Internal Combustion Engine	Innovations of War	Science	Ltd Legendary	7	67	[TriggerTime:DRAW] [Effect:ENERGY, Value:-1] [Target:(your cards)] [Duration:END_ROUND] [TriggerTime:PLAY] [Condition:ROUND_STATE, Value:Loss] [Target:(your cards)] [Effect:POWER, Value:+15] [Duration:END_TURN] 
 SIW007	Chlorine Gas	Innovations of War	Science	Common	2	40	[TriggerTime:DRAW] [Target:(all cards)] [Effect:POWER, Value:-20] [Duration:END_TURN] 
-SIW010	Superglue	Innovations of War	Science	Ltd Legendary	3	10	[TriggerTime:PLAY] [Effect:POWER, Value:+20] [Target:[Who:SELF, What:CARDS_IN_DECK]] [Duration:END_TURN] 
+SIW010	Superglue	Innovations of War	Science	Ltd Legendary	3	10	[TriggerTime:PLAY] [Effect:POWER, Value:+20] [Target:[Who:SELF, Where:CARDS_IN_DECK]] [Duration:END_TURN] 
 SIW011	Microwave Ovens	Innovations of War	Science	Rare	5	48	[TriggerTime:PLAY] [Effect:ENERGY, Value:-1] [Target:(your Curious Cuisine cards)] [Duration:END_ROUND] 
 SIW008	Concertina Wire	Innovations of War	Science	Common	3	28	[TriggerTime:PLAY] [Target:(a random card in your Opponent's hand)] [Effect:POWER, Value:-20] [Duration:END_ROUND] 
 SIW009	Duct Tape	Innovations of War	Science	Common	2	25	[TriggerTime:PLAY] [Target:(your Opponent’s Oceans & Seas cards)] [Effect:POWER, Value:-15] [Duration:END_ROUND]
@@ -2676,7 +2675,7 @@ SPL011	Caloris Planitia	Planetside	Space	Ltd Epic	8	79	[TriggerTime:DRAW] [Condi
 OFF012	Great Barracuda	Feisty Fish	Oceans & Seas	Ltd Common	1	22	[TriggerTime:RETURN] lose 1 Energy.
 OFF018	Scorpion Fish	Feisty Fish	Oceans & Seas	Ltd Rare	5	48	[TriggerTime:PLAY] your Opponent loses -1 Energy/Turn [Duration:END_ROUND]
 OFF016	Bluefin Tuna	Feisty Fish	Oceans & Seas	Ltd Common	1	8	NULL
-OFF015	Puffer Fish	Feisty Fish	Oceans & Seas	Ltd Common	3	17	[TriggerTime:PLAY] [Effect:POWER, Value:+4] [Target:[Who:SELF, What:CARDS_IN_DECK]] [Duration:END_TURN] 
+OFF015	Puffer Fish	Feisty Fish	Oceans & Seas	Ltd Common	3	17	[TriggerTime:PLAY] [Effect:POWER, Value:+4] [Target:[Who:SELF, Where:CARDS_IN_DECK]] [Duration:END_TURN] 
 OFF017	Sailfish	Feisty Fish	Oceans & Seas	Ltd Common	5	48	NULL
 OFF019	Stargazer Fish	Feisty Fish	Oceans & Seas	Ltd Epic	7	60	[TriggerTime:DRAW] [Effect:ENERGY, Value:-1] [Target:(your Space cards)] [Duration:END_ROUND] 
 OFF025	Piranha	Feisty Fish	Oceans & Seas	Ltd Epic	5	52	[TriggerTime:RETURN] [Target:(the cards left in your hand)] [Effect:POWER, Value:+20] [Duration:TIMER, Value:(two)]

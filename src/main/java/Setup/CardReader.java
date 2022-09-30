@@ -96,6 +96,10 @@ public class CardReader {
         }
     }
 
+    public Set<String> getSetOfAllCards() {
+        return this.idStringIndex.keySet();
+    }
+
     public List<String> getPotentialCombos (String comboWith) {
         List<String> comboList = new ArrayList<>();
         String[] combosUnexpanded = this.stringIndexToCombosMap.get(comboWith);

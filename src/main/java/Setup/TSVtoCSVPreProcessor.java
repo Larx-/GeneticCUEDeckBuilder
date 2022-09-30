@@ -1,8 +1,16 @@
 package Setup;
 
+import Controlling.Main;
+import Effects.E_Energy;
+import Effects.E_Power;
+import Effects.E_PowerForEach;
 import Effects.Effect;
 import Enums.Album;
-import Enums.TriggerTime;
+import Enums.Collection;
+import Enums.Who;
+import GameElements.Target;
+import PreProcessing.EffectChunkParser;
+import PreProcessing.RegexPreProcessor;
 import com.opencsv.*;
 import com.opencsv.exceptions.CsvException;
 import lombok.extern.log4j.Log4j2;
@@ -15,13 +23,18 @@ import java.util.*;
 @Log4j2
 public class TSVtoCSVPreProcessor {
 
-    public void processTSVtoCSV() {
-        List<String[]> cardsFromTSV = new ArrayList<>();
-        String defaultFilenameTSV = "src/main/resources/Cards/PreParsing/cards_regex_effects.tsv";
-        String defaultFilenameCSV = "src/main/resources/Cards/cards.csv";
+    Map<String, String> cardIdToNatLangEffectMap = new HashMap<>();
+    Set<String> allCardNames = new HashSet<>();
 
+    EffectChunkParser effectChunkParser;
+
+    public void processTSVtoCSV() {
+        this.mapAllEffects(RegexPreProcessor.formattedFile);
+        this.effectChunkParser = new EffectChunkParser(this.allCardNames);
+
+        List<String[]> cardsFromTSV = new ArrayList<>();
         CSVParser tsvParser = new CSVParserBuilder().withSeparator('\t').build();
-        try (CSVReader reader = new CSVReaderBuilder(new FileReader(defaultFilenameTSV)).withCSVParser(tsvParser).build()) {
+        try (CSVReader reader = new CSVReaderBuilder(new FileReader(RegexPreProcessor.regexFile)).withCSVParser(tsvParser).build()) {
             cardsFromTSV = reader.readAll();
         } catch (IOException | CsvException e) {
             log.error(Arrays.toString(e.getStackTrace()));
@@ -30,15 +43,8 @@ public class TSVtoCSVPreProcessor {
         // Printing all collections to add to enum
         // printCollections(cardsFromTSV);
 
-        // Collect all names to feed to the effect parser
-        Set<String> allCardNames = new HashSet<>();
-        for (String[] tsvCard : cardsFromTSV) {
-            allCardNames.add(tsvCard[1].toLowerCase());
-        }
-
-        EffectParser effectParser = new EffectParser(allCardNames);
         List<String[]> processedCards = new ArrayList<>();
-        processedCards.add(new String[]{"Id","IdString","Name","Lim","Rarity","Collection","Energy","Power","EffectDescriptionTODO","Effect","CombosWithTODO"});
+        processedCards.add(new String[]{"Id","IdString","Name","Lim","Rarity","Collection","Energy","Power","EffectDescription","Effect","CombosWithTODO"});
 
         // Translate all effects and write new file in expected format
 //        List<String[]> subList = cardsFromTSV.subList(0, 10);
@@ -61,9 +67,10 @@ public class TSVtoCSVPreProcessor {
             rarity = rarity.replace("Lvl ", "");
             rarity = rarity.replace("Cft ", "");
 
-            // No effects and combos to isolate influence of different rules better
-            String effectsDesc = "-";
-            String combosWith = "[]";
+            // TODO: Maybe test no effects and combos to isolate influence of different rules better
+
+            String effectsDesc = cardIdToNatLangEffectMap.get(idString);
+            String combosWith = determineSimpleCombos(cardName, effects);
 
             String[] cardCSV = new String[]{String.valueOf(intId),idString,cardName,limited,rarity,collection,energy,power,effectsDesc,effects,combosWith};
             processedCards.add(cardCSV);
@@ -79,10 +86,90 @@ public class TSVtoCSVPreProcessor {
 //        log.debug(effMatched + " / 2700 effects have been matched using " + numPatterns + " patterns, resulting in " + avgEffPerPattern + " per pattern.");
 //        log.debug("This means on average there are " + avgMissingPattern + " more patterns to write.\n\n\n");
 
-        try (CSVWriter writer = new CSVWriter(new FileWriter(defaultFilenameCSV))) {
+        try (CSVWriter writer = new CSVWriter(new FileWriter(Main.cardsFile))) {
             writer.writeAll(processedCards);
         } catch (IOException e) {
             log.error(Arrays.toString(e.getStackTrace()));
+        }
+    }
+
+    private String determineSimpleCombos(String cardName, String effects) {
+        List<Effect> parsedEffects = this.effectChunkParser.parseEffect(cardName, effects);
+        String combos = "";
+
+        if (parsedEffects != null) {
+            for (Effect effect : parsedEffects) {
+                if (effect.getTarget().getWho() == Who.SELF) {
+                    if (effect instanceof E_Power) {
+                        if (((E_Power) effect).getChangeBy() > 0) {
+                            combos = this.appendCombo(combos, findTargetsAsString(effect.getTarget()), cardName);
+                        }
+
+                    } else if (effect instanceof E_PowerForEach) {
+                        if (((E_PowerForEach) effect).getChangeBy() > 0) {
+                            combos = this.appendCombo(combos, findTargetsAsString(effect.getTarget()), cardName);
+                            combos = this.appendCombo(combos, findTargetsAsString(((E_PowerForEach) effect).getCountEach()), cardName);
+                        }
+
+                    } else if (effect instanceof E_Energy) {
+                        if (((E_Energy) effect).getChangeBy() < 0) {
+                            combos = this.appendCombo(combos, findTargetsAsString(effect.getTarget()), cardName);
+                        }
+                    }
+                }
+                // TODO: Also look through the conditions
+            }
+        }
+        if (combos.length() == 0) {
+            return "[]";
+        } else {
+            return "[" + combos.substring(0, combos.length()-1) + "]";
+        }
+    }
+
+    private String appendCombo(String comboFull, String combo, String cardName) {
+        if (!combo.equals("") && !combo.contains(cardName) && !comboFull.contains(combo)) {
+            comboFull += combo;
+        }
+        return comboFull;
+    }
+
+    private String findTargetsAsString (Target target) {
+        String combosWith = "";
+
+        Collection collection = target.getCollection();
+        if (collection != null && collection != Collection.NAN && collection != Collection.NAN_WS) {
+            combosWith += collection + ",";
+        }
+
+        Album album = target.getAlbum();
+        if (album != null && album != Album.NAN && album != Album.NAN_2 && album != Album.NAN_3) {
+            combosWith += album + ",";
+        }
+
+        String name = target.getName();
+        if (name != null && !name.equals("NULL") && !name.equals("null")) {
+            combosWith += name + ",";
+        }
+
+        return combosWith;
+    }
+
+    private void mapAllEffects(String formattedFile) {
+        List<String[]> cardsFromTSV = null;
+
+        CSVParser tsvParser = new CSVParserBuilder().withSeparator('\t').build();
+        try (CSVReader reader = new CSVReaderBuilder(new FileReader(formattedFile)).withCSVParser(tsvParser).build()) {
+            cardsFromTSV = reader.readAll();
+        } catch (IOException | CsvException e) {
+            log.error(Arrays.toString(e.getStackTrace()));
+        }
+
+        for (String[] cardTSV : cardsFromTSV) {
+            String indexStr = cardTSV[0];
+            String natLangEff = cardTSV[7];
+            this.cardIdToNatLangEffectMap.put(indexStr, natLangEff);
+            this.allCardNames.add(cardTSV[1].toLowerCase());
         }
     }
 

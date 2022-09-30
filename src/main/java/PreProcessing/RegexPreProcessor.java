@@ -14,8 +14,8 @@ import java.util.regex.Pattern;
 @Log4j2
 public class RegexPreProcessor {
 
-    private static final String originalFile = "src/main/resources/Cards/PreParsing/cards_original.tsv";
-    private static final String formattedFile = "src/main/resources/Cards/PreParsing/cards_formatted.tsv";
+    public static final String originalFile = "src/main/resources/Cards/PreParsing/cards_original.tsv";
+    public static final String formattedFile = "src/main/resources/Cards/PreParsing/cards_formatted.tsv";
     public  static final String regexFile = "src/main/resources/Cards/PreParsing/cards_regex_effects.tsv";
 
     private static List<String> anomalies = new ArrayList<>();
@@ -278,7 +278,7 @@ public class RegexPreProcessor {
 
     private String replaceSpecialCases (String preFormatted, boolean doLogs) {
         preFormatted = replaceAll(preFormatted, Pattern.compile("BURN \\((\\d+?)\\) all cards - yours until next turn, your Opponent's until played\\."),
-                "[Effect:BURN, Value:15] [Target:SELF, Where:CARDS_IN_HAND] [Duration:TIMER, Value:1] [Effect:BURN, Value:15] [Target:OTHER, Where:CARDS_IN_HAND] [Duration:UNTIL_PLAYED] ",  doLogs);
+                "[Effect:BURN, Value:15] [Target:[Who:SELF, Where:CARDS_IN_HAND]] [Duration:TIMER, Value:1] [Effect:BURN, Value:15] [Target:[Who:OTHER, Where:CARDS_IN_HAND]] [Duration:UNTIL_PLAYED] ",  doLogs);
 
         preFormatted = replaceAll(preFormatted, Pattern.compile("When drawn, gain \\+10 Power/Turn and 1 Energy/Turn until this card is played\\. If you have played Electricity, when drawn, gain an additional \\+10 Power/Turn until this card is played\\."),
                 "[TriggerTime:DRAW] [Target:SELF] [Effect:POWER_PER_TURN, Value:+10] [Effect:ENERGY_PER_TURN, Value:+1] [Duration:WHILE_IN_HAND] [TriggerTime:DRAW] [Target:SELF] [Effect:POWER_PER_TURN, Value:+10] [Condition:PLAYED_BEFORE, Who:SELF, Where:CARDS_IN_DECK, CompareTo:Electricity]",  doLogs);
@@ -347,7 +347,7 @@ public class RegexPreProcessor {
         preFormatted = replaceAll(preFormatted, Pattern.compile("[r|R]educe the [e|E]nergy [c|C]ost of (.*?) by .?(\\d+?).?"),"[Effect:ENERGY, Value:-$2] [Target:($1)] ", doLogs);
         preFormatted = replaceAll(preFormatted, Pattern.compile("[f|F]or each (.*?) [c|C]ard in your deck.*maximum of (\\d+?)\\).*give this [c|C]ard (.?\\d+?) [p|P]ower this turn,"),"[Effect:POWER_FOR_EACH, Value:$3, CountEach:[Who:SELF, Where:CARDS_IN_DECK, CompareTo:($1)], UpTo:$2] [Target:THIS] [Duration:END_TURN] ", doLogs);
         preFormatted = replaceAll(preFormatted, Pattern.compile("([g|G]ain|[g|G]ive yourself|[g|G]et|[y|Y]ou have|[g|G]ain an extra|[r|R]eceive) ([+-|]\\d+) [e|E]nergy/[t|T]urn"),"[Target:SELF] [Effect:ENERGY_PER_TURN, Value:$2] ", doLogs);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[r|R]educe the [e|E]nergy [c|C]ost of your (.*?) [c|C]ards by (.*?) "),"[Effect:ENERGY, Value:-$2] [Target:[Who:SELF, What:CARDS_IN_DECK, CompareTo:($1)]] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[r|R]educe the [e|E]nergy [c|C]ost of your (.*?) [c|C]ards by (.*?) "),"[Effect:ENERGY, Value:-$2] [Target:[Who:SELF, Where:CARDS_IN_DECK, CompareTo:($1)]] ", doLogs);
         preFormatted = replaceAll(preFormatted, Pattern.compile("[g|G]ive this [c|C]ard (.?\\d+?) [p|P]ower"),"[Target:THIS] [Effect:POWER, Value:$1] ", doLogs);
         preFormatted = replaceAll(preFormatted, Pattern.compile("[g|G]ive your Opponent (.?\\d+?) [p|P]ower/[t|T]urn"),"[Target:OTHER] [Effect:POWER_PER_TURN, Value:$1] ", doLogs);
         preFormatted = replaceAll(preFormatted, Pattern.compile("[g|G]ive your Opponent (.?\\d+?) [e|E]nergy\\/[t|T]urn"),"[Target:OTHER] [Effect:ENERGY_PER_TURN, Value:$1] ", doLogs);
@@ -447,9 +447,9 @@ public class RegexPreProcessor {
         preFormatted = replaceAll(preFormatted, Pattern.compile("increase the ([E|e]nergy |)cost of (.*?) card(s|) by (\\d+)"),"[Effect:ENERGY, Value:(+$4)] [Target:($2)] ", doLogs);
         preFormatted = replaceAll(preFormatted, Pattern.compile("if you're winning the round"),"[Condition:ROUND_STATE, Value:Win] ", doLogs);
         preFormatted = replaceAll(preFormatted, Pattern.compile("if you're losing the round"),"[Condition:ROUND_STATE, Value:Loss] ", doLogs);
-        preFormatted = replaceAll(preFormatted, Pattern.compile("your cards have (.?\\d+) Power"),"[Effect:POWER, Value:$1] [Target:[Who:SELF, What:CARDS_IN_DECK]] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("your cards have (.?\\d+) Power"),"[Effect:POWER, Value:$1] [Target:[Who:SELF, Where:CARDS_IN_DECK]] ", doLogs);
 
-        preFormatted = replaceAll(preFormatted, Pattern.compile("[^(]cards left in your hand[^)]"),"[Target:[Who:SELF, What:CARDS_IN_HAND]] ", doLogs);
+        preFormatted = replaceAll(preFormatted, Pattern.compile("[^(]cards left in your hand[^)]"),"[Target:[Who:SELF, Where:CARDS_IN_HAND]] ", doLogs);
         preFormatted = replaceAll(preFormatted, Pattern.compile("\\(with target preview\\)\\."),"", doLogs);
         preFormatted = replaceAll(preFormatted, Pattern.compile("([i|I]f it is|[i|I]f it’s|[o|O]n) the first [t|T]urn of a [r|R]ound"),"[Condition:TURN_IN_ROUND, Value:1] ", doLogs);
         preFormatted = replaceAll(preFormatted, Pattern.compile(", and and ")," ", doLogs);

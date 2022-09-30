@@ -67,7 +67,7 @@ public class EffectChunkParser {
 //        }
     }
 
-    private List<Effect> parseEffect (String cardName, String effect) {
+    public List<Effect> parseEffect (String cardName, String effect) {
         if (!effect.equalsIgnoreCase("NULL")) {
 
             int openedBrackets = 0;

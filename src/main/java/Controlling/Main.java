@@ -7,13 +7,19 @@ import GameElements.Deck;
 import GameElements.Game;
 import GameElements.Rules;
 import PreProcessing.RegexPreProcessor;
+import Setup.CardReader;
 import Setup.DeckInitializer;
 import Setup.RulesInitializer;
 import Setup.TSVtoCSVPreProcessor;
+import com.opencsv.CSVWriter;
 import lombok.extern.log4j.Log4j2;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.security.SecureRandom;
+import java.util.Arrays;
 import java.util.Scanner;
+import java.util.Set;
 
 @Log4j2
 public class Main {
@@ -23,19 +29,17 @@ public class Main {
     public static SecureRandom random;
     public static final String cardsFile = "src/main/resources/Cards/cards.csv";
     public static final String rulesFile = "src/main/resources/Rules/Default.json";
-    public static final String residentsFile = "src/main/resources/Residents/residents.csv";
-    public static final String candidatesFile = null;
+    public static final String residentsFile = "src/main/resources/Decks/residents.csv";
+    public static final String allCardsTestFile = "src/main/resources/Decks/allCardsTest.csv";
+    public static       String candidatesFile = null;
 
     public static final String resultsDir = "src/main/resources/Results";
-    public static final String resultsName = "Resident_Determination_QualityTest_2";
+    public static final String resultsName = "Test_2";
 
     public static final boolean doPreProcessing = true;
-    public static final boolean doPreDefDecks   = false;
+    public static final boolean doPreDefDecks   = false;    // Not in GenAlg
     public static final boolean doEndlessMode   = true;     // Not available for GenAlg mode
-    public static final int runMode             = 0;        // 0 = GenAlg, 1 = Player vs Bot, 2 = Bot vs Bot
-
-    // TODO: Bugs in the simulation part of the software:
-    //       SNB023]  Medusa Nebula -> Does not seem to give a random card of the opponent -36
+    public static final int runMode             = 3;        // 0 = GenAlg, 1 = Player vs Bot, 2 = Bot vs Bot, 3 = Test all Cards
 
     // Used for Player vs Bot
     public static final String[] noEffDeck = new String[]{
@@ -56,7 +60,11 @@ public class Main {
         }
 
         if (runMode == 0) {
-            runGenAlg();
+            runGenAlg(candidatesFile);
+
+        } else if (runMode == 3) {
+            createAllCardsCandiates();
+            runGenAlg(allCardsTestFile);
 
         } else {
             if (doEndlessMode) { loopGames(); }
@@ -64,16 +72,46 @@ public class Main {
         }
     }
 
+    private static void createAllCardsCandiates() {
+        CardReader cardReader = new CardReader(cardsFile);
+        Set<String> cards = cardReader.getSetOfAllCards();
+        StringBuilder allCardsTestCSV = new StringBuilder();
+
+        int cardNumber = 1;
+        for (String card : cards) {
+            if (cardNumber >= GenAlg.defaultNumCards) {
+                allCardsTestCSV.append(card).append("\n");
+                cardNumber = 1;
+            } else {
+                allCardsTestCSV.append(card).append(",");
+                cardNumber++;
+            }
+        }
+        // Remove last ","
+        if (cardNumber != 1) {
+            allCardsTestCSV.deleteCharAt(allCardsTestCSV.length()-1);
+        }
+
+        try {
+            FileWriter myWriter = new FileWriter(allCardsTestFile);
+            myWriter.write(allCardsTestCSV.toString());
+            myWriter.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private static void runPreProcessor() {
         RegexPreProcessor regexPreProcessor = new RegexPreProcessor();
-        String preFormatted = regexPreProcessor.processCardList();
+        regexPreProcessor.processCardList();
 
         TSVtoCSVPreProcessor preProcessor = new TSVtoCSVPreProcessor();
         preProcessor.processTSVtoCSV();
     }
 
-    private static void runGenAlg() {
-        GenAlg genAlg = new GenAlg(cardsFile, rulesFile, residentsFile, candidatesFile);
+    private static void runGenAlg(String canFile) {
+        GenAlg genAlg = new GenAlg(cardsFile, rulesFile, residentsFile, canFile);
         genAlg.runGeneticAlgorithm();
     }
 

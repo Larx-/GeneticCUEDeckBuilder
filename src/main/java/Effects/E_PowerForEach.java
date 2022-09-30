@@ -6,6 +6,7 @@ import Enums.Who;
 import GameElements.Card;
 import GameElements.Game;
 import GameElements.Target;
+import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.ArrayList;
@@ -14,10 +15,10 @@ import java.util.List;
 @Log4j2
 public class E_PowerForEach extends Effect {
 
-    Integer changeBy;
+    @Getter public Integer changeBy;
     int upTo;
     boolean countPlayHistory;
-    Target countEach;
+    @Getter public Target countEach;
 
     public E_PowerForEach(TriggerTime triggerTime, Target targetCards, Integer changeBy, TriggerTime duration, Integer timer, List<Condition> conditions, Target countEach, int upTo, boolean countPlayHistory) {
         super(triggerTime, targetCards, duration, timer, conditions);
