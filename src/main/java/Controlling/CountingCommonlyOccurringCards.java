@@ -39,6 +39,22 @@ import java.util.*;
     8 cards occurred in at least 2 files and at least 100 times in total! (Out of 419 unique cards)
 */
 
+/*
+    Comparing the 7_StandardComboZero, these occurred suspiciously often (300 is max possible):
+
+        ACFU001		260		 -> 260
+        ELT008		220		 -> 220
+        EWW028		283		 -> 283
+        LPL018		276		 -> 276
+        LPR012		200		 -> 200
+        SBB012		284		 -> 284
+        SDD026		217		 -> 217
+        SMA025		274		 -> 274
+        SOD016		281		 -> 281
+
+    9 cards occurred in at least 1 files and at least 200 times in total! (Out of 540 unique cards)
+*/
+
 public class CountingCommonlyOccurringCards {
 
     public static String[] fileNames_Standard = {
@@ -49,13 +65,20 @@ public class CountingCommonlyOccurringCards {
             "C:/Users/kabra/Desktop/Uni/Bachelor 2/GeneticCUEDeckBuilder/src/main/resources/Results/1_StandardRules/RepeatResidents_ContinuedCanFrom1_3_Rules2/currentCandidates.csv"
     };
 
-    public static String[] fileNames = {
+    public static String[] fileNames_NoEffects = {
             "C:/Users/kabra/Desktop/Uni/Bachelor 2/GeneticCUEDeckBuilder/src/main/resources/Results/4_NoEffects/From_Null_Rules_1/currentCandidates.csv",
             "C:/Users/kabra/Desktop/Uni/Bachelor 2/GeneticCUEDeckBuilder/src/main/resources/Results/4_NoEffects/From_1_Rules_3/currentCandidates.csv"
+    };    
+    
+    public static String[] fileNames = {
+            "C:/Users/kabra/Desktop/Uni/Bachelor 2/GeneticCUEDeckBuilder/src/main/resources/Results/1_StandardRules/RepeatResidents_Rules1/currentCandidates - Kopie.csv",
+            "C:/Users/kabra/Desktop/Uni/Bachelor 2/GeneticCUEDeckBuilder/src/main/resources/Results/1_StandardRules/RepeatResidents_Rules2/currentCandidates - Kopie.csv",
+            "C:/Users/kabra/Desktop/Uni/Bachelor 2/GeneticCUEDeckBuilder/src/main/resources/Results/1_StandardRules/RepeatResidents_Rules3/currentCandidates - Kopie.csv",
+            "C:/Users/kabra/Desktop/Uni/Bachelor 2/GeneticCUEDeckBuilder/src/main/resources/Results/7_StandardComboZero/From_Null_Rules_1/currentCandidates.csv"
     };
 
-    public static int minTotalOccurrences = 100;
-    public static int minOccurredInFiles  = 2;
+    public static int minTotalOccurrences = 200;
+    public static int minOccurredInFiles  = 3;
     
     public static void main(String[] args) {
         List<Map<String, Integer>> listOfCounts = new ArrayList<>();
