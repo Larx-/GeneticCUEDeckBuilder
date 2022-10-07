@@ -1,0 +1,8 @@
+{
+  "EnergyStarting": 10,
+  "EnergyMin": 5,
+  "EnergyMax": 15,
+  "EnergyPerTurn": 10,
+  "GuaranteedBoni": {"Science": 200, "History": 200, "Space": 200},
+  "AdditionalBoni": {"Science": 200, "History": 200, "Space": 200}
+}

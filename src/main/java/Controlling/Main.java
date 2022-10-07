@@ -28,18 +28,18 @@ public class Main {
 
     public static SecureRandom random;
     public static final String cardsFile = "src/main/resources/Cards/cards.csv";
-    public static final String rulesFile = "src/main/resources/Rules/2.json";
+    public static final String rulesFile = "src/main/resources/Rules/1.json"; // Next: 2
     public static final String residentsFile = "src/main/resources/Decks/repeat_residents.csv";
     public static final String allCardsTestFile = "src/main/resources/Decks/allCardsTest.csv";
-    public static       String candidatesFile = "src/main/resources/Results/RepeatResidents_ContinuedCanFrom1_Rules3/currentCandidates.csv";
+    public static       String candidatesFile = null; // Next: "src/main/resources/Results/7_StandardComboZero/From_Null_Rules_1"
 
     public static final String resultsDir = "src/main/resources/Results";
-    public static final String resultsNameOriginal = "RepeatResidents_ContinuedCanFrom1_3_Rules2";
+    public static final String resultsNameOriginal = "testing"; //"7_StandardComboZero/From_Null_Rules_1"; // Next: From_1_Rules_3
 
     public static final boolean doPreProcessing = true;
-    public static final boolean doPreDefDecks   = false;    // Not in GenAlg
+    public static final boolean doPreDefDecks   = true;     // Not in GenAlg
     public static final boolean doEndlessMode   = true;     // Not available for GenAlg mode
-    public static final int runMode             = 0;        // 0 = GenAlg, 1 = Player vs Bot, 2 = Bot vs Bot, 3 = Test all Cards
+    public static final int runMode             = 1;        // 0 = GenAlg, 1 = Player vs Bot, 2 = Bot vs Bot, 3 = Test all Cards
     public static final int doRepeat            = 0;        // Repeat GenAlg this many times with the best candidates, 0 for off
 
     // Used for Player vs Bot
@@ -47,11 +47,16 @@ public class Main {
             "LDG005","LDG006","LDG007","LDG014","LDG009","LDG010",
             "PFF006","OMA006","OMA008","OMA010","OMA011","OMA012",
             "OMA013","OWA001","OWA007","OWA010","LRE009","LMA002",};
-    public static final String[] residentDeck = noEffDeck;
-    public static final String[] opponentDeck = new String[]{
-            "ACRR006","SFR003","EPP009","POM013","PFF001","PFF005",
-            "PFF006","OMA006","OMA008","OMA010","OMA011","OMA012",
+    public static final String[] fromStandardRulesDeck = new String[]{  // From counting common occurrences in 1_StandardRules
+            "EWW028","LPR012","OCE009","SBB012","SMA025","SOD016",
+            "STE019","ACFU001","EES008","EMM034","LVE032","OCP002",
             "OMA013","OWA001","OWA007","OWA010","LRE009","LMA002",};
+    public static final String[] fromNoEffDeck = new String[]{          // From counting common occurrences in 4_NoEffects
+            "ACFU001","ACRR004","EEE009","EWW032","ORE004","PCA022",
+            "SDD028","SFN025","OMA008","OMA010","OMA011","OMA012",
+            "OMA013","OWA001","OWA007","OWA010","LRE009","LMA002",};
+    public static final String[] residentDeck = noEffDeck;
+    public static final String[] opponentDeck = fromNoEffDeck;
 
     public static void main(String[] args) {
         Main.random = new SecureRandom();

@@ -67,7 +67,10 @@ public class TSVtoCSVPreProcessor {
             rarity = rarity.replace("Lvl ", "");
             rarity = rarity.replace("Cft ", "");
 
-            // TODO: Maybe test no effects and combos to isolate influence of different rules better
+            // TODO: Maybe test no effects and combos to isolate influence of different rules better -> DONE: it's not any better
+//            effects = "NULL";
+//            String effectsDesc = "NULL";
+//            String combosWith = "[]";
 
             String effectsDesc = cardIdToNatLangEffectMap.get(idString);
             String combosWith = determineSimpleCombos(cardName, effects);

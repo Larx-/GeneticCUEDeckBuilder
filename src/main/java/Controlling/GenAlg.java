@@ -29,8 +29,8 @@ public class GenAlg {
 
     public static final int repetitions         = 50;
     public static final int tournamentSize      = 5;
-    public static final int generations         = 200;
-    public static final int comboMutationChance = 50;
+    public static final int generations         = 100;
+    public static final int comboMutationChance = 0;
 //    public static final int hyperMutationRatio  = 10;
 
     public static ResultWriter resultWriter;

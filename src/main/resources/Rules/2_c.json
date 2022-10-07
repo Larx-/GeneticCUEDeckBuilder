@@ -1,0 +1,8 @@
+{
+  "EnergyStarting": 12,
+  "EnergyMin": 4,
+  "EnergyMax": 48,
+  "EnergyPerTurn": 12,
+  "GuaranteedBoni": {"Paleontology": 300, "NAN": 0, "NAN_2": 0},
+  "AdditionalBoni": {"Paleontology": 300, "NAN": 0, "NAN_2": 0}
+}

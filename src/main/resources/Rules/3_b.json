@@ -1,0 +1,8 @@
+{
+  "EnergyStarting": 20,
+  "EnergyMin": 5,
+  "EnergyMax": 40,
+  "EnergyPerTurn": 5,
+  "GuaranteedBoni": {"History of Heartbreak": 200, "Super Structures": 200, "Deep Ocean": 200},
+  "AdditionalBoni": {"Money; Money; Money": 100, "Fearsome Flyers": 100, "Dogs": 100}
+}
