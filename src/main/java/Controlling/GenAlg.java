@@ -24,13 +24,14 @@ public class GenAlg {
     public static DeckInitializer deckInitializer;
     public static RulesInitializer rulesInitializer;
 
-    public static final int numResidents = 10;
-    public static final int numCandidates = 100;
+    public static final int numResidents        = 10;
+    public static final int numCandidates       = 300;
 
-    public static final int repetitions = 50;
-    public static final int tournamentSize = 5;
-    public static final int generations = 100;
+    public static final int repetitions         = 50;
+    public static final int tournamentSize      = 5;
+    public static final int generations         = 200;
     public static final int comboMutationChance = 50;
+//    public static final int hyperMutationRatio  = 10;
 
     public static ResultWriter resultWriter;
     private List<String[]> resDecks;
@@ -39,13 +40,13 @@ public class GenAlg {
     private final List<AgentInterface> residentList;
     private List<Candidate> candidateList;
 
-    public GenAlg (String cardsFile, String rulesFile, String residentsFile, String candidatesFile) {
+    public GenAlg (String cardsFile, String rulesFile, String residentsFile, String candidatesFile, String resultsName) {
         deckInitializer = new DeckInitializer(cardsFile);
         rulesInitializer = new RulesInitializer();
 
         rules = rulesInitializer.getRulesFromFile(rulesFile);
 
-        resultWriter = new ResultWriter(Main.resultsDir, Main.resultsName);
+        resultWriter = new ResultWriter(Main.resultsDir, resultsName);
 
         this.residentList = this.initResidents(residentsFile);
         this.candidateList = this.initCandidates(candidatesFile);

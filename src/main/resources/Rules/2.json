@@ -1,0 +1,8 @@
+{
+  "EnergyStarting": 12,
+  "EnergyMin": 4,
+  "EnergyMax": 48,
+  "EnergyPerTurn": 20,
+  "GuaranteedBoni": {"Around the Reef": 100, "Awesome Aviation": 80, "Bugs": 60},
+  "AdditionalBoni": {"Fabulous Fish": 50, "Forces of the Universe": 50, "Going Underground": 50}
+}

@@ -78,13 +78,18 @@ public class ResultWriter {
     }
 
     public void writeCurrentCandidates (List<String[]> currentCandidateDecks) {
-        Path initialFilePath = Paths.get(this.filePath.toString(), "currentCandidates.txt");
+        Path initialFilePath = Paths.get(this.filePath.toString(), "currentCandidates.csv");
 
             StringBuilder currentCandidates = new StringBuilder();
             for (String[] deck : currentCandidateDecks) {
                 String[] copyDeck = deck.clone();
                 Arrays.sort(copyDeck);
-                currentCandidates.append(Arrays.toString(copyDeck).replace("[","").replace("]","")).append("\n");
+                currentCandidates
+                        .append(Arrays.toString(copyDeck)
+                        .replace("[","")
+                        .replace("]","")
+                        .replace(" ",""))
+                        .append("\n");
             }
 
             try {

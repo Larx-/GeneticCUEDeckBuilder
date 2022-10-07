@@ -28,18 +28,19 @@ public class Main {
 
     public static SecureRandom random;
     public static final String cardsFile = "src/main/resources/Cards/cards.csv";
-    public static final String rulesFile = "src/main/resources/Rules/Default.json";
-    public static final String residentsFile = "src/main/resources/Decks/residents.csv";
+    public static final String rulesFile = "src/main/resources/Rules/2.json";
+    public static final String residentsFile = "src/main/resources/Decks/repeat_residents.csv";
     public static final String allCardsTestFile = "src/main/resources/Decks/allCardsTest.csv";
-    public static       String candidatesFile = null;
+    public static       String candidatesFile = "src/main/resources/Results/RepeatResidents_ContinuedCanFrom1_Rules3/currentCandidates.csv";
 
     public static final String resultsDir = "src/main/resources/Results";
-    public static final String resultsName = "Test_2";
+    public static final String resultsNameOriginal = "RepeatResidents_ContinuedCanFrom1_3_Rules2";
 
     public static final boolean doPreProcessing = true;
     public static final boolean doPreDefDecks   = false;    // Not in GenAlg
     public static final boolean doEndlessMode   = true;     // Not available for GenAlg mode
-    public static final int runMode             = 3;        // 0 = GenAlg, 1 = Player vs Bot, 2 = Bot vs Bot, 3 = Test all Cards
+    public static final int runMode             = 0;        // 0 = GenAlg, 1 = Player vs Bot, 2 = Bot vs Bot, 3 = Test all Cards
+    public static final int doRepeat            = 0;        // Repeat GenAlg this many times with the best candidates, 0 for off
 
     // Used for Player vs Bot
     public static final String[] noEffDeck = new String[]{
@@ -60,11 +61,20 @@ public class Main {
         }
 
         if (runMode == 0) {
-            runGenAlg(candidatesFile);
+            String resultsName = doRepeat > 0 ? resultsNameOriginal + "0" : resultsNameOriginal;
+            String residFile = residentsFile;
+            runGenAlg(residFile, candidatesFile, resultsName);
+
+            for (int i = 1; i <= doRepeat; i++) {
+                resultsName = resultsNameOriginal + i;
+                residFile = resultsDir + "/" + resultsNameOriginal + (i-1) + "/currentCandidates.csv";
+
+                runGenAlg(residFile, candidatesFile, resultsName);
+            }
 
         } else if (runMode == 3) {
             createAllCardsCandiates();
-            runGenAlg(allCardsTestFile);
+            runGenAlg(residentsFile, allCardsTestFile, resultsNameOriginal);
 
         } else {
             if (doEndlessMode) { loopGames(); }
@@ -110,8 +120,8 @@ public class Main {
         preProcessor.processTSVtoCSV();
     }
 
-    private static void runGenAlg(String canFile) {
-        GenAlg genAlg = new GenAlg(cardsFile, rulesFile, residentsFile, canFile);
+    private static void runGenAlg(String resFile, String canFile, String resultsName) {
+        GenAlg genAlg = new GenAlg(cardsFile, rulesFile, resFile, canFile, resultsName);
         genAlg.runGeneticAlgorithm();
     }
 

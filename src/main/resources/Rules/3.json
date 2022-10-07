@@ -1,0 +1,8 @@
+{
+  "EnergyStarting": 60,
+  "EnergyMin": 6,
+  "EnergyMax": 90,
+  "EnergyPerTurn": 6,
+  "GuaranteedBoni": {"History of Heartbreak": 70, "Aztec Mythology": 60, "Deep Ocean": 50},
+  "AdditionalBoni": {"Money; Money; Money": 40, "Fearsome Flyers": 30, "Dogs": 30}
+}

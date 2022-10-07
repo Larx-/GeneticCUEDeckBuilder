@@ -1,0 +1,8 @@
+{
+  "EnergyStarting": 15,
+  "EnergyMin": 15,
+  "EnergyMax": 15,
+  "EnergyPerTurn": 15,
+  "GuaranteedBoni": {"Prominent Painters": 80, "Philosophy": 80, "Aztec Mythology": 80},
+  "AdditionalBoni": {"The Occult": 40, "Brilliant Human Body": 40, "Plant Life": 40}
+}
