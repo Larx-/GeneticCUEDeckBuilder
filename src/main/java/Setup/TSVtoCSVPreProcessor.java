@@ -7,6 +7,7 @@ import Effects.E_PowerForEach;
 import Effects.Effect;
 import Enums.Album;
 import Enums.Collection;
+import Enums.TriggerTime;
 import Enums.Who;
 import GameElements.Target;
 import PreProcessing.EffectChunkParser;
@@ -69,15 +70,34 @@ public class TSVtoCSVPreProcessor {
 
             // TODO: Maybe test no effects and combos to isolate influence of different rules better -> DONE: it's not any better
 //            effects = "NULL";
-//            String effectsDesc = "NULL";
-//            String combosWith = "[]";
 
-            String effectsDesc = cardIdToNatLangEffectMap.get(idString);
-            String combosWith = determineSimpleCombos(cardName, effects);
+            String effectsDesc = "NULL";
+            String combosWith = "[]";
 
-            String[] cardCSV = new String[]{String.valueOf(intId),idString,cardName,limited,rarity,collection,energy,power,effectsDesc,effects,combosWith};
-            processedCards.add(cardCSV);
-            intId++;
+            boolean effectParsesCorrectly = true;
+            if (!effects.equalsIgnoreCase("NULL")) {
+                List<Effect> parsedEffects = this.effectChunkParser.parseEffect(cardName, effects);
+
+                if (parsedEffects == null || parsedEffects.size() == 0) {
+                    effectParsesCorrectly = false;
+                } else {
+                    for (Effect eff : parsedEffects) {
+                        if (TriggerTime.ERROR == eff.getTriggerTime() || Collection.NAN == eff.getTarget().getCollection()) {
+                            effectParsesCorrectly = false;
+                            break;
+                        }
+                    }
+
+                    effectsDesc = cardIdToNatLangEffectMap.get(idString);
+                    combosWith = determineSimpleCombos(cardName, parsedEffects);
+                }
+            }
+
+            if (effectParsesCorrectly) {
+                String[] cardCSV = new String[]{String.valueOf(intId),idString,cardName,limited,rarity,collection,energy,power,effectsDesc,effects,combosWith};
+                processedCards.add(cardCSV);
+                intId++;
+            }
         }
 
 //        int missingPatterns = effectParser.parser.getNumEffectsWithoutPattern();
@@ -96,8 +116,7 @@ public class TSVtoCSVPreProcessor {
         }
     }
 
-    private String determineSimpleCombos(String cardName, String effects) {
-        List<Effect> parsedEffects = this.effectChunkParser.parseEffect(cardName, effects);
+    private String determineSimpleCombos(String cardName, List<Effect> parsedEffects) {
         String combos = "";
 
         if (parsedEffects != null) {

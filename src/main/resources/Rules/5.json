@@ -1,0 +1,8 @@
+{
+  "EnergyStarting": 60,
+  "EnergyMin": 6,
+  "EnergyMax": 90,
+  "EnergyPerTurn": 6,
+  "GuaranteedBoni": {"Stage & Screen": 80, "Herbivores": 70, "Nebulae": 60},
+  "AdditionalBoni": {"Primates": 40, "The American Revolution": 30, "Arthurian Legends": 30}
+}

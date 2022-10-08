@@ -24,14 +24,18 @@ public class GenAlg {
     public static DeckInitializer deckInitializer;
     public static RulesInitializer rulesInitializer;
 
-    public static final int numResidents        = 10;
-    public static final int numCandidates       = 300;
+    public static final int numResidents        = 15;
+    public static final int numCandidates       = 100;
 
     public static final int repetitions         = 50;
     public static final int tournamentSize      = 5;
-    public static final int generations         = 100;
-    public static final int comboMutationChance = 0;
-//    public static final int hyperMutationRatio  = 10;
+    public static       int generations         = 50;
+    public static       int averageGoal         = 60; // If not 0, above generations are only a minimum, continues running until goal is reached
+    public static final int comboMutationChance = 50;
+
+    public static final int hyperMutationRatio  = 10;     // Never used
+    public static final boolean doCulling = false;
+    public static final float DELTA = 0.00000000001f;
 
     public static ResultWriter resultWriter;
     private List<String[]> resDecks;
@@ -39,6 +43,7 @@ public class GenAlg {
 
     private final List<AgentInterface> residentList;
     private List<Candidate> candidateList;
+    private final String candidatesFile;
 
     public GenAlg (String cardsFile, String rulesFile, String residentsFile, String candidatesFile, String resultsName) {
         deckInitializer = new DeckInitializer(cardsFile);
@@ -50,6 +55,7 @@ public class GenAlg {
 
         this.residentList = this.initResidents(residentsFile);
         this.candidateList = this.initCandidates(candidatesFile);
+        this.candidatesFile = candidatesFile;
     }
 
     public void runGeneticAlgorithm() {
@@ -60,16 +66,28 @@ public class GenAlg {
         for (int gen = 0; gen < generations; gen++) {
             log.debug("Generation " + gen);
 
-            Candidate canBest = evaluator.evaluateFitness(candidateList, gen);
+            Candidate canBest = evaluator.evaluateFitness(this.candidateList, gen);
             // Write evaluated candidates, instead of new ones to be able to confirm evaluation, if restarting is necessary, also makes more sense logically
             resultWriter.writeCurrentCandidates(this.canDecks);
 
-            this.candidateList = this.selectNextGen(this.candidateList);
-            this.candidateList = this.mutateGen(this.candidateList);
+            // Prolog GenAlg if needed
+            if (generations == (gen+1) && averageGoal > 0 && averageGoal > resultWriter.getLastAvg()) {
+                generations++;
+            }
 
-            // Add the best candidate without mutating
-            this.candidateList.add(new Candidate(canBest.getDeckStrArray()));
-            this.canDecks.add(canBest.getDeckStrArray());
+            if (doCulling && canBest.getFitness() <= DELTA) {
+                this.candidateList = this.initCandidates(this.candidatesFile);
+                log.debug("Culling all candidates!");
+
+            } else {
+                this.candidateList = this.selectNextGen(this.candidateList);
+                this.candidateList = this.mutateGen(this.candidateList);
+
+                // Add the best candidate without mutating
+                this.candidateList.add(new Candidate(canBest.getDeckStrArray()));
+                this.canDecks.add(canBest.getDeckStrArray());
+            }
+
         }
     }
 

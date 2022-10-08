@@ -478,7 +478,8 @@ public class EffectBuilder {
                 case "POWER":           effectList.add(new E_Power  (this.triggerTime.get(i), this.target.get(i), this.value.get(i), this.duration.get(i), this.timer.get(i), this.conditions.get(i))); break;
                 case "BURN":            effectList.add(new E_Burn   (this.triggerTime.get(i), this.target.get(i), this.value.get(i), this.duration.get(i), this.timer.get(i), this.conditions.get(i))); break;
                 case "LOCK":            effectList.add(new E_Lock   (this.triggerTime.get(i), this.target.get(i), this.duration.get(i), this.timer.get(i), this.conditions.get(i))); break;
-                default:                //log.error("Effect parsing failed during building.");
+                default:
+//                    log.error("Effect parsing failed during building.");
             }
         }
 

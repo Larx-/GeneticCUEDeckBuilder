@@ -1,0 +1,8 @@
+{
+  "EnergyStarting": 30,
+  "EnergyMin": 0,
+  "EnergyMax": 60,
+  "EnergyPerTurn": 30,
+  "GuaranteedBoni": {"Deep Ocean": 90, "Machines of War": 80, "Carnivores": 60},
+  "AdditionalBoni": {"Climate Change": 50, "Planetside": 50, "Land Before Time": 50}
+}

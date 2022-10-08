@@ -15,17 +15,19 @@ import java.util.List;
 
 public class ResultWriter {
 
-    public static final boolean SAFE_MODE = false; // Makes sure to never override old files, even when name is the same
+    public static final boolean SAFE_MODE = true; // Makes sure to never override old files, even when name is the same
 
     private String name;
     private String directory;
     private Path filePath;
+    @Getter private float lastAvg;
 
     public ResultWriter (String directory, String name) {
         this.name = name;
         this.directory = directory;
 
         this.filePath = Paths.get(directory,name);
+        this.lastAvg = 0.0f;
 
         if (SAFE_MODE) {
             while (Files.exists(this.filePath)) {
@@ -103,6 +105,9 @@ public class ResultWriter {
     }
 
     public void appendCurrentFitness (int gen, float worst, float avg, float best, float[] bestDistribution, String[] bestDeck) {
+        // To be able to continue for a specific average goal
+        this.lastAvg = avg;
+
         Path initialFilePath = Paths.get(this.filePath.toString(), "continuousFitness.csv");
 
         if (!Files.exists(initialFilePath) || (!SAFE_MODE && gen == 0)) {

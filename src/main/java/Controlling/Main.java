@@ -28,18 +28,18 @@ public class Main {
 
     public static SecureRandom random;
     public static final String cardsFile = "src/main/resources/Cards/cards.csv";
-    public static final String rulesFile = "src/main/resources/Rules/1.json"; // Next: 2
-    public static final String residentsFile = "src/main/resources/Decks/repeat_residents.csv";
+    public static final String rulesFile = "src/main/resources/Rules/6.json";
+    public static final String residentsFile = "src/main/resources/Decks/NewResidents/res_current.csv";
     public static final String allCardsTestFile = "src/main/resources/Decks/allCardsTest.csv";
-    public static       String candidatesFile = null; // Next: "src/main/resources/Results/7_StandardComboZero/From_Null_Rules_1"
+    public static       String candidatesFile = null; // "src/main/resources/Results/UntilAvg60Run/FROM_r4_c0_WITH_r5_c0/currentCandidates.csv";
 
-    public static final String resultsDir = "src/main/resources/Results";
-    public static final String resultsNameOriginal = "testing"; //"7_StandardComboZero/From_Null_Rules_1"; // Next: From_1_Rules_3
+    public static final String resultsDir = "src/main/resources/Results/UntilAvg60Run";
+    public static final String resultsNameOriginal = "FROM_null_WITH_r6_c50";
 
     public static final boolean doPreProcessing = true;
-    public static final boolean doPreDefDecks   = true;     // Not in GenAlg
+    public static final boolean doPreDefDecks   = false;    // Not in GenAlg
     public static final boolean doEndlessMode   = true;     // Not available for GenAlg mode
-    public static final int runMode             = 1;        // 0 = GenAlg, 1 = Player vs Bot, 2 = Bot vs Bot, 3 = Test all Cards
+    public static final int runMode             = 0;        // 0 = GenAlg, 1 = Player vs Bot, 2 = Bot vs Bot, 3 = Create and run GenAlg with allCardsTest
     public static final int doRepeat            = 0;        // Repeat GenAlg this many times with the best candidates, 0 for off
 
     // Used for Player vs Bot
