@@ -31,10 +31,10 @@ public class Main {
     public static final String rulesFile = "src/main/resources/Rules/6.json";
     public static final String residentsFile = "src/main/resources/Decks/NewResidents/res_current.csv";
     public static final String allCardsTestFile = "src/main/resources/Decks/allCardsTest.csv";
-    public static       String candidatesFile = null; // "src/main/resources/Results/UntilAvg60Run/FROM_r4_c0_WITH_r5_c0/currentCandidates.csv";
+    public static       String candidatesFile = "src/main/resources/Results/UntilAvg60Run/FROM_r4_c50_WITH_r5_c50/currentCandidates.csv";
 
     public static final String resultsDir = "src/main/resources/Results/UntilAvg60Run";
-    public static final String resultsNameOriginal = "FROM_null_WITH_r6_c50";
+    public static final String resultsNameOriginal = "FROM_r45_c50_WITH_r6_c50";
 
     public static final boolean doPreProcessing = true;
     public static final boolean doPreDefDecks   = false;    // Not in GenAlg

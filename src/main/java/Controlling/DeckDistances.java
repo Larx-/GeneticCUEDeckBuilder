@@ -1,23 +1,32 @@
 package Controlling;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class DeckDistances {
 
     // Quick and not very pretty, but should get the task done
-    public static String fileName_1 = "src/main/resources/Decks/NewResidents/res_identical.csv";
-    public static String fileName_2 = null; // "src/main/resources/Decks/NewResidents/res_identical.csv";
+    public static String fileBase   = "src/main/resources/";
+    public static String fileOutput = fileBase + "Results/DeckDistances/";  // null for no output
+
+    public static String fileName_1 = "Results/UntilAvg60Run/FROM_null_WITH_r6_c95";
+    public static String fileName_2 = "Results/UntilAvg60Run/FROM_r45_c0_WITH_r6_c0";
+
+    // Missing: Continuous and Combo 50/95
 
     public static void main(String[] args) {
+        String toFileContent = "Deck Distance Score for: \n      " + fileName_1;
+        toFileContent = fileName_2 != null ? toFileContent + " (Left side from top to bottom)\nand   " + fileName_2 + " (Top side from left to right)" : toFileContent;
+        toFileContent += "\n\n";
 
         Integer[][] scoreMatrix = null;
 
         if (fileName_2 == null) {
             // Internal population homogeneity
-            List<String[]> population = readFullFile(fileName_1);
+            String fileName_str = fileName_1.endsWith(".csv") ? fileBase + fileName_1 : fileBase +  fileName_1 + "/currentCandidates.csv";
+            List<String[]> population = readFullFile(fileName_str);
             int populationSize = population.size();
 
             scoreMatrix = new Integer[populationSize][populationSize];
@@ -34,12 +43,14 @@ public class DeckDistances {
                 }
             }
             float similarity = scoreTotal / ((float) (countChecked * GenAlg.defaultNumCards) / 100);
-            System.out.printf("Similarity: %1.2f%% (Score: %d/%d) \n", similarity, scoreTotal, (countChecked * GenAlg.defaultNumCards));
+            toFileContent += String.format("Similarity: %1.2f%% (Score: %d/%d) \n\n", similarity, scoreTotal, (countChecked * GenAlg.defaultNumCards));
 
         } else {
             // Comparing population homogeneity
-            List<String[]> population_1 = readFullFile(fileName_1);
-            List<String[]> population_2 = readFullFile(fileName_2);
+            String fileName_1_str = fileName_1.endsWith(".csv") ? fileBase + fileName_1 : fileBase +  fileName_1 + "/currentCandidates.csv";
+            String fileName_2_str = fileName_2.endsWith(".csv") ? fileBase +  fileName_2 : fileBase +  fileName_2 + "/currentCandidates.csv";
+            List<String[]> population_1 = readFullFile(fileName_1_str);
+            List<String[]> population_2 = readFullFile(fileName_2_str);
             int populationSize_1 = population_1.size();
             int populationSize_2 = population_2.size();
 
@@ -55,17 +66,42 @@ public class DeckDistances {
                 }
             }
             float similarity = scoreTotal / ((float) (countChecked * GenAlg.defaultNumCards) / 100);
-            System.out.printf("Similarity: %1.2f%% (Score: %d/%d) \n", similarity, scoreTotal, (countChecked * GenAlg.defaultNumCards));
+            toFileContent += String.format("Similarity: %1.2f%% (Score: %d/%d) \n\n", similarity, scoreTotal, (countChecked * GenAlg.defaultNumCards));
         }
 
         for (Integer[] row : scoreMatrix) {
             for (Integer cell : row) {
                 if (cell != null) {
-                    System.out.print(cell);
+                    toFileContent += cell;
                 }
-                System.out.print("\t");
+                toFileContent += "\t";
             }
-            System.out.print("\n");
+            toFileContent = toFileContent.trim() + "\n";
+        }
+
+        if (fileOutput != null) {
+            String outputFilePath = fileOutput + fileName_1.replace("/","-");
+            outputFilePath = fileName_2 != null ? outputFilePath + "_AND_" + fileName_2.replace("/","-") : outputFilePath;
+
+            System.out.println(outputFilePath);
+            System.out.println(toFileContent);
+
+            writeFile(outputFilePath, toFileContent);
+        }
+    }
+
+    private static void writeFile (String outputFilePath, String content) {
+        try {
+            Path filePath = Paths.get(outputFilePath);
+            File file = filePath.toFile();
+            file.getParentFile().mkdirs();
+
+            FileWriter myWriter = new FileWriter(file);
+            myWriter.write(content);
+            myWriter.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
