@@ -9,10 +9,10 @@ public class DeckDistances {
 
     // Quick and not very pretty, but should get the task done
     public static String fileBase   = "src/main/resources/";
-    public static String fileOutput = fileBase + "Results/DeckDistances/";  // null for no output
+    public static String fileOutput = fileBase + "Results/4_DeckDistances_ofAvg60Run/";  // null for no output
 
-    public static String fileName_1 = "Results/UntilAvg60Run/FROM_null_WITH_r6_c95";
-    public static String fileName_2 = "Results/UntilAvg60Run/FROM_r45_c0_WITH_r6_c0";
+    public static String fileName_1 = "Results/3_Min50Gens_UntilAvgScore60/FROM_null_WITH_r6_c95";
+    public static String fileName_2 = "Results/3_Min50Gens_UntilAvgScore60/FROM_r45_c0_WITH_r6_c0";
 
     // Missing: Continuous and Combo 50/95
 
