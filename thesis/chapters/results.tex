@@ -1,11 +1,69 @@
 \chapter{Results and Evaluation}
 \label{ch:results}
-This part will show the results of the experiments, if possible graphically, and discuss what can be learned from them.
+\section{Fitness score tables} % Double page wide graphics can be up to ~130mm
+\label{ch:results:fit}
+For better overview but also centrality, we have decided to put them all in the appendix. They can be found here \ref{all_gens}
 
-\section{Experimental result data}
-\label{ch:results:data}
-Tables and logs mostly. 
+\subsection{Initial set of runs}
+\label{ch:results:fit:init}
+First we have the tables for the best, worst and average fitness, starting from random populations until the required win percentage is reached (\ref{sec:method:testing:end}). All three are using rule set 1 (\ref{sec:method:testing:rules1}) and varying the combo mutation chance (\ref{sec:method:genalg:combo_mutation}) between 0\% (\ref{fig:random_to_r1:c0}), 50\% (\ref{fig:random_to_r1:c50}) and 95\% (\ref{fig:random_to_r1:c95}). \\
+
+\subsection{Continuous set of runs}
+\label{ch:results:fit:cont}
+Then there are the fitness tables for the continuous runs, that were seeded with the last generation of the respective run in \ref{ch:results:fit:init}. They first use rule set 2 (\ref{sec:method:testing:rules2}) and varying the combo mutation chance (\ref{sec:method:genalg:combo_mutation}) between 0\% (\ref{fig:r1_to_r2:c0}), 50\% (\ref{fig:r1_to_r2:c50}) and 95\% (\ref{fig:r1_to_r2:c95}).  \\
+
+Then the last generation of the respective combo mutation chance is used to generate the third set, using rule set 3 (\ref{sec:method:testing:rules3}) and while varying the combo mutation chance (\ref{sec:method:genalg:combo_mutation}) between 0\% (\ref{fig:r2_to_r3:c0}), 50\% (\ref{fig:r2_to_r3:c50}) and 95\% (\ref{fig:r2_to_r3:c95}). \\
+
+
+\subsection{Runs from random populations}
+\label{ch:results:fit:rand}
+Lastly there are the independent runs, all starting from random populations, so they are comparable to the initial set of runs (\ref{ch:results:fit:init}), as well as the (\ref{ch:results:fit:cont}). First rule set 2 is used (\ref{sec:method:testing:rules2}) with combo mutation chances (\ref{sec:method:genalg:combo_mutation}) of 0\% (\ref{fig:random_to_r2:c0}), 50\% (\ref{fig:random_to_r2:c50}) and 95\% (\ref{fig:random_to_r2:c95}). \\
+
+Then rule set 3 is used (\ref{sec:method:testing:rules3}) while varying the combo mutation chance (\ref{sec:method:genalg:combo_mutation}) between 0\% (\ref{fig:random_to_r3:c0}), 50\% (\ref{fig:random_to_r3:c50}) and 95\% (\ref{fig:random_to_r3:c95}).
+
+
+\newpage
+\subsection{Decks Distance}
+\label{ch:results:deck_dist}
+To be able to compare the variety and level of convergence between experiment sets are, a similarity score is calculated. This deck similarity represents how much overlap two population have between all of their deck. Alternatively, if only one population is provided, the internal similarities are calculated. \\
+To do this each deck is compared to each deck of the second population and the number of cards that appear in each pair is added up. \\
 
 \section{Evaluating collected data}
 \label{ch:results:eval}
-Possibly some light play testing of the decks in the real game might be possible at this point, but an evaluation from one or better a few experienced players would be preferable.
+We have a number of parameters, that were varied during the experiment, each providing insights into at least one previously defined research question (\ref{sec:method:quest}). Additionally most of the available result data has been processed and presented. This allows us to answer the questions, where we will hold back \emph{RQ 2} and \emph{RQ 2} until their sub questions could be discussed. \\
+\\
+	\emph{RQ 1.1:} Does continuous mutation reduce the generation time?
+\emph{Absolutely}. This assumption has been confirmed by every single continuous run in \ref{ch:results:fit:cont}. All of them reached the 60\% goal much faster than the minimum generation number. Though the runs with the third rule set (\ref{sec:method:genalg:combo_mutation}) have to be viewed with care, as they all started out inheriting decks strong enough to almost instantly reach the goal. Still, contrasting this speed with the initial generation (\ref{ch:results:fit:init}) that took 139, 85 and 94 generations respectively, it seems continuous generation if you want to optimize for speed. But those were by far the quickest of the remaining individual runs, as the second rule set took 545, 1217 and 624! 
+\\
+	\emph{RQ 1.2:} How does continuous mutation affect the variety in it's population?
+\emph{Yes, it is lower than average, but only marginally.} Some similarity scores for comparison can be found a as raw data or here \ref{similarity_scores}.
+These similarity scores average out to 63,45\% for the individual runs and 69,37\% for the continuous mutation runs. Continuity is 5,92 percent points worse in this metric than individual, but all of those values are fairly high and we were surprised that this difference was not much higher.\\
+In the other comparisons between decks the continuity populations have kept showing this low, but noticeable score difference, so we will not discuss this further at this point.
+\\
+\\
+	\emph{RQ 1:} Is continuous mutation (\ref{sec:method:testing:continuous_individual_hybrid}) beneficial?
+\emph{We believe it's benefits far outweigh it's downsides.} Good populations have translated remarkably well into new rule sets. But the main draw for us is not the surprisingly high score right at the beginning, but that there is any score at all. It has shown, that the time loss with the biggest potential has been the start, where no decks are able to gain even a single win. Our biggest difference has been up to around 700 generations between starting and the first signs that a candidate might start to get a foothold. And all of these generation attempts were made in the same rules set (\ref{fig:random_to_r2:c0} and \ref{fig:random_to_r2:c50}), of course with different combo mutation rates, but that could not have been this impactful based on other comparisons.\\
+
+	\emph{RQ 2.1:} Does combination affine mutation reduce the generation time?
+	Due to the before mentioned variance in getting to any viable population at all, it is impossible to say. More resting is necessary.
+\\
+\\
+	\emph{RQ 2.2:} How does combination affine mutation affect the variety in it's population?
+	This also has been difficult to tell, as there are comparisons that speak in either way, so we have to say that this is also something for future testing, even if it seems almost good enough to be statistically significant. So when combo mutation slightly counter acts homogenization, it may be possible to negate the negative impacts of continuous mutation.
+\\
+\\
+	\emph{RQ 2:} Is combination affine mutation (\ref{sec:method:genalg:combo_mutation}) beneficial?
+	\emph{Unknown and needs more testing.}
+\\
+\\
+	\emph{RQ 3:} Can other observations be made that would help deciding the best parameters or things to be aware of?\\
+	\emph{RQ 3.1:} Is the algorithm in general prone to convergent evolution, creating the same decks over and over?
+	\emph{Yes!} Depending on the exact rule set at least. If it is a tough one, like rule set 2 was for our test environment, they show very high similarities.
+\\
+\\
+	\emph{RQ 3.2:} Is it beneficial for the runtime to be greedy during the selection of the initial random population?
+	\emph{No. surprisingly!} Instinctively Hyper-Mutation or Zero Score Re-rolling (described in \ref{sec:method:genalg:other_mutation}) should help with the slow start, but there seemed to be no noticeable improvement. \\
+\\
+\\
+
+

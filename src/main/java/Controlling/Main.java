@@ -28,7 +28,7 @@ public class Main {
 
     public static SecureRandom random;
     public static final String cardsFile = "src/main/resources/Cards/cards.csv";
-    public static final String rulesFile = "src/main/resources/Rules/6.json";
+    public static final String rulesFile = "src/main/resources/Rules/5.json";
     public static final String residentsFile = "src/main/resources/Decks/NewResidents/res_current.csv";
     public static final String allCardsTestFile = "src/main/resources/Decks/allCardsTest.csv";
     public static       String candidatesFile = "src/main/resources/Results/UntilAvg60Run/FROM_r4_c50_WITH_r5_c50/currentCandidates.csv";

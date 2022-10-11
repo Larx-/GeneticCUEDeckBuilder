@@ -1,22 +1,47 @@
 \chapter{Method}
 \label{ch:method}
+The following chapter will focus on the specific questions we want to answer. The methodology, in particular the genetic algorithm, chosen parameters to vary and the actual testing strategy will be discussed.
 
-% TODO: Figure out how one can make multiple files out of this mess...
+\section{Research Questions}
+\label{sec:method:quest}
+First the goals mentioned in \ref{sec:intro:goals} have to be broken down into indiviual, specific questions. For this we assume we want to develop a tool to be able to create decks through a genetic algorithm, that should be able to provide as strong and varied decks as possible. It should be able to do this without having to switch any parameters and it should be as efficient and fast as possible. We measure the number of generations until the win percent goal is reached, which is not exactly a speed measurement, but it is definitely close enough.\\
 
-\section{Simulation compatible re-implementation of the game}
+	\emph{RQ 1:} Is continuous mutation (\ref{sec:method:testing:continuous_individual_hybrid}) beneficial?\\
+		\emph{RQ 1.1:} Does continuous mutation reduce the generation time?\\
+		\emph{RQ 1.2:} How does continuous mutation affect the variety in it's population?\\
+	\emph{RQ 2:} Is combination affine mutation (\ref{sec:method:genalg:combo_mutation}) beneficial?\\
+		\emph{RQ 2.1:} Does combination affine mutation reduce the generation time?\\
+		\emph{RQ 2.2:} How does combination affine mutation affect the variety in it's population?\\
+	\emph{RQ 3:} Can other observations be made that would help deciding the best parameters or things to be aware of?\\
+		\emph{RQ 3.1:} Is the algorithm prone to convergent evolution, creating the same decks over and over?\\
+		\emph{RQ 3.2:} Is it beneficial for the runtime to be greedy during the selection of the initial random population?\\
+
+\section{Simulation compatible implementation of CUE}
 \label{sec:method:game}
 Here will be a short description of my re-implementation of the game to allow for simulating games. It will also include any simplifications I may have had to compromise on, either because of time constraints and unexpected complexity or because of limitations in other areas. With some simplifications, like not requiring 2 cards to be played next to each other for a specific condition, it might be possible to get better data, that can then be more meaningfully extrapolated to the full game.\\
-CUE developers "Avid Games" kindly provided me with a .tsv list of all cards including information and nat lang effect.
 
 \subsection{Structure of the general game logic}
 \label{sec:method:game:general}
-Isn't this pretty much covered already? \\
+To briefly explain the mechanics of CUE, you gain a variable amount of energy per turn to play up to three cards out of five in your hand to maximize the power you generate. After each turn, played cards are put under their corresponding deck, consisting of 18 cards total, and new ones are drawn until five are on hand again. After every three turns a round ends and whoever managed to generate the most power in those three turns wins that round. The rounds are played as a best of five, so a game can have between three and five. Each round is played in an arena that gives a specific set of cards a bonus. Each week the amount of energy you gain per turn, the possible sets that can get bonuses, as well as a few other parameters/rules are changed.
 
-\subsection{Implementation of a natural language effect parser}
+\subsection{Natural language effect parser}
 \label{sec:method:game:natlang_parser}
-Describe some of the issues I had getting this to work reliably
+We have access to a formatted list of all cards available on the xx.xx.xxxx. \\
+This list includes all relevant elements of the cards; id, name, energy cost, power, rarity, collection and the effect as plain text.\\
+To be able to simulate games these have to be parsed, but because of inconsistencies in the way the effects are described, we could not use a simple grammar or pattern based parser.\\
+Instead we used consecutive regex replacements. As a basic example the effect \\"When played, give your Opponent -10 Power/Turn for the rest of this round." \\became "[TriggerTime:PLAY] [Target:OTHER] [Effect:POWER\_PER\_TURN, Value:-10] [Duration:END\_ROUND]".\\
+Theses could then more easily be parsed block for block. When parsing more complex effects, as soon as one of the three main blocks, TriggerTime, Target or Effect, reoccur, a new and independent set is started.\\
+is parsed and stored in a two dimensional array in this way: Then, since some blocks relate to more than one set, the three main blocks are first propagated "forward", where any are missing and then "backwards" .\\
+After successfully parsing an effect we also gather the needed information for combination directed mutations. \\
+All card names, collections and albums that are mentioned in positive effects for the player playing the effect are collected and saved. \\
+For example the effect \\"When drawn, reduce the Energy cost of your Dogs cards by 1 until played, and give your Cute Cats cards +12 Power until the end of the game." \\becomes
+\\"[TriggerTime:DRAW] [Effect:ENERGY, Value:-1] [Target:(your Dogs cards)] [Duration:UNTIL\_PLAYED] [Target:(your Cute Cats cards)] [Effect:POWER, Value:+12] [Duration:PERMANENT]"
+and has the combo mutation designation "[Dogs,Cute Cats]".\\
+Due to a number of reasons not all effects are parsed correctly using this method. But due to time constraints we are not able to fix all the parsing problems, as many would mean tedious manual work with diminishing returns on the parsed percentage. Instead we continue with the subset of cards, whose effect is parsed correctly. The main reason for this are unique or rarely used descriptions, often because they are written in a way that is deviant form the usual. This affected the regexp step, since not all parts of every effect could be replaced with a standard property block. A secondary fuzzy search on target values is also affected by this and lead to more losses. This step is needed, because requiring total standardization from the regexp step would have made it much more difficult to write generally applicable expressions. \\
 
-% TODO: Break here
+But even if the meaning of a more complex effect is distinct, when some parts are only implied or carried between different effect sets, some errors inevitably occur. Any that manifest in some noticeable way, like being overly represented during generation, were fixed manually, but it's likely that some are still not correctly applied. This is accepted, as it should not have a significant impact on the final conclusions. \\ 
+All in all 1621 cards are considered for our subset of the originally 2945 cards.\\
+
 
 \section{Implementation of bot agents for fitness evaluation}
 \label{sec:method:agents}
@@ -24,17 +49,17 @@ To be able to judge how well a deck might do, it needs to be tested against all 
 
 \subsection{Simple random agent}
 \label{sec:method:agents:random}
-For my implementation I chose a bot, that randomly picks as many cards as it's current energy allows.
+For our implementation we chose an agent, that randomly picks three cards to play every turn, if there is enough energy, otherwise as many cards as is possible. \\
 
-\subsection{Other agents}
+\subsection{Reasoning for random agent}
 \label{sec:method:agents:other}
-Of course a more intelligent AI would be able to more accurately represent how a human might play and there are a lot of different approaches, like neural nets, heuristics based MiniMax or Monte Carlo methods. It would be interesting to compare these in a separate paper, but because of time constraints and to avoid introducing more variables, I have not. In addition, even the bots in the actual game seemed to play with a mostly random approach for a long time, so it is not a bad analogue to the game.
+Of course a more intelligent AI would be able to more accurately represent how a human might play and there are a lot of possible approaches, like neural networks, a heuristics based MiniMax algorithm or Monte Carlo methods. It would be interesting to compare these in a separate paper, but because of time constraints and to avoid introducing more variables, we picked the simplest possible agent. In addition, even the bots in the game seemed to play with a mostly random approach for a long time, so it seems like a decent enough analogue to the game. \\
+Due to this the most successful decks will be different than those a good player would create, as some cards are only useful with carefully considered play. For example the popular card "Heimadall" with the effect "" not only requires building the deck around having at least one card from each album, but also smart play. If possible it should always be played on the first turn of a round to give it's effect the biggest impact. But it is also important to consider how the card will cycle, meaning when exactly it's drawn again, based on the turn, position in which it is played and predicted number of cards played per turn. \\
 
 \subsection{Deck selection for “Resident agents”}
 \label{sec:method:agents:resident_decks}
-Decks for “resident bots” to compare the population against
-
-% TODO: Break here
+To be able to assign a score to a deck, we need a base line of decks, that are tested against. These decks, from now called "resident decks", are each assigned to and played by a “resident agent”. These should be fairly strong in the testing environment, as progress can not be tracked accurately, if most random decks usually beat the resident decks. \\
+The limitations in our environment, resulting from only using a subset of all cards and the random play style our agents have, it is not possible to simply use well established decks or deck archetypes, that are popular in the player base and tested over time. Instead we used the genetic algorithm itself to progressively create our resident decks in steps.
 
 \section{Implementation of the genetic algorithm}
 \label{sec:method:genalg}
@@ -47,42 +72,71 @@ This makes the additions to the basic algorithm a relatively low priority, thoug
 
 \subsection{Initialization}
 \label{sec:method:genalg:init}
-With random decks or from file to be able to continue / restart from any point
+The algorithm was usually initialized with a completely random set of decks. But for backup and also continuity mutation the ability to load from file to be able to continue / restart from any point was implemented very early.
 
 \subsection{Overview of steps in the algorithm}
 \label{sec:method:genalg:overview}
-Overview of the overall procedure structure 
+The genetic algorithm is essentially just a very fast player that can try many different things and see what sticks. For this there is a very elegant loop it has to do, with every generation.\\
+\begin{itemize}
+	\item Play a lot of games to be able to tell the good from the bad decks\\
+	\item Select the next generation\\
+	\item And lastly change it up a bit to be ready for the next generation\\
+\end{itemize}
+
 
 \subsection{Fitness evaluation}
 \label{sec:method:genalg:fitness}
-according parameters discussed
+Each candidate deck battles, all of usually 10 residents, each 50 times, to remove some of the variance from the way we are simulating the game and player.
 
 \subsection{Selection}
 \label{sec:method:genalg:selection}
-according parameters discussed
+We used a simple tournament selection with a tournament size of 5.
 
-\subsection{Mutation}
+\subsection{Single point mutation}
 \label{sec:method:genalg:mutation}
-according parameters discussed
+A mutation is only done once a generation for any individual deck, but that accounts for a lot of combination testing if you have 200 candidates.
 
-\subsection{Hyper-mutation}
-\label{sec:method:genalg:hyper_mutation}
-according parameters discussed
+\subsection{Combination affine mutation}
+\label{sec:method:genalg:combo_mutation}
+The combination affine mutation, further called "combo mutation", works just like the normal single point mutation \ref{sec:method:genalg:mutation}, except, that it tries to replace the card selected for mutation with a card that would work well in combination with the deck. To achieve this, another card in the deck is selected. The previously defined potential beneficial combinations of this card are used a the set of cards, which can be selected to be added to the deck. In case there are no combinations or all of these card are already in the deck, it falls back to randomly selecting one from the full set.\\
+To avoid potentially complete stagnation in the population, this combo selector only has a certain chance to be used during mutation. Because this variation method is relatively specific to this case and the similarity of it to how a real player might choose cards, there is a high expectation of improvement. To test how it affects the resulting decks we have varied the parameter in our testing using a combo mutation chance of 0\%, 50\%, and 95\%.
 
-% TODO: Break here
+\subsection{Other potential methods}
+\label{sec:method:genalg:other_mutation}
+Other considered, but not used for the final run, methods of changing the population include Crossover, Hyper-Mutation and a variation of the latter. \\
+Crossover is taking two candidates, cutting both at the same random index and switching the cut part between the two candidates. This did not seem to significantly influence the results, but created problems with potentially having the same card multiple times in one deck. This is not allowed by the game and often results in strange behavior, so we choose to avoid it entirely in the final testing. \\ 
+Hyper-Mutation, as described by Grefenstätte [4], periodically replaces a part of the population with completely random candidates. This can help when the entire population has become too homogeneous. With a periodically changing global maximum score, as is the case with changing rule sets, a homogeneous population often means a slower response time or even being completely stuck in the current local maximum. Any of the considered Hyper-Mutation-Rates have been either inconsequential or even bad for the resulting number of needed generations on a rule change. More frequently changing rules and a system that is more prone to getting a very similar population may be needed for Hyper-Mutation to be beneficial, so we have not used it.\\
+One area where stagnation was very noticeable, is in the beginning of the generation, until some small success can be found after a random amount of time. To adapt the idea of Hyper-Mutation to this use case, we replaced a percentage of the population, in every generation where the average score is exactly zero. More testing is needed here, because of the huge amount of variance. Due to the long run times, it is not possible for us to determine if it had any impact on the speed, so to avoid this additional parameter, the final test is run without.\\
+
+\subsection{Continuous, individual and hybrid modes}
+\label{sec:method:testing:continuous_individual_hybrid}
+Individual mutation is the standard way through initialization by a random population. Continuous mutation on the other hand works by keeping the population of the last run, as a seed for the next.
 
 \section{Testing strategies}
 \label{sec:method:testing}
-Explain (possible) split with single vs specialized decks \\
-Easier to benchmark <-> Closer to reality \\
 Setting the parameters could be it’s own experiment, but to have enough time to answer my main question, these experiments might be fairly short. Once the resulting decks rank consistently high and at least a good amount above random, I will freeze the parameters of the genetic algorithm. \\
 The main test will then be running the algorithm for n generations using one set of game rules that have been used in the game. Then changing those rules and letting the algorithm run for n generations using the previously created decks as seeds again. Additionally the algorithm will also run n generations with the new rules without any previous decks.  \\
 Repeating this with different game rules should hopefully give some insight whether the head start is good, bad or inconsequential, depending on how drastic the change in game rules were. \\
 
+The rule sets chosen for the final test can be seen in. They are actual rule sets that haven been in the game and are selected because they represent fairly extreme ends of the spectrum of possible rule sets. Their differences are also highlighted by the ordering. \\
+
+\label{sec:method:testing:end}
+All test algorithm continues until the average score is above 60\%, but at least 50 generations.\\
+
+\label{sec:method:testing:rules1}
+\label{sec:method:testing:rules2}
+\label{sec:method:testing:rules3}
+
 \subsection{Same resident decks for all rule sets}
 \label{sec:method:testing:single}
-Still need to create the decks or competition
+To generate the residents we simply ran the algorithm until it's close to 90\% or 100\% win rates, then take some of this population as the next residents. We did this loop 3 times and felt like the residents had the right difficulty for the experiment.\\
+During this evolution we used rules, as "default" as possible, with average power and no bonus rules.
+
 
 \subsection{Specialized resident decks for each rule set}
 \label{sec:method:testing:special}
-Might not even happen
+To further emphasize the differences in characteristics potential decks need with different rule sets it would be possible to use specialized residents for each rule set. Preliminary tests have shown though, that this benefit would be very small, if noticeable at all. Because of this we chose to forego this option, as it would add another variable into the already very complex testing plan. It is possible, that the continuous generation could benefit from this, by specializing to counter exactly the resident decks, but this would again require careful play. Most likely because of the erratic way our agents play, this overspecialization has not occurred in our testing, as can be seen by the fairly low similarity scores shown in \ref{similarity_scores}.
+
+
+
+

@@ -1,3 +1,12 @@
 \chapter{Conclusion}
 \label{ch:conclusion}
-Hopefully a nicely wrapped up end with the main question answered and more potential research areas uncovered.
+We were not able to full answer all of our research questions, but learned a few unexpected things, like how good preevoled decks still are against new rules. Also how few variables during the generation had any immediate and or even noticeable effect.\\
+It is possible, that the test series is simply too short. But because of the long runtimes and that it is already clear, that getting this first "foothold" is the critical variable, on which our simulation duration depends. Notice how in every graph (\ref{all_gens}) the number of generations between an average score of 0.01\% and 60\% only marginally varied, so even if improvements could have been made here, they would have only become apparent after hundreds of test runs taking many days. And even if a better setting is found, the time will not significantly change, while getting to that first win can take ten times as long as going from there to the goal of 60\%. \\
+And this is really where the continuous method shines, since the best decks from the previous rule set are used as the starting population. These translate into a worse score with the new rule set, but importantly their average score is not 0.0\%. \\
+Because of this the contentious population reached the targeted average MUCH quicker, always before reaching the limit of at least 50 generations.\\
+
+\section{Future research}
+How such a continuous generation behaves in the long term, getting stronger and stronger or homogenizing and dropping off at some point because they could not beat a new rule set. \\
+A less simplified, regarding the subset of cards, the simple nature of the agents, their static deck and possibly just a lot more full runs could still uncover many interesting facts.\\
+Another interesting question but statistically most likely fairly difficult to determine, is how a hybrid approach would have worked out and if there is a sweet spot and what determines it.\\
+I would also like to see a return of the combination affine mutation, but that would have to be on a much more complete representation of the game.\\

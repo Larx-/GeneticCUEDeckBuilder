@@ -17,7 +17,7 @@
 % does not support utf8 use another editor!
 % ****************************************************************************************************
 \PassOptionsToPackage{utf8}{inputenc}
-  \usepackage{inputenc}
+\usepackage{inputenc}
 
 % ****************************************************************************************************
 % 1. Configure classicthesis for your needs here, e.g., remove "drafting" below
@@ -103,6 +103,7 @@
 
 \PassOptionsToPackage{doublespacing}{hdathesis}  % options: abbrev exam big wiwi english master
   \usepackage{hdathesis}
+  \usepackage{adjustbox}
 
 % ********************************************************************
 % General useful packages
@@ -144,7 +145,15 @@
 %\DeclareCaptionLabelFormat{smallcaps}{\bothIfFirst{#1}{~}\MakeTextLowercase{\textsc{#2}}}
 %\captionsetup{font=small,labelformat=smallcaps} % format=hang,
 \captionsetup{font=small} % format=hang,
-\usepackage{subfig}
+\usepackage{subcaption}
+
+\newcommand{\adjustimg}{% Horizontal adjustment of image
+	\checkoddpage%
+	\ifoddpage\hspace*{\dimexpr\evensidemargin-\oddsidemargin}\else\hspace*{-\dimexpr\evensidemargin-\oddsidemargin}\fi%
+}
+\newcommand{\centerimg}[2][width=\textwidth]{% Center an image
+	\makebox[\textwidth]{\adjustimg\includegraphics[#1]{#2}}%
+}
 % ****************************************************************************************************
 
 
@@ -186,8 +195,10 @@
 %\pdfcompresslevel=9
 %\pdfadjustspacing=1
 %\fi
+\usepackage{geometry}
 %\PassOptionsToPackage{pdftex}{graphicx} %%%IVO: driver will be chosen automatically
-  \usepackage{graphicx}
+	\usepackage{graphicx}
+\usepackage{hvFloat}
 
 
 % ********************************************************************
@@ -275,8 +286,8 @@
 % Changing the text area
 % ********************************************************************
 %\areaset[current]{312pt}{761pt} % 686 (factor 2.2) + 33 head + 42 head \the\footskip
-%\setlength{\marginparwidth}{7em}%
-%\setlength{\marginparsep}{2em}%
+\setlength{\marginparwidth}{7em}
+\setlength{\marginparsep}{2em}%
 
 % ********************************************************************
 % Using different fonts
